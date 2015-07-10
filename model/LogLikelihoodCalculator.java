@@ -20,7 +20,7 @@ import java.lang.Math;
  * STILL NEEDS THOROUGH TESTING
  * 
  */
-public class LikelihoodCalculator {
+public class LogLikelihoodCalculator {
     //testing this requires a lot of annoying IO code.
     //Might be better to have a separate testing class for testing LC
     
@@ -42,7 +42,7 @@ public class LikelihoodCalculator {
     
     double[] freqs = new double[]{ 1.0, 0.0, 0.0, 0.0 }; // A is only permissible state
     
-    public LikelihoodCalculator(AdvancedAlignment alignment, Tree tree, int site){
+    public LogLikelihoodCalculator(AdvancedAlignment alignment, Tree tree, int site){
         this.alignment = alignment;
         this.tree = tree;
         //this.rateMatrix = rateMatrix
@@ -136,7 +136,7 @@ public class LikelihoodCalculator {
 //            System.out.println("taxon: " + s + "\t" + "state: " + advanced.getStateBySequenceName(s, 0));
 //        }
         
-        LikelihoodCalculator LC = new LikelihoodCalculator(advanced, testTree, 0);
+        LogLikelihoodCalculator LC = new LogLikelihoodCalculator(advanced, testTree, 0);
         
         Node root = testTree.getRoot();
         
