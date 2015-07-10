@@ -16,13 +16,15 @@ import org.apache.commons.math3.linear.Array2DRowRealMatrix;
  */
 public class RateMatrix extends Array2DRowRealMatrix {
 
-    private BaseFrequencies pi;
+    private BaseFrequencies pi; 
     private TsTvRatio kappa;
+    
+    public BaseFrequencies getBaseFrequencies(){ return pi; }
     
     public RateMatrix( BaseFrequencies pi, TsTvRatio kappa ){ 
         //suitable for constructing a classic HKY85 Q matrix
         
-        super(); 
+        super(); // this will create a matrix with no data. I think I need to pass in the values here
         this.kappa = kappa;
         this.pi = pi;
         
@@ -53,6 +55,7 @@ public class RateMatrix extends Array2DRowRealMatrix {
     
     
     public static void main(String[] args){
+        System.out.println("Testing RateMatrix");
         TsTvRatio k = new TsTvRatio(2.0);
         BaseFrequencies freqs = new BaseFrequencies(new double[]{ 0.25, 0.25, 0.25, 0.25 });
         
@@ -62,8 +65,5 @@ public class RateMatrix extends Array2DRowRealMatrix {
 
     
     }
-    
-    
-    
-    
+
 }//class
