@@ -1,5 +1,7 @@
 
 package yeswecan.model;
+import org.apache.commons.math3.linear.EigenDecomposition;
+
 
 /**
  *
@@ -11,10 +13,28 @@ package yeswecan.model;
  */
 public class TransProbMatrix {
     
-    public TransProbMatrix(){
-    
+    public TransProbMatrix(RateMatrix Q){
+        // perform eigen decomposition
+        
+        //EigenDecomposition eigen = new EigenDecomposition(Q);
+        
     }
     
     
+    
+    /*
+    public static double[][] getP(double t){
+    
+        // return P(t)
+        
+    }
+    */
+    
+    public static void main(String[] args){
+        System.out.println("Testing TransProbMatrix");
+        
+        
+        //TransProbMatrix P = new TransProbMatrix();
+    }
     
 }
