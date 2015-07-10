@@ -49,43 +49,7 @@ public class LikelihoodCalculator {
         this.site = site;
     }
     
-    public static void main(String[] args){
-        System.out.println("Hello World, this is Likelihood Calculator");
 
-        String testTreePath = "/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/test.tre";
-        String testAlignPath = "/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/test.fasta";
-        
-        ReadTree testTree;
-        Alignment align;
-        SimpleAlignment simple;
-        AdvancedAlignment advanced;
-
-        try{
-            testTree = new ReadTree(testTreePath);
-
-            align = AlignmentReaders.readFastaSequences(new FileReader(testAlignPath), new Nucleotides());
-            simple = new SimpleAlignment(align);
-            advanced = new AdvancedAlignment(simple);
-            
-        }
-        catch(Exception e){ testTree=null; simple = null; advanced = null; System.out.println("Error reading alignment in LC main"); e.printStackTrace(); System.exit(1);  }
-
-        
-//        String[] taxa = new String[]{ "human", "chimp", "gorilla", "orangutan" };
-//        for (String s : taxa){
-//            System.out.println("taxon: " + s + "\t" + "state: " + advanced.getStateBySequenceName(s, 0));
-//        }
-        
-        LikelihoodCalculator LC = new LikelihoodCalculator(advanced, testTree, 0);
-        
-        Node root = testTree.getRoot();
-        
-        double lnL = Math.log( LC.calculateSiteLogLikelihood() );
-        
-        System.out.println( "Site lnL = " + lnL );
-        
-        System.out.println("End of test");
-    }//main
     
     
     public double calculateSiteLogLikelihood(){ //pass in rate matrix
@@ -103,7 +67,7 @@ public class LikelihoodCalculator {
         //Felsenstein's Pruning Algorithm
         double[] parentConditionals = new double[States.NT_STATES]; //number of nucleotide states
         
-        if (parent.isLeaf()){ // 'parent' is terminal node, i.e. actually has no children.
+        if (parent.isLeaf()){ // 'parent' is terminal node, i.e. has no children.
         
             String taxonName = parent.getIdentifier().getName();
             int state = alignment.getStateBySequenceName(taxonName, site);
@@ -142,6 +106,46 @@ public class LikelihoodCalculator {
     
     }//downTree()
     
+    
+    
+    
+    public static void main(String[] args){
+        System.out.println("Hello World, this is Likelihood Calculator");
+
+        String testTreePath = "/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/test.tre";
+        String testAlignPath = "/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/test.fasta";
+        
+        ReadTree testTree;
+        Alignment align;
+        SimpleAlignment simple;
+        AdvancedAlignment advanced;
+
+        try{
+            testTree = new ReadTree(testTreePath);
+
+            align = AlignmentReaders.readFastaSequences(new FileReader(testAlignPath), new Nucleotides());
+            simple = new SimpleAlignment(align);
+            advanced = new AdvancedAlignment(simple);
+            
+        }
+        catch(Exception e){ testTree=null; simple = null; advanced = null; System.out.println("Error reading alignment in LC main"); e.printStackTrace(); System.exit(1);  }
+
+        
+//        String[] taxa = new String[]{ "human", "chimp", "gorilla", "orangutan" };
+//        for (String s : taxa){
+//            System.out.println("taxon: " + s + "\t" + "state: " + advanced.getStateBySequenceName(s, 0));
+//        }
+        
+        LikelihoodCalculator LC = new LikelihoodCalculator(advanced, testTree, 0);
+        
+        Node root = testTree.getRoot();
+        
+        double lnL = Math.log( LC.calculateSiteLogLikelihood() );
+        
+        System.out.println( "Site lnL = " + lnL );
+        
+        System.out.println("End of test");
+    }//main
     
     
 }//class
