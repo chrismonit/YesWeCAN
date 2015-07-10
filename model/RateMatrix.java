@@ -24,7 +24,7 @@ public class RateMatrix extends Array2DRowRealMatrix {
     public RateMatrix( BaseFrequencies pi, TsTvRatio kappa ){ 
         //suitable for constructing a classic HKY85 Q matrix
         
-        super(); // this will create a matrix with no data. I think I need to pass in the values here
+        super(); // this will create a matrix with no data; populated at end of constructor
         this.kappa = kappa;
         this.pi = pi;
         
@@ -52,7 +52,7 @@ public class RateMatrix extends Array2DRowRealMatrix {
         
     }//constructor
     
-    
+
     
     public static void main(String[] args){
         System.out.println("Testing RateMatrix");
