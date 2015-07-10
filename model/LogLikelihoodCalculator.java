@@ -1,18 +1,11 @@
 
 package yeswecan.model;
 
-//for testing:
-import pal.tree.ReadTree;
-import pal.alignment.AlignmentReaders;
-import pal.alignment.*;
-import java.io.FileReader;
-import pal.datatype.Nucleotides;
 import yeswecan.phylo.AdvancedAlignment;
 
 import pal.tree.Node;
 import pal.tree.Tree;
 import yeswecan.phylo.States;
-import java.lang.Math;
 
 /**
  * @author Christopher Monit (c.monit.12@ucl.ac.uk)
@@ -21,50 +14,19 @@ import java.lang.Math;
  * 
  */
 public class LogLikelihoodCalculator {
-    //testing this requires a lot of annoying IO code.
-    //Might be better to have a separate testing class for testing LC
-    
-    //real fields
-    
-    private AdvancedAlignment alignment;
-    private Tree tree;
-    //prvate double[] rateMatrix;
-    private int site;
-    
-    //test fields
-    
-    double[] probMatrix = 
-        new double[]{ 1.0, 0.0, 0.0, 0.0,
-                      0.0, 1.0, 0.0, 0.0,              
-                      0.0, 0.0, 1.0, 0.0,              
-                      0.0, 0.0, 0.0, 1.0              
-                    };
-    
-    double[] freqs = new double[]{ 0.25, 0.25, 0.25, 0.25 }; // A is only permissible state
-    
-    // to be removed
-    public LogLikelihoodCalculator(AdvancedAlignment alignment, Tree tree, int site){
-        this.alignment = alignment;
-        this.tree = tree;
-        //this.rateMatrix = rateMatrix
-        this.site = site;
-    }
-    
-    public LogLikelihoodCalculator(){
-    
-    }
 
-    
+
+    public LogLikelihoodCalculator(){}
     
     public double calculateSiteLogLikelihood(AdvancedAlignment alignment, Tree tree, int site, RateMatrix Q){ 
   
         double sum = 0.0;
         double[] rootConditionals = downTree( tree.getRoot(), alignment, tree, site, Q );
         for (int iRootState = 0; iRootState < States.NT_STATES; iRootState++) {
-            sum +=  freqs[iRootState] * rootConditionals[iRootState];
+            sum +=  Q.getBaseFrequencies().get()[iRootState] * rootConditionals[iRootState];
             
         }
-        return sum;
+        return Math.log(sum);
     }
     
     private double[] downTree(Node parent, AdvancedAlignment alignment, Tree tree, int site, RateMatrix Q){
@@ -86,7 +48,8 @@ public class LogLikelihoodCalculator {
         }//if leaf
         else{
             //parentConditionals dependent on children conditionals
-            for (int i = 0; i < parentConditionals.length; i++) parentConditionals[i] = 1.0; // set all to one at first, will multiply by probabilities for each child, below
+            for (int i = 0; i < parentConditionals.length; i++) 
+                parentConditionals[i] = 1.0; // set all to one at first, will multiply by probabilities for each child, below
 
             for (int iChild = 0; iChild < parent.getChildCount(); iChild++){ //for every child of this parent node
                 Node child = parent.getChild(iChild);
@@ -113,47 +76,6 @@ public class LogLikelihoodCalculator {
         return parentConditionals;
     
     }//downTree()
-    
-    
-    
-    
-    public static void main(String[] args){
-//        System.out.println("Hello World, this is Likelihood Calculator");
-//
-//        String testTreePath = "/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/test.tre";
-//        String testAlignPath = "/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/test.fasta";
-//        
-//        ReadTree testTree;
-//        Alignment align;
-//        SimpleAlignment simple;
-//        AdvancedAlignment advanced;
-//
-//        try{
-//            testTree = new ReadTree(testTreePath);
-//
-//            align = AlignmentReaders.readFastaSequences(new FileReader(testAlignPath), new Nucleotides());
-//            simple = new SimpleAlignment(align);
-//            advanced = new AdvancedAlignment(simple);
-//            
-//        }
-//        catch(Exception e){ testTree=null; simple = null; advanced = null; System.out.println("Error reading alignment in LC main"); e.printStackTrace(); System.exit(1);  }
-//
-//        
-////        String[] taxa = new String[]{ "human", "chimp", "gorilla", "orangutan" };
-////        for (String s : taxa){
-////            System.out.println("taxon: " + s + "\t" + "state: " + advanced.getStateBySequenceName(s, 0));
-////        }
-//        
-//        LogLikelihoodCalculator LC = new LogLikelihoodCalculator(advanced, testTree, 0);
-//        
-//        Node root = testTree.getRoot();
-//        
-//        double lnL = Math.log( LC.calculateSiteLogLikelihood() );
-//        
-//        System.out.println( "Site lnL = " + lnL );
-//        
-//        System.out.println("End of test");
-    }//main
-    
+
     
 }//class

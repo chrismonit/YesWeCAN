@@ -19,7 +19,9 @@ public class RateMatrix extends Array2DRowRealMatrix {
     private BaseFrequencies pi; 
     private TsTvRatio kappa;
     
-    public BaseFrequencies getBaseFrequencies(){ return pi; }
+    public BaseFrequencies getBaseFrequencies(){ 
+        return pi; 
+    }
     
     public RateMatrix( BaseFrequencies pi, TsTvRatio kappa ){ 
         //suitable for constructing a classic HKY85 Q matrix
@@ -52,7 +54,7 @@ public class RateMatrix extends Array2DRowRealMatrix {
         
     }//constructor
     
-
+    
     
     public static void main(String[] args){
         System.out.println("Testing RateMatrix");
