@@ -31,9 +31,9 @@ public class ProbMatrixGenerator {
         this.decomp = new EigenDecomposition(Q);
 
         //get rid of this later
-        RealMatrix diag = decomp.getD();
-        double[][] data = diag.getData();
-        MatrixPrinter.PrintMatrix(data, "diag");
+//        RealMatrix diag = decomp.getD();
+//        double[][] data = diag.getData();
+//        MatrixPrinter.PrintMatrix(data, "diag");
         
     }
  

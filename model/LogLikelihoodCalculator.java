@@ -23,8 +23,7 @@ public class LogLikelihoodCalculator {
         double sum = 0.0;
         double[] rootConditionals = downTree( tree.getRoot(), alignment, tree, site, Q );
         for (int iRootState = 0; iRootState < States.NT_STATES; iRootState++) {
-            sum +=  Q.getBaseFrequencies().get()[iRootState] * rootConditionals[iRootState];
-            
+            sum +=  Q.getBaseFrequencies().get()[iRootState] * rootConditionals[iRootState];   
         }
         return Math.log(sum);
     }
