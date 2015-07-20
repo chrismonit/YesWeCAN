@@ -23,7 +23,7 @@ public class RateMatrix extends Array2DRowRealMatrix {
         return pi; 
     }
     
-    public RateMatrix( BaseFrequencies pi, TsTvRatio kappa ){ 
+    public RateMatrix( TsTvRatio kappa, BaseFrequencies pi){ 
         //suitable for constructing a classic HKY85 Q matrix
         
         super(); // this will create a matrix with no data; populated at end of constructor
@@ -61,7 +61,7 @@ public class RateMatrix extends Array2DRowRealMatrix {
         TsTvRatio k = new TsTvRatio(2.0);
         BaseFrequencies freqs = new BaseFrequencies(new double[]{ 0.25, 0.25, 0.25, 0.25 });
         
-        RateMatrix Q = new RateMatrix( freqs, k );
+        RateMatrix Q = new RateMatrix( k, freqs );
         double[][] matrixData = Q.getData();
         MatrixPrinter.PrintMatrix(matrixData, "matrix data");
 

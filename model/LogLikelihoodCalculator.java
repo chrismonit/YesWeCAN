@@ -18,7 +18,7 @@ public class LogLikelihoodCalculator {
 
     public LogLikelihoodCalculator(){}
     
-    public double calculateSiteLogLikelihood(AdvancedAlignment alignment, Tree tree, int site, RateMatrix Q){ 
+    public static double calculateSiteLogLikelihood(AdvancedAlignment alignment, Tree tree, int site, RateMatrix Q){ 
   
         double sum = 0.0;
         double[] rootConditionals = downTree( tree.getRoot(), alignment, tree, site, Q );
@@ -28,7 +28,7 @@ public class LogLikelihoodCalculator {
         return Math.log(sum);
     }
     
-    private double[] downTree(Node parent, AdvancedAlignment alignment, Tree tree, int site, RateMatrix Q){
+    private static double[] downTree(Node parent, AdvancedAlignment alignment, Tree tree, int site, RateMatrix Q){
         //Felsenstein's Pruning Algorithm. Inspired by (virtually copied from) R. Goldstein's downTree method in Play.java
         double[] parentConditionals = new double[States.NT_STATES]; //number of nucleotide states
         

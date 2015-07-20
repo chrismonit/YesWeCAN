@@ -99,7 +99,7 @@ public class TransitionProbabilityMatrix {
         TsTvRatio k = new TsTvRatio(1.0);
         BaseFrequencies freqs = new BaseFrequencies(new double[]{ 0.25, 0.25, 0.25, 0.25 });
         
-        RateMatrix Q = new RateMatrix( freqs, k );
+        RateMatrix Q = new RateMatrix( k, freqs );
         
         TransitionProbabilityMatrix P = new TransitionProbabilityMatrix(Q);
         
