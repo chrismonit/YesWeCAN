@@ -36,7 +36,7 @@ public class LogLikelihoodCalculator {
         
             String taxonName = parent.getIdentifier().getName();
             int state = alignment.getStateBySequenceName(taxonName, site);
-            System.out.println("taxon Name = " + taxonName + "\t" + "state = " + state);
+            //System.out.println("taxon Name = " + taxonName + "\t" + "state = " + state);
         
             if (state >= 0 && state < States.NT_STATES) //the observed state is recognised as a nucleotide
                 parentConditionals[state] = 1.0;
@@ -76,5 +76,4 @@ public class LogLikelihoodCalculator {
     
     }//downTree()
 
-    
 }//class
