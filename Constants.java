@@ -18,4 +18,9 @@ public class Constants {
     public static double ABSOLUTE_THRESHOLD = 5.0e-6;
     public static int MAXIMUM_EVALUATIONS = 4000;
     public static int MAXIMUM_ITERATIONS = 10000;
+    
+    // may want to replace this with default values in the jcommander class
+    
+    public static String ERROR_PREFIX = "ERROR: ";
+    
 }
