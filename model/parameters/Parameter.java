@@ -10,7 +10,7 @@ package yeswecan.model.parameters;
  */
 public abstract class Parameter {
  
-    
-    
-    
-}
+    public Parameter(){}
+
+
+}//class
