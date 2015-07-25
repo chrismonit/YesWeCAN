@@ -18,7 +18,7 @@ import yeswecan.utils.MatrixPrinter;
  * class for housing various means of calculating exp(Qt)
  * Method of eigendecomposition of Q comes from Yang (2006) p68, as do the variable names
  */
-public class TransitionProbabilityMatrix {
+public class TransitionProbabilityMatrix implements ProbMatrixGenerator {
     
     RealMatrix U;
     RealMatrix lambda;
@@ -94,21 +94,9 @@ public class TransitionProbabilityMatrix {
     }
     
     
-    public static void main(String[] args){
-        System.out.println("Testing TransitionProbabilityMatrix");
-        TsTvRatio k = new TsTvRatio(1.0);
-        BaseFrequencies freqs = new BaseFrequencies(new double[]{ 0.25, 0.25, 0.25, 0.25 });
-        
-        RateMatrix Q = new RateMatrix( k, freqs );
-        
-        TransitionProbabilityMatrix P = new TransitionProbabilityMatrix(Q);
-        
-        
-        //start doing proper maths test to make sure this is working. refer to linear algebra theory!!
-        
-        
+    public RealMatrix getP(double t){
+        return null;
     }
-    
     
     
     
