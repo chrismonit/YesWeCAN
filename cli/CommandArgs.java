@@ -7,10 +7,12 @@
 package yeswecan.cli;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import yeswecan.Constants;
 import yeswecan.phylo.States;
 /**
  *
@@ -32,15 +34,17 @@ public class CommandArgs {
 
     // initial values for params
     
-    @Parameter(names = {"-kappa", "-k"}, description = "Transition/transversion rate ratio. Default=1")
+    @Parameter(names = {"-kappa", "-k"}, required = false, description = "Transition/transversion rate ratio. Default=1")
     private Double kappa = 1.0;
     
-    @Parameter(names = {"-frequencies", "-pi"}, description = "Stationary frequencies for nucleotides. Default=[0.25,0.25,0.25,0.25]")
-    private List<Double> pi = new ArrayList<>(Arrays.asList(0.25, 0.25, 0.25, 0.25));
+    @Parameter(names = {"-frequencies", "-pi"}, required = false, description = "Stationary frequencies for nucleotides, delimited by comma. Default=\"0.25,0.25,0.25,0.25\"")
+    private String pi = "0.25,0.25,0.25,0.25";
+    
+
     
     
     
-    @Parameter(names = {"-fix"}, description = "Parameters to be fixed at initial values")
+    @Parameter(names = {"-fix"}, required = false, description = "Parameters to be fixed at initial values")
     private List<String> fix = new ArrayList<>();
     
     
@@ -58,11 +62,26 @@ public class CommandArgs {
     
     public double[] pi(){ //just makes a double[] from ArrayList<Double>
         double[] toReturn = new double[States.NT_STATES];
-        for (int i = 0; i < States.NT_STATES; i++) {
-            toReturn[i] = pi.get(i).doubleValue();
+        String[] piValueStrings;
+        
+        try{
+            piValueStrings = pi.split(Constants.PI_DELIMITER);
+            if (piValueStrings.length != States.NT_STATES){
+                String errorMsg = MessageFormat.format( "-frequences: Must have {0} floating point values, delimited by \"{1}\"", States.NT_STATES, Constants.PI_DELIMITER );
+                throw new ParameterException(errorMsg);
+            }
+            
+            for (int i = 0; i < States.NT_STATES; i++) {
+                toReturn[i] = Double.parseDouble(piValueStrings[i]);
+            }
+
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            System.exit(1);
         }
         return toReturn;
-    }
+    }// pi
     
     public List<String> fix(){
         return fix;

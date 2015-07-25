@@ -33,25 +33,46 @@ public class ProbMatrixGenerator {
         //get rid of this later
 //        RealMatrix diag = decomp.getD();
 //        double[][] data = diag.getData();
-//        MatrixPrinter.PrintMatrix(data, "diag");
+//        MatrixPrintser.PrintMatrix(data, "diag");
         
     }
+    
+    
  
     public RealMatrix getP(double t){
 
         RealMatrix V = decomp.getV();
         
-        double[][] diag = decomp.getD().getData();  
+        MatrixPrinter.PrintMatrix(V.getData(), "V");
+        
+        double[][] diag = decomp.getD().getData(); 
+        MatrixPrinter.PrintMatrix(diag, "diag before transform");
+
+        
         for (int i = 0; i < diag.length; i++) {
             diag[i][i] = Math.exp( diag[i][i] * t );
         }
+        
+        MatrixPrinter.PrintMatrix(diag, "diag after transform");
+        
         RealMatrix transformD = new Array2DRowRealMatrix(diag);
         
         RealMatrix VT = decomp.getVT();
         
+        MatrixPrinter.PrintMatrix(VT.getData(), "VT");
+
+        
         RealMatrix P_t = V.multiply(transformD.multiply(VT));
+        
+        System.out.println("eigenvalue complex:   " + decomp.hasComplexEigenvalues());
 
         return P_t;
     }
     
-}
+    
+//    public RealMatrix getPYang(double t){
+//    
+//    
+//    }
+    
+}// class

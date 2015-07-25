@@ -64,6 +64,7 @@ public class Analyse {
     }
     
     //TODO make more sophistcated exceptions to help user find problems. Separate tree and alignment reading in 
+    // TODO make this able to read either fasta or phylip alignments
     public void loadData(String alignmentPath, String treePath){
         try{
             this.alignment = new AdvancedAlignment(
@@ -76,11 +77,14 @@ public class Analyse {
             e.printStackTrace();
             System.exit(1);
         }
-    }
+        
+        
+        
+    }//loadData
     
     
     // only HKY at the moment
-    public List<Parameter> makeModel(CommandArgs comArgs){
+    public static List<Parameter> makeModel(CommandArgs comArgs){
         TsTvRatio kappa = new TsTvRatio(comArgs.kappa());
         BaseFrequencies pi = new BaseFrequencies(comArgs.pi());
 

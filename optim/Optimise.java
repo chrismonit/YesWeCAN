@@ -45,6 +45,7 @@ public class Optimise {
     }
 
     // optimise multivariate function using Nelder-Mead simplex algorithm
+    // can call this multiple times to reepat otpimisation, perhaps by peturbing initial params
     public PointValuePair optNMS(MultivariateFunction function, List<Parameter> initial){
         
         double[] initialValues = Mapper.getOptimisable(initial);

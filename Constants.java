@@ -23,4 +23,5 @@ public class Constants {
     
     public static String ERROR_PREFIX = "ERROR: ";
     
+    public static String PI_DELIMITER = ",";
 }
