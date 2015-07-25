@@ -54,7 +54,7 @@ public class LogLikelihoodCalculator {
                 Node child = parent.getChild(iChild);
                 
                 double branchLength = child.getBranchLength();
-                ProbMatrixGenerator pGenerator = new ProbMatrixGenerator(Q);
+                PtEigenDecomposition pGenerator = new PtEigenDecomposition(Q);
                 double[][] P_t = pGenerator.getP(branchLength).getData();
                 
                 double[] childConditionals = downTree(child, alignment, tree, site, Q);
