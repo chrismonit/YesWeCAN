@@ -6,15 +6,15 @@
 
 package yeswecan.model;
 
-import org.apache.commons.math3.linear.RealMatrix;
-
 /**
  *
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>
  */
-public interface ProbMatrixGenerator {
+public class PtSeriesExpansion implements ProbMatrixGenerator {
     
     
-    public RealMatrix getP(double t);
+    
+    
+    
     
 }

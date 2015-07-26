@@ -1,6 +1,7 @@
 
 package yeswecan.model;
 
+import com.sun.org.apache.bcel.internal.Constants;
 import java.lang.ArithmeticException;
 
 import java.lang.Math; //only for testing, creating a Q matrix
@@ -9,6 +10,7 @@ import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
 import yeswecan.model.parameters.BaseFrequencies;
 import yeswecan.model.parameters.TsTvRatio;
+import yeswecan.phylo.States;
 import yeswecan.utils.MatrixPrinter;
 
 /**
@@ -18,47 +20,57 @@ import yeswecan.utils.MatrixPrinter;
  * class for housing various means of calculating exp(Qt)
  * Method of eigendecomposition of Q comes from Yang (2006) p68, as do the variable names
  */
-public class TransitionProbabilityMatrix implements ProbMatrixGenerator {
+public class YangEigenDecomposition implements ProbMatrixGenerator {
     
-    RealMatrix U;
-    RealMatrix lambda;
-    RealMatrix invU;
+    private RealMatrix U;
+    private RealMatrix lambda;
+    private RealMatrix invU;
 
     
-    public TransitionProbabilityMatrix( RateMatrix Q ){ 
+    public YangEigenDecomposition( RateMatrix Q ){ 
                
-        Array2DRowRealMatrix bigPiSqrt = makeBigPiSqrt( Q.getBaseFrequencies() );
-        Array2DRowRealMatrix invBigPiSqrt = inverseBigPiSqrt( bigPiSqrt );
+        RealMatrix bigPiSqrt = makeBigPiSqrt( Q.getBaseFrequencies() );
+        RealMatrix invBigPiSqrt = inverseBigPiSqrt( bigPiSqrt );
         
-        Array2DRowRealMatrix B = makeB( bigPiSqrt, Q, invBigPiSqrt );
+        RealMatrix B = makeB2( bigPiSqrt, Q, invBigPiSqrt );
         
-        EigenDecomposition decompositionB = new EigenDecomposition(B);
+        EigenDecomposition decompB = new EigenDecomposition(B);
         
-        RealMatrix R = decompositionB.getV();
-        this.lambda = decompositionB.getD(); //eigenvalues of B, which are the same as the eigenvalues of Q
-        RealMatrix invR = decompositionB.getVT(); // inverse(R) == transpose(R)
+        RealMatrix R = decompB.getV();
+        this.lambda = decompB.getD(); //eigenvalues of B, which are the same as the eigenvalues of Q
+        RealMatrix invR = decompB.getVT(); // inverse(R) == transpose(R)
         
-        // could throw an error if decompositionB.hasComplexEigenValues
+        // could throw an error if decompB.hasComplexEigenValues
+        if (decompB.hasComplexEigenvalues()) {
+            throw new RuntimeException("YangEigenDecomposition: Matrix B has complex Eigenvalues");
+        }
+        
+        
         this.U = invBigPiSqrt.multiply(R);
         this.invU = invR.multiply(bigPiSqrt);
  
-        MatrixPrinter.PrintMatrix( bigPiSqrt.getData(), "bigPiSqrt");
-        
+        MatrixPrinter.PrintMatrix( bigPiSqrt.getData(), "bigPiSqrt");       
         MatrixPrinter.PrintMatrix( invBigPiSqrt.getData(), "invBigPiSqrt");
-
         MatrixPrinter.PrintMatrix( B.getData(), "B matrix, similar to Q (i.e. should have same eigenvalues");
-    }//constructor
+    }    
+
+    private static RealMatrix makeB(RateMatrix Q){
+        double[][] B = new double[States.NT_STATES][States.NT_STATES];
+        double[][] QData = Q.getData();
+        
+        double[] pi = Q.getBaseFrequencies().get();
+        
+        for (int i = 0; i < States.NT_STATES; i++) {
+            for (int j = 0; j < States.NT_STATES; j++) {
+                B[i][j] = QData[i][j] * Math.sqrt(pi[i]) * 1.0/Math.sqrt(pi[j]);
+            }// j
+        }// i
+        
+        return new Array2DRowRealMatrix(B);
+    }// makeB
     
-    //TODO
-    public double[][] getTransitionProbabilityMatrix(double branchlength){
-        return new double[0][0];
     
-    
-    };
-    
-    
-    
-    private Array2DRowRealMatrix makeBigPiSqrt(BaseFrequencies frequencies){
+    private static RealMatrix makeBigPiSqrt(BaseFrequencies frequencies){
 
         double[][] piDiag = new double[frequencies.get().length][frequencies.get().length];
         for (int i = 0; i < frequencies.get().length; i++) {
@@ -67,10 +79,10 @@ public class TransitionProbabilityMatrix implements ProbMatrixGenerator {
         return new Array2DRowRealMatrix(piDiag);
     }
     
-    private Array2DRowRealMatrix inverseBigPiSqrt( Array2DRowRealMatrix bigPiSqrt ){
+    private static RealMatrix inverseBigPiSqrt( RealMatrix bigPiSqrt ){
         /* PI^(-1/2) = diag{ 1/sqrt(pi_A), 1/sqrt(pi_C), 1/sqrt(pi_G), 1/sqrt(pi_T) }
         */
-        Array2DRowRealMatrix invBigPiSqrt = new Array2DRowRealMatrix( bigPiSqrt.getData() );
+        RealMatrix invBigPiSqrt = new Array2DRowRealMatrix( bigPiSqrt.getData() );
         for (int i = 0; i < bigPiSqrt.getRowDimension(); i++) {
             double inverseOfDiagonalElement;
             try{
@@ -86,9 +98,10 @@ public class TransitionProbabilityMatrix implements ProbMatrixGenerator {
         return invBigPiSqrt;
     }
     
-    private Array2DRowRealMatrix makeB( Array2DRowRealMatrix bigPiSqrt,
-                                        Array2DRowRealMatrix Q, 
-                                        Array2DRowRealMatrix invBigPiSqrt){
+    
+    private RealMatrix makeB2( RealMatrix bigPiSqrt,
+                                        RealMatrix Q, 
+                                        RealMatrix invBigPiSqrt){
     
        return bigPiSqrt.multiply(Q).multiply(invBigPiSqrt);
     }
