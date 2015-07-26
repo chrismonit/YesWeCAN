@@ -44,6 +44,8 @@ public class PtSeriesExpansion implements ProbMatrixGenerator {
             exp(Qt) = I + Qt + ((Qt)^2)/2! + ((Qt)^3)/3! + ... + ((Qt)^n)/n!
         */
         
+        System.out.println("Start of seriesExpansion");
+        
         RealMatrix Qt = Q.scalarMultiply(t);
         
         // make identity matrix

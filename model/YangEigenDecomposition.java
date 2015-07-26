@@ -75,7 +75,7 @@ public class YangEigenDecomposition implements ProbMatrixGenerator {
         for (int i = 0; i < States.NT_STATES; i++) {
             for (int j = 0; j < States.NT_STATES; j++) {
                 UData[i][j] = R.getEntry(i, j) * 1.0/Math.sqrt(pi[i]);
-                invUData[i][j] = invR.getEntry(i, j) * Math.sqrt(pi[i]);
+                invUData[i][j] = invR.getEntry(i, j) * Math.sqrt(pi[j]);
             }
         }
         this.U = new Array2DRowRealMatrix(UData);
