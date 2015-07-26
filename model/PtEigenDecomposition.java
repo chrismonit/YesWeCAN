@@ -43,28 +43,28 @@ public class PtEigenDecomposition implements ProbMatrixGenerator {
 
         RealMatrix V = decomp.getV();
         
-        MatrixPrinter.PrintMatrix(V.getData(), "V");
+        //MatrixPrinter.PrintMatrix(V.getData(), "V");
         
         double[][] diag = decomp.getD().getData(); 
-        MatrixPrinter.PrintMatrix(diag, "diag before transform");
+        //MatrixPrinter.PrintMatrix(diag, "diag before transform");
 
         
         for (int i = 0; i < diag.length; i++) {
             diag[i][i] = Math.exp( diag[i][i] * t );
         }
         
-        MatrixPrinter.PrintMatrix(diag, "diag after transform");
+        //MatrixPrinter.PrintMatrix(diag, "diag after transform");
         
         RealMatrix transformD = new Array2DRowRealMatrix(diag);
         
         RealMatrix VT = decomp.getVT();
         
-        MatrixPrinter.PrintMatrix(VT.getData(), "VT");
+        //MatrixPrinter.PrintMatrix(VT.getData(), "VT");
 
         
         RealMatrix P_t = V.multiply(transformD.multiply(VT));
         
-        System.out.println("eigenvalue complex:   " + decomp.hasComplexEigenvalues());
+        //System.out.println("eigenvalue complex:   " + decomp.hasComplexEigenvalues());
 
         return P_t;
     }
