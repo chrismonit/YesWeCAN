@@ -1,10 +1,8 @@
 
 package yeswecan.model;
 
-import com.sun.org.apache.bcel.internal.Constants;
 import java.lang.ArithmeticException;
 
-import java.lang.Math; 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -18,7 +16,6 @@ import yeswecan.utils.MatrixPrinter;
  * @author Christopher Monit (c.monit.12@ucl.ac.uk)
  * 
  * Method of eigendecomposition of Q comes from Yang (2006) p68, as do the variable names
- * 
  *    
  * Diagonalise B = R * Λ * R⁻¹ - Yang CME - pg. 69, eq. 2.27
  *
@@ -43,17 +40,25 @@ import yeswecan.utils.MatrixPrinter;
 
 public class YangEigenDecomposition implements ProbMatrixGenerator {
     
+    private RateMatrix Q; // necessary to have a field for Q so we can have a getQ method
+    
     private RealMatrix U;
     private RealMatrix lambda;
     private RealMatrix invU;
-
     
     public YangEigenDecomposition( RateMatrix Q ){ 
-               
+        
+        this.Q = Q;
+        
         RealMatrix B = makeB( Q );
         
         EigenDecomposition decompB = new EigenDecomposition(B);
         
+        /**
+         * According to Yang 2006 (citing Kelly 1979), 
+         * it can be proved that a reversible Q matrix must have real eigenvalues.
+         * But just in case:
+         */
         if (decompB.hasComplexEigenvalues()) {
             throw new RuntimeException("YangEigenDecomposition: Matrix B has complex Eigenvalues");
         }
@@ -90,7 +95,7 @@ public class YangEigenDecomposition implements ProbMatrixGenerator {
         
         for (int i = 0; i < States.NT_STATES; i++) {
             for (int j = 0; j < States.NT_STATES; j++) {
-                B[i][j] = QData[i][j] * Math.sqrt(pi[i]) / Math.sqrt(pi[j]); // need to catch a divide by zero exception
+                B[i][j] = QData[i][j] * Math.sqrt(pi[i]) / Math.sqrt(pi[j]); 
             }// j
         }// i
         
@@ -152,6 +157,9 @@ public class YangEigenDecomposition implements ProbMatrixGenerator {
         return Pt;
     }
     
+    public RateMatrix getQ(){
+        return this.Q;
+    }
     
     
     

@@ -37,15 +37,16 @@ public class PtSeriesExpansion implements ProbMatrixGenerator {
         return seriesExpansion(this.Q, t, this.highestTerm);
     }
     
+    public RateMatrix getQ(){
+        return this.Q;
+    }
     
     private static RealMatrix seriesExpansion(RateMatrix Q, double t, int highestTerm){
         
         /*
             exp(Qt) = I + Qt + ((Qt)^2)/2! + ((Qt)^3)/3! + ... + ((Qt)^n)/n!
         */
-        
-        System.out.println("Start of seriesExpansion");
-        
+                
         RealMatrix Qt = Q.scalarMultiply(t);
         
         // make identity matrix

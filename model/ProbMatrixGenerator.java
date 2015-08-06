@@ -17,4 +17,5 @@ public interface ProbMatrixGenerator {
     
     public RealMatrix getP(double t);
     
+    public RateMatrix getQ();
 }

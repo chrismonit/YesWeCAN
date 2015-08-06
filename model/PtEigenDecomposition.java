@@ -22,12 +22,12 @@ import org.apache.commons.math3.linear.Array2DRowRealMatrix;
  */
 public class PtEigenDecomposition implements ProbMatrixGenerator {
     
-    
+    private RateMatrix Q;
     private EigenDecomposition decomp;
             
     public PtEigenDecomposition(RateMatrix Q){
         // perform eigen decomposition
-        
+        this.Q = Q;
         this.decomp = new EigenDecomposition(Q);
 
         //get rid of this later
@@ -69,10 +69,10 @@ public class PtEigenDecomposition implements ProbMatrixGenerator {
         return P_t;
     }
     
+    public RateMatrix getQ(){
+        return this.Q;
+    }    
     
-//    public RealMatrix getPYang(double t){
-//    
-//    
-//    }
+
     
 }// class

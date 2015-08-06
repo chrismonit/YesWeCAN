@@ -55,10 +55,13 @@ public class Function implements MultivariateFunction {
         RateMatrix Q = new RateMatrix(new TsTvRatio(point[0]), 
                 new BaseFrequencies(new double[]{point[1], point[2], point[3], (1.0-(point[1]+point[2]+point[3]))}));
         
+        //System.out.println("value: " + point[0] + "\t" + point[1] + "\t" + point[2] + "\t" + point[3] + "\t" + (1.0-(point[1]+point[2]+point[3])) );
+        
+        ProbMatrixGenerator P = ProbMatrixFactory.getPGenerator(Q);
         
         double lnL = 0.0;
         for (int iSite=0; iSite < alignment.getLength(); iSite++){
-            lnL += LogLikelihoodCalculator.calculateSiteLogLikelihood(alignment, tree, iSite, Q);
+            lnL += LogLikelihoodCalculator.calculateSiteLogLikelihood(alignment, tree, iSite, P);
         }
         
         return lnL;
