@@ -9,7 +9,7 @@ import yeswecan.Constants;
 /**
  * @author Christopher Monit (c.monit.12@ucl.ac.uk)
  */
-public class BaseFrequencies extends Parameter {
+public class BaseFrequencies  {
     
 //    private Hashtable<Character, Double> frequencies;
 //    

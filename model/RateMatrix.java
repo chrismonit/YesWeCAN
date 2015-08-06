@@ -17,13 +17,13 @@ import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 public class RateMatrix extends Array2DRowRealMatrix {
 
     private BaseFrequencies pi; 
-    private TsTvRatio kappa;
+    private TsTvRatioAdvanced kappa;
     
     public BaseFrequencies getBaseFrequencies(){ 
         return pi; 
     }
     
-    public RateMatrix( TsTvRatio kappa, BaseFrequencies pi){ 
+    public RateMatrix( TsTvRatioAdvanced kappa, BaseFrequencies pi){ 
         //suitable for constructing a classic HKY85 Q matrix
         
         super(); // this will create a matrix with no data; populated at end of constructor
@@ -58,7 +58,7 @@ public class RateMatrix extends Array2DRowRealMatrix {
     
     public static void main(String[] args){
         System.out.println("Testing RateMatrix");
-        TsTvRatio k = new TsTvRatio(2.0);
+        TsTvRatioAdvanced k = new TsTvRatioAdvanced(2.0);
         BaseFrequencies freqs = new BaseFrequencies(new double[]{ 0.25, 0.25, 0.25, 0.25 });
         
         RateMatrix Q = new RateMatrix( k, freqs );

@@ -8,13 +8,13 @@ import yeswecan.phylo.States;
  * @author Christopher Monit (c.monit.12@ucl.ac.uk)
  * 
  */
-public class TsTvRatio extends Parameter {
+public class TsTvRatioAdvanced  {
     
-    double kappa;
+    private double kappa;
     
     private Hashtable<Character, String> baseTypes = new Hashtable();
     
-    public TsTvRatio(double kappa){
+    public TsTvRatioAdvanced(double kappa){
         this.kappa = kappa;
         
         baseTypes.put('A', "purine");
@@ -37,7 +37,7 @@ public class TsTvRatio extends Parameter {
     
     public static void main(String[] args){
         System.out.println("Testing TransitionOrTransversion");
-        TsTvRatio t = new TsTvRatio(2.0);
+        TsTvRatioAdvanced t = new TsTvRatioAdvanced(2.0);
         int i = 0;
         int j = 2;
         double output = t.getKappaIfTransition(i, j);

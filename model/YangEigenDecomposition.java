@@ -7,7 +7,7 @@ import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
 import yeswecan.model.parameters.BaseFrequencies;
-import yeswecan.model.parameters.TsTvRatio;
+import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.States;
 import yeswecan.utils.MatrixPrinter;
 

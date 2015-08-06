@@ -14,7 +14,7 @@ import org.apache.commons.math3.analysis.MultivariateFunction;
 import pal.tree.Tree;
 import yeswecan.model.RateMatrix;
 import yeswecan.model.parameters.BaseFrequencies;
-import yeswecan.model.parameters.TsTvRatio;
+import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.model.LogLikelihoodCalculator;
 
 import yeswecan.phylo.AdvancedAlignment;
@@ -52,7 +52,7 @@ public class Function implements MultivariateFunction {
         
         //make RateMatrix
         // temporary, need to make use of some sort of mapping object
-        RateMatrix Q = new RateMatrix(new TsTvRatio(point[0]), 
+        RateMatrix Q = new RateMatrix(new TsTvRatioAdvanced(point[0]), 
                 new BaseFrequencies(new double[]{point[1], point[2], point[3], (1.0-(point[1]+point[2]+point[3]))}));
         
         //System.out.println("value: " + point[0] + "\t" + point[1] + "\t" + point[2] + "\t" + point[3] + "\t" + (1.0-(point[1]+point[2]+point[3])) );
