@@ -4,6 +4,7 @@ package yeswecan.model.parameters;
 import java.util.Hashtable;
 import yeswecan.phylo.States;
 import swmutsel.model.parameters.TsTvRatio;
+import yeswecan.Constants;
 /**
  *
  * @author Christopher Monit (c.monit.12@ucl.ac.uk)
@@ -13,6 +14,8 @@ public class TsTvRatioAdvanced extends TsTvRatio {
     
     
     private Hashtable<Character, Character> baseTypes = new Hashtable();
+    
+
     
     public TsTvRatioAdvanced(TsTvRatio kappaInstance){
         this(kappaInstance.get());

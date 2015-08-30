@@ -10,15 +10,17 @@ Can pass alignment and tree to constructor
 
 package yeswecan.model;
 
+import java.util.List;
 import org.apache.commons.math3.analysis.MultivariateFunction;
 import pal.tree.Tree;
 import swmutsel.model.parameters.BaseFrequencies;
+import swmutsel.model.parameters.Parameter;
+import swmutsel.model.parameters.Mapper;
+import yeswecan.Constants;
 
-import yeswecan.model.RateMatrix;
-//import yeswecan.model.parameters.BaseFrequencies;
-import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.model.LogLikelihoodCalculator;
-
+import yeswecan.model.RateMatrix;
+import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.AdvancedAlignment;
 
 
@@ -30,36 +32,51 @@ import yeswecan.phylo.AdvancedAlignment;
 public class Function implements MultivariateFunction {
     
     
-    // have constructor take mapping instance and use this to get param values from point in value method
-    // lets assume for now we're just making an HKY85 and using fixed branch lengths
-    // point[0] == kappa
-    // point[1-3] == first 3 base sequences 
-    
-    /*
-    * mapping instance could be passed into constructor, itself having been initialised so
-    * it knows how many parameters are being optimised.
-       therefore it know how long the point array should be and what values are what
-    */
+
     
     private AdvancedAlignment alignment;
     private Tree tree;
+    private MutationModel mutModel;
     
     public Function(AdvancedAlignment alignment, Tree tree){
         this.alignment = alignment;
         this.tree = tree;
+        
+        /* NB while this instance of MutationModel is defined here with parameter
+        (the default) values, they are never used. The only way to get anything
+        out from this class is through the value() method, which always populates
+        the MutationModel instance anew 
+        */
+        this.mutModel = new MutationModel(new TsTvRatioAdvanced(Constants.DEFAULT_KAPPA), 
+                new BaseFrequencies(Constants.DEFAULT_PI));
+
     }
+    
     
     
     public double value(double[] point){
         
-        //make RateMatrix
-        // temporary, need to make use of some sort of mapping object
-        RateMatrix Q = new RateMatrix(new TsTvRatioAdvanced(point[0]), 
-                new BaseFrequencies(new double[]{point[1], point[2], point[3], (1.0-(point[1]+point[2]+point[3]))}));
         
-        //System.out.println("value: " + point[0] + "\t" + point[1] + "\t" + point[2] + "\t" + point[3] + "\t" + (1.0-(point[1]+point[2]+point[3])) );
+        /* point vector arrives with values in optim space.
+            need to map back to real parameter space and then calculate likelihood
+        */
+        
+        Mapper.setOptimisable(mutModel.getParameters(), point);
+        
+        
+        // make Q matrix
+        RateMatrix Q = new RateMatrix(mutModel.getKappa(), mutModel.getPi());
+        
+        //TsTvRatioAdvanced k = parameters.get(0);
+        //RateMatrix Q = new RateMatrix(new TsTvRatioAdvanced(k), parameters.get(1));
+        
+        //make P matrix generator
         
         ProbMatrixGenerator P = ProbMatrixFactory.getPGenerator(Q);
+        
+        
+        // can then compute likelihood
+        
         
         double lnL = 0.0;
         for (int iSite=0; iSite < alignment.getLength(); iSite++){

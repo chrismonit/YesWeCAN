@@ -19,6 +19,9 @@ public class Constants {
     public static int MAXIMUM_EVALUATIONS = 4000;
     public static int MAXIMUM_ITERATIONS = 10000;
     
+    public static double DEFAULT_KAPPA = 1.0;
+    public static double[] DEFAULT_PI = new double[]{ 0.25, 0.25, 0.25, 0.25 };
+    
     // may want to replace this with default values in the jcommander class
     
     public static String ERROR_PREFIX = "ERROR: ";

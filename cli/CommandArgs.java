@@ -35,7 +35,7 @@ public class CommandArgs {
     // initial values for params
     
     @Parameter(names = {"-kappa", "-k"}, required = false, description = "Transition/transversion rate ratio. Default=1")
-    private Double kappa = 1.0;
+    private Double kappa = Constants.DEFAULT_KAPPA;
     
     @Parameter(names = {"-frequencies", "-pi"}, required = false, description = "Stationary frequencies for nucleotides, delimited by comma. Default=\"0.25,0.25,0.25,0.25\"")
     private String pi = "0.25,0.25,0.25,0.25";
