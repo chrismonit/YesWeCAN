@@ -2,9 +2,11 @@
 package yeswecan.model;
 
 import yeswecan.model.parameters.*;
+
 import yeswecan.utils.MatrixPrinter;
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import swmutsel.model.parameters.BaseFrequencies;
 
 /**
  *
@@ -30,11 +32,13 @@ public class RateMatrix extends Array2DRowRealMatrix {
         this.kappa = kappa;
         this.pi = pi;
         
-        double[][] matrixData = new double[this.pi.get().length][this.pi.get().length];
+        int numStates = this.pi.get().length;
+        
+        double[][] matrixData = new double[numStates][numStates];
                 
         //populate off-diagonal elements
-        for (int i = 0; i < this.pi.get().length; i++) {
-            for (int j = 0; j < this.pi.get().length; j++) {
+        for (int i = 0; i < numStates; i++) {
+            for (int j = 0; j < numStates; j++) {
                 
                 if (i == j) continue;
                 matrixData[i][j] = this.pi.get()[j] * this.kappa.getKappaIfTransition(i, j);
@@ -43,9 +47,9 @@ public class RateMatrix extends Array2DRowRealMatrix {
         
         //populate diagonal elements
         
-        for (int i = 0; i < this.pi.get().length; i++) {
+        for (int i = 0; i < numStates; i++) {
             double rowSum = 0.0;
-            for (int j = 0; j < this.pi.get().length; j++) {
+            for (int j = 0; j < numStates; j++) {
                 rowSum += matrixData[i][j];
             }
             matrixData[i][i] = -rowSum;
@@ -65,7 +69,6 @@ public class RateMatrix extends Array2DRowRealMatrix {
         double[][] matrixData = Q.getData();
         MatrixPrinter.PrintMatrix(matrixData, "matrix data");
 
-    
     }
 
 }//class

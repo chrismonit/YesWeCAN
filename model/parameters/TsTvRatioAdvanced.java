@@ -3,32 +3,37 @@ package yeswecan.model.parameters;
 
 import java.util.Hashtable;
 import yeswecan.phylo.States;
+import swmutsel.model.parameters.TsTvRatio;
 /**
  *
  * @author Christopher Monit (c.monit.12@ucl.ac.uk)
  * 
  */
-public class TsTvRatioAdvanced  {
+public class TsTvRatioAdvanced extends TsTvRatio {
     
-    private double kappa;
     
-    private Hashtable<Character, String> baseTypes = new Hashtable();
+    private Hashtable<Character, Character> baseTypes = new Hashtable();
+    
+    public TsTvRatioAdvanced(TsTvRatio kappaInstance){
+        this(kappaInstance.get());
+    }
     
     public TsTvRatioAdvanced(double kappa){
-        this.kappa = kappa;
+        super(kappa);
         
-        baseTypes.put('A', "purine");
-        baseTypes.put('C', "pyrimidine");
-        baseTypes.put('G', "purine");
-        baseTypes.put('T', "pyrimidine");
-        
+        // TODO faster to compare ints/bits than chars?
+        // but still need an Integer instance for the hashtable rather than primitive types, might slow it down again?
+        baseTypes.put('A', 'R'); //purine
+        baseTypes.put('C', 'Y'); //pyrimidine
+        baseTypes.put('G', 'R'); //purine
+        baseTypes.put('T', 'Y'); //pyrimidine
     }//constrcutor
     
     
     public double getKappaIfTransition(int base_i, int base_j){
 
         if ( baseTypes.get( States.BASES[base_i] ) == baseTypes.get( States.BASES[base_j] ) ){
-            return kappa;
+            return this.get();
         }
         else{
             return 1.0;

@@ -12,8 +12,10 @@ package yeswecan.model;
 
 import org.apache.commons.math3.analysis.MultivariateFunction;
 import pal.tree.Tree;
+import swmutsel.model.parameters.BaseFrequencies;
+
 import yeswecan.model.RateMatrix;
-import yeswecan.model.parameters.BaseFrequencies;
+//import yeswecan.model.parameters.BaseFrequencies;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.model.LogLikelihoodCalculator;
 

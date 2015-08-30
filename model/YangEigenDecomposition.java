@@ -6,7 +6,9 @@ import java.lang.ArithmeticException;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
-import yeswecan.model.parameters.BaseFrequencies;
+
+import swmutsel.model.parameters.BaseFrequencies;
+
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.States;
 import yeswecan.utils.MatrixPrinter;
@@ -102,7 +104,7 @@ public class YangEigenDecomposition implements ProbMatrixGenerator {
         return new Array2DRowRealMatrix(B);
     }// makeB
     
-    
+    //NB this code was written before introducing Asif's BaseFrequencies, untested after this change:
 //    private static RealMatrix makeBigPiSqrt(BaseFrequencies frequencies){
 //
 //        double[][] piDiag = new double[frequencies.get().length][frequencies.get().length];
