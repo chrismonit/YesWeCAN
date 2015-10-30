@@ -46,6 +46,13 @@ public class MutationModel extends SubstitutionModel {
         super.addParameters(kappa, pi);
     }
     
+//    public MutationModel(MutationModel model){
+//        this.kappa = model.kappa;
+//        this.pi = model.pi;
+//        super.clearParameters();
+//        super.addParameters(kappa, pi);
+//    }
+    
     
     public TsTvRatioAdvanced getKappa() {
         return kappa;

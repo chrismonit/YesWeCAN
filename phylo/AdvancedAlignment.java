@@ -26,6 +26,7 @@ public class AdvancedAlignment extends SimpleAlignment {
         int sequenceID = super.whichIdNumber(name);
         char stateAsChar = super.getData(sequenceID, site);
         int stateAsInt = DataTypeTool.getNucleotides().getState(stateAsChar); 
+        
         return stateAsInt;
     }
     

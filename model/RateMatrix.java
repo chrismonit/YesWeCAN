@@ -32,6 +32,7 @@ public class RateMatrix extends Array2DRowRealMatrix {
         this.kappa = kappa;
         this.pi = pi;
         
+        
         int numStates = this.pi.get().length;
         
         double[][] matrixData = new double[numStates][numStates];
@@ -45,6 +46,7 @@ public class RateMatrix extends Array2DRowRealMatrix {
             }// j
         }// i
         
+        
         //populate diagonal elements
         
         for (int i = 0; i < numStates; i++) {
@@ -55,6 +57,8 @@ public class RateMatrix extends Array2DRowRealMatrix {
             matrixData[i][i] = -rowSum;
         }
         super.setSubMatrix(matrixData, 0, 0); //replace the (hitherto blank) matrix data
+               
+
         
     }//constructor
     

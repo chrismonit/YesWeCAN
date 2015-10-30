@@ -18,7 +18,9 @@ public class LogLikelihoodCalculator {
     public LogLikelihoodCalculator(){}
     
     public static double calculateSiteLogLikelihood(AdvancedAlignment alignment, Tree tree, int site, ProbMatrixGenerator pGenerator){ 
-  
+        
+        //System.out.println("root:" + tree.getRoot().toString());
+        
         double sum = 0.0;
         double[] rootConditionals = downTree( tree.getRoot(), alignment, tree, site, pGenerator );
                 
@@ -31,15 +33,16 @@ public class LogLikelihoodCalculator {
     private static double[] downTree(Node parent, AdvancedAlignment alignment, Tree tree, int site, ProbMatrixGenerator pGenerator){
         //Felsenstein's Pruning Algorithm. Inspired by (virtually copied from) R. Goldstein's downTree method in Play.java
         double[] parentConditionals = new double[States.NT_STATES]; //number of nucleotide states
+        //System.out.println("node id: " + parent.getIdentifier());
         
         if (parent.isLeaf()){ // 'parent' is terminal node, i.e. has no children.
         
             String taxonName = parent.getIdentifier().getName();
             int state = alignment.getStateBySequenceName(taxonName, site);
-            //System.out.println("taxon Name = " + taxonName + "\t" + "state = " + state);
+            //System.out.println("site: " + site + "\t" + "taxonName: " + taxonName + "\t" + "state: " + state + "\t");
         
             if (state >= 0 && state < States.NT_STATES){ //the observed state is recognised as a nucleotide
-                //System.out.println("if state: " + state);
+                //System.out.println("state: " + state);
                 parentConditionals[state] = 1.0;
             }
             else  {
@@ -53,11 +56,14 @@ public class LogLikelihoodCalculator {
             //parentConditionals dependent on children conditionals
             for (int i = 0; i < parentConditionals.length; i++) 
                 parentConditionals[i] = 1.0; // set all to one at first, will multiply by probabilities for each child, below
-
+            //System.out.println(parent.getNumber() + "\t" + parent.getChildCount() + "\t" + parent.getBranchLength());
+            
+            
             for (int iChild = 0; iChild < parent.getChildCount(); iChild++){ //for every child of this parent node
                 Node child = parent.getChild(iChild);
                 
                 double t = child.getBranchLength();
+                
                 double[][] P_t = pGenerator.getP(t).getData(); //don't need double[][], could use RealMatrix getElement method
 
                 double[] childConditionals = downTree(child, alignment, tree, site, pGenerator);
@@ -70,8 +76,13 @@ public class LogLikelihoodCalculator {
                     }// jChildState
                     parentConditionals[iParentState] *= nodeConditionalLikelihood;
                 }// iParentState
-                
             }//for iChild
+            
+//           String conditionalsString = "";
+//            for (int i = 0; i < 4; i++) {
+//                conditionalsString += "," + Double.toString(parentConditionals[i]);
+//            }
+//            System.out.println(parent.getNumber() + "\t" + parent.getBranchLength() + "\t" + conditionalsString);
             
         }//else (if not leaf)
 

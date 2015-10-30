@@ -77,9 +77,7 @@ public class Analyse {
             e.printStackTrace();
             System.exit(1);
         }
-        
-        
-        
+
     }//loadData
     
     

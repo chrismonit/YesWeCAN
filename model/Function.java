@@ -22,6 +22,7 @@ import yeswecan.model.LogLikelihoodCalculator;
 import yeswecan.model.RateMatrix;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.AdvancedAlignment;
+import yeswecan.utils.MatrixPrinter;
 
 
 
@@ -49,10 +50,11 @@ public class Function implements MultivariateFunction {
         */
         this.mutModel = new MutationModel(new TsTvRatioAdvanced(Constants.DEFAULT_KAPPA), 
                 new BaseFrequencies(Constants.DEFAULT_PI));
-
+        
+        
     }
     
-    
+    private int i = 0; // debugging
     
     public double value(double[] point){
         
@@ -60,30 +62,59 @@ public class Function implements MultivariateFunction {
         /* point vector arrives with values in optim space.
             need to map back to real parameter space and then calculate likelihood
         */
+ 
+        Mapper.setOptimisable(this.mutModel.getParameters(), point);
+
+
+        //System.out.print("i: " + i +"\t");
+        i++;
         
-        Mapper.setOptimisable(mutModel.getParameters(), point);
+        boolean verbose = false;
+        
+        if (verbose) {
+            System.out.print(this.mutModel.getKappa().toString() + "\t");
+    //        System.out.println("point[0]: " + point[0]);
+    //        System.out.println("");
+
+//            System.out.println(mutModel.getPi().toString());
+//
+//            System.out.println("length: " + point.length);
+//
+//            String pointString = "";
+//                for (int i = 0; i < point.length; i++) {
+//                    pointString += "," + Double.toString(point[i]);
+//            }
+//            System.out.println("pointString: " + pointString);
+//            //MatrixPrinter.PrintMatrix(Q.getData(), "Q: " + i);
+//
+//            System.out.println("");
+//            System.out.println("");
+
+        }
         
         
         // make Q matrix
-        RateMatrix Q = new RateMatrix(mutModel.getKappa(), mutModel.getPi());
+        RateMatrix Q = new RateMatrix(this.mutModel.getKappa(), this.mutModel.getPi());
         
-        //TsTvRatioAdvanced k = parameters.get(0);
-        //RateMatrix Q = new RateMatrix(new TsTvRatioAdvanced(k), parameters.get(1));
+        
         
         //make P matrix generator
-        
         ProbMatrixGenerator P = ProbMatrixFactory.getPGenerator(Q);
         
         
         // can then compute likelihood
-        
-        
+
         double lnL = 0.0;
-        for (int iSite=0; iSite < alignment.getLength(); iSite++){
-            lnL += LogLikelihoodCalculator.calculateSiteLogLikelihood(alignment, tree, iSite, P);
+        for (int iSite=0; iSite < this.alignment.getLength(); iSite++){
+            lnL += LogLikelihoodCalculator.calculateSiteLogLikelihood(this.alignment, this.tree, iSite, P);
         }
         
+
+        //System.out.println("lnL: " + lnL);
+        
+        //System.out.println("");
+
         return lnL;
-    }
+    }// value
     
-}
+}// class

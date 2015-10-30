@@ -43,11 +43,12 @@ public class TsTvRatioAdvanced extends TsTvRatio {
         }
     }
     
+    //deprecated
     public static void main(String[] args){
         System.out.println("Testing TransitionOrTransversion");
         TsTvRatioAdvanced t = new TsTvRatioAdvanced(2.0);
-        int i = 0;
-        int j = 2;
+        int i = 1;
+        int j = 3;
         double output = t.getKappaIfTransition(i, j);
         System.out.println("value = " + output);
     }//main for testing

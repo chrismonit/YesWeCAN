@@ -19,6 +19,17 @@ public abstract class SubstitutionModel {  // smaller version of equivalent clas
     
     private List<Parameter> parameters = Lists.newArrayList();
     
+    private double lnL = Double.NEGATIVE_INFINITY; // default lnL
+
+    public double getLnL(){
+        return this.lnL;
+    }
+    
+    public void setLnL(double lnL){
+        this.lnL = lnL;
+    }
+    
+    // from swmutsel version:
     public void addParameters(Parameter... parameters) {
         Collections.addAll(this.parameters, parameters);
     }
