@@ -40,12 +40,14 @@ public class CommandArgs {
     @Parameter(names = {"-frequencies", "-pi"}, required = false, description = "Stationary frequencies for nucleotides, delimited by comma. Default=\"0.25,0.25,0.25,0.25\"")
     private String pi = "0.25,0.25,0.25,0.25";
     
-
+    @Parameter(names = {"-tcag"}, required = false, description = "Input frequencies are ordered: T,C,A,G (PAML style)")
+    private String tcag = "false";
     
     
     
     @Parameter(names = {"-fix"}, required = false, description = "Parameters to be fixed at initial values")
-    private List<String> fix = new ArrayList<>();
+    private String fix = "false"; // need to change so no argument required, just looks whether the flag is present or not
+    //private List<String> fix = new ArrayList<>();
     
     
     public String alignment(){
@@ -83,9 +85,17 @@ public class CommandArgs {
         return toReturn;
     }// pi
     
-    public List<String> fix(){
+    public String fix(){
         return fix;
     }
+    
+  public String tcag(){
+        return tcag;
+    }
+    
+//    public List<String> fix(){
+//        return fix;
+//    }
     
     
 }//class

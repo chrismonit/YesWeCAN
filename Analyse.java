@@ -14,10 +14,15 @@ import pal.datatype.Nucleotides;
 import pal.tree.ReadTree;
 import pal.tree.Tree;
 import swmutsel.model.parameters.BaseFrequencies;
+import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Parameter;
 import swmutsel.model.parameters.TsTvRatio;
 import yeswecan.cli.CommandArgs;
+import yeswecan.model.Function;
 import yeswecan.phylo.AdvancedAlignment;
+import yeswecan.phylo.ReorderFrequencies;
+import yeswecan.phylo.States;
+import yeswecan.utils.ArrayPrinter;
 
 /**
  *
@@ -61,6 +66,16 @@ public class Analyse {
         //TODO
         // params = makeModel(...)
         // fit(data, model)
+        
+        // calculate lnL with fixed params
+        if (Boolean.parseBoolean(comArgs.fix())){
+            calculateFixed(
+                    makeModel(comArgs),
+                    this.tree,
+                    this.alignment
+            ); 
+        }
+        
     }
     
     //TODO make more sophistcated exceptions to help user find problems. Separate tree and alignment reading in 
@@ -84,10 +99,29 @@ public class Analyse {
     // only HKY at the moment
     public static List<Parameter> makeModel(CommandArgs comArgs){
         TsTvRatio kappa = new TsTvRatio(comArgs.kappa());
-        BaseFrequencies pi = new BaseFrequencies(comArgs.pi());
+        
+        double[] frequencies = new double[States.NT_STATES]; // will be in correct order, whatever that may be
+        
+        if (Boolean.parseBoolean(comArgs.tcag())){
+            frequencies = ReorderFrequencies.pamlToAlpha(comArgs.pi());
+        }
+        else{
+            frequencies = comArgs.pi();
+        }
 
+        BaseFrequencies pi = new BaseFrequencies(frequencies);
+        
         return Arrays.asList(kappa, pi);        
     }
+    
+    public static void calculateFixed(List<Parameter> model, Tree tree, AdvancedAlignment alignment){
+        double[] optimisableParams = Mapper.getOptimisable(model); // map parameters to optimisation space, so Function.value can use them
+        Function calculator = new Function(alignment, tree);
+    
+        double lnL = calculator.value(optimisableParams);
+        System.out.println("lnL: " + lnL); // better to have it print the input parameters too, so you can see input and output together
+    }
+    
     
     //TODO
     // start the optimisation
