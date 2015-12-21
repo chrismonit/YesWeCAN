@@ -22,7 +22,11 @@ public class RateMatrix extends Array2DRowRealMatrix {
     private TsTvRatioAdvanced kappa;
     
     public BaseFrequencies getBaseFrequencies(){ 
-        return pi; 
+        return this.pi; 
+    }
+    
+    public TsTvRatioAdvanced getKappa(){
+        return this.kappa;
     }
     
     public RateMatrix( TsTvRatioAdvanced kappa, BaseFrequencies pi){ 
@@ -56,10 +60,32 @@ public class RateMatrix extends Array2DRowRealMatrix {
             }
             matrixData[i][i] = -rowSum;
         }
-        super.setSubMatrix(matrixData, 0, 0); //replace the (hitherto blank) matrix data
-               
+        
+        //MatrixPrinter.PrintMatrix(matrixData, "matrix data before scaling");
+        
+        // scale matrix such that average substitution rate is 1
+        
+        // compute nu
+
+        double nuDenominator = 0.0;
+        
+        for (int i = 0; i < numStates; i++) {
+            nuDenominator += this.pi.get()[i] * matrixData[i][i];
+        }
+        double nu = 1.0 / -nuDenominator;
+        
+        // do the scaling
+        for (int i = 0; i < numStates; i++) {
+            for (int j = 0; j < numStates; j++) {
+                matrixData[i][j] *= nu;
+            }
+        }
+        
+        //MatrixPrinter.PrintMatrix(matrixData, "matrix data after scaling");
 
         
+        super.setSubMatrix(matrixData, 0, 0); //replace the (hitherto blank) matrix data
+               
     }//constructor
     
     

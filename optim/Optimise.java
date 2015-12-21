@@ -64,7 +64,7 @@ public class Optimise {
         
         InitialGuess guess = new InitialGuess(initialValues); // starting values
         
-        // let's do this:
+        // let's go:
         PointValuePair result = mySO.optimize( maxeval, maxiter, myNMS, myOF, guess );
         
         

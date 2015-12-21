@@ -19,6 +19,9 @@ import swmutsel.model.parameters.Parameter;
 import swmutsel.model.parameters.TsTvRatio;
 import yeswecan.cli.CommandArgs;
 import yeswecan.model.Function;
+import yeswecan.model.MutationModel;
+import yeswecan.model.SubstitutionModel;
+import yeswecan.optim.Optimise;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.ReorderFrequencies;
 import yeswecan.phylo.States;
@@ -50,10 +53,11 @@ public class Analyse {
     
     private AdvancedAlignment alignment;
     private Tree tree;
+    private CommandArgs comArgs;
     
     public Analyse(String[] args){
-        CommandArgs comArgs = new CommandArgs();
-        JCommander jcom = new JCommander(comArgs);
+        this.comArgs = new CommandArgs();
+        JCommander jcom = new JCommander(this.comArgs);
         
         try{
             jcom.parse(args);
@@ -62,18 +66,23 @@ public class Analyse {
             System.out.println(ex.getMessage());
         }
         
-        loadData(comArgs.alignment(), comArgs.tree());
+        loadData(this.comArgs.alignment(), this.comArgs.tree());
         //TODO
         // params = makeModel(...)
         // fit(data, model)
         
         // calculate lnL with fixed params
-        if (Boolean.parseBoolean(comArgs.fix())){
+        if (Boolean.parseBoolean(this.comArgs.fix())){
             calculateFixed(
-                    makeModel(comArgs),
+                    // for testing WITHOUT mapping. TEMPORARY
+                    //new double[]{ this.comArgs.kappa(), this.comArgs.pi()[2], this.comArgs.pi()[1], this.comArgs.pi()[3], this.comArgs.pi()[0] },
+                    makeModel(),
                     this.tree,
                     this.alignment
             ); 
+        }
+        else{
+            fit();
         }
         
     }
@@ -97,39 +106,53 @@ public class Analyse {
     
     
     // only HKY at the moment
-    public static List<Parameter> makeModel(CommandArgs comArgs){
-        TsTvRatio kappa = new TsTvRatio(comArgs.kappa());
+    public List<Parameter> makeModel(){
+        TsTvRatio kappa = new TsTvRatio(this.comArgs.kappa());
         
         double[] frequencies = new double[States.NT_STATES]; // will be in correct order, whatever that may be
         
-        if (Boolean.parseBoolean(comArgs.tcag())){
-            frequencies = ReorderFrequencies.pamlToAlpha(comArgs.pi());
+        if (Boolean.parseBoolean(this.comArgs.tcag())){
+            frequencies = ReorderFrequencies.pamlToAlpha(this.comArgs.pi());
         }
         else{
-            frequencies = comArgs.pi();
+            frequencies = this.comArgs.pi();
         }
 
         BaseFrequencies pi = new BaseFrequencies(frequencies);
-        
+        //System.out.println("make model frequencies:" + pi.toString());
         return Arrays.asList(kappa, pi);        
     }
     
+    //original
     public static void calculateFixed(List<Parameter> model, Tree tree, AdvancedAlignment alignment){
         double[] optimisableParams = Mapper.getOptimisable(model); // map parameters to optimisation space, so Function.value can use them
         Function calculator = new Function(alignment, tree);
-    
         double lnL = calculator.value(optimisableParams);
-        System.out.println("lnL: " + lnL); // better to have it print the input parameters too, so you can see input and output together
+        System.out.println("lnL: " + lnL + " "); // better to have it print the input parameters too, so you can see input and output together
     }
     
+    // testing without mapping
+//    public static void calculateFixed(double[] realParams, Tree tree, AdvancedAlignment alignment){
+//        //double[] optimisableParams = Mapper.getOptimisable(model); // map parameters to optimisation space, so Function.value can use them
+//        
+//        Function calculator = new Function(alignment, tree);
+//        
+//        double lnL = calculator.value(realParams);
+//        
+//        System.out.println("lnL with real params (not mapped): " + lnL + " "); // better to have it print the input parameters too, so you can see input and output together
+//    }
+//    
     
     //TODO
     // start the optimisation
     public void fit(){
-        // make new instance of function, which takes in the data
-        //use Optimise to fit the model to the data
-        // get the MLEs
-        // format in some way
+        Function optFunction = new Function(this.alignment, this.tree);
+        Optimise opt = new Optimise();
+        SubstitutionModel result = opt.optNMS(optFunction, new MutationModel(makeModel()));
+        
+        System.out.println("opt lnL: "+result.getLnL());
+        System.out.println( result.getParameters().get(0).toString());
+        System.out.println(result.getParameters().get(1).toString());
     }
     
     

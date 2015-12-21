@@ -38,6 +38,9 @@ public abstract class SubstitutionModel {  // smaller version of equivalent clas
         this.parameters.clear();
     }
 
+    public void setParameters(List<Parameter> p){
+        this.parameters = p;
+    }
 
     public List<Parameter> getParameters() {
         return this.parameters;

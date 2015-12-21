@@ -46,6 +46,12 @@ public class MutationModel extends SubstitutionModel {
         super.addParameters(kappa, pi);
     }
     
+    //TODO this is incorrent - using other methods you set kappa and pi, but using this constructor, you don't
+    public MutationModel(List<Parameter> p){
+        super.clearParameters();
+        super.setParameters(p);
+    }
+    
 //    public MutationModel(MutationModel model){
 //        this.kappa = model.kappa;
 //        this.pi = model.pi;

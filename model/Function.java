@@ -14,8 +14,9 @@ import java.util.List;
 import org.apache.commons.math3.analysis.MultivariateFunction;
 import pal.tree.Tree;
 import swmutsel.model.parameters.BaseFrequencies;
-import swmutsel.model.parameters.Parameter;
 import swmutsel.model.parameters.Mapper;
+import swmutsel.model.parameters.Parameter;
+import swmutsel.model.parameters.TsTvRatio;
 import yeswecan.Constants;
 
 import yeswecan.model.LogLikelihoodCalculator;
@@ -24,16 +25,11 @@ import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.utils.MatrixPrinter;
 
-
-
 /**
  *
  * @author cmonit1
  */
 public class Function implements MultivariateFunction {
-    
-    
-
     
     private AdvancedAlignment alignment;
     private Tree tree;
@@ -54,17 +50,44 @@ public class Function implements MultivariateFunction {
         
     }
     
+    
+    // for testing without mapping
+//    public double value(double[] point){
+//
+//        // make Q matrix
+//        RateMatrix Q = new RateMatrix(new TsTvRatioAdvanced(point[0]), new BaseFrequencies(new double[]{ point[1], point[2], point[3], point[4]}));
+//
+//        //MatrixPrinter.PrintMatrix(Q.getData(), "Q:");
+//        
+//        //make P matrix generrator
+//        ProbMatrixGenerator P = ProbMatrixFactory.getPGenerator(Q);
+//
+//        // can then compute likelihood
+//
+//        double lnL = 0.0;
+//        for (int iSite=0; iSite < this.alignment.getLength(); iSite++){
+//            double sitelnL = LogLikelihoodCalculator.calculateSiteLogLikelihood(this.alignment, this.tree, iSite, P);
+//            //System.out.println("site_"+iSite + "\t" + sitelnL);
+//            lnL += sitelnL;
+//        }
+//        return lnL;
+//    }
+    
+    
+    
+    
+    
+    
     private int i = 0; // debugging
     
+    // normal value method, includes mapping
     public double value(double[] point){
-        
-        
+  
         /* point vector arrives with values in optim space.
             need to map back to real parameter space and then calculate likelihood
         */
  
         Mapper.setOptimisable(this.mutModel.getParameters(), point);
-
 
         //System.out.print("i: " + i +"\t");
         i++;
@@ -95,7 +118,10 @@ public class Function implements MultivariateFunction {
         
         // make Q matrix
         RateMatrix Q = new RateMatrix(this.mutModel.getKappa(), this.mutModel.getPi());
-        
+
+//        MatrixPrinter.PrintMatrix(Q.getData(), "Q:");
+//        System.out.println(this.mutModel.getKappa().toString());
+//        System.out.println(this.mutModel.getPi().toString());
         
         
         //make P matrix generator
@@ -106,7 +132,10 @@ public class Function implements MultivariateFunction {
 
         double lnL = 0.0;
         for (int iSite=0; iSite < this.alignment.getLength(); iSite++){
-            lnL += LogLikelihoodCalculator.calculateSiteLogLikelihood(this.alignment, this.tree, iSite, P);
+            double sitelnL = LogLikelihoodCalculator.calculateSiteLogLikelihood(this.alignment, this.tree, iSite, P);
+            //System.out.println("site_"+iSite + "\t" + sitelnL);
+            
+            lnL += sitelnL;
         }
         
 

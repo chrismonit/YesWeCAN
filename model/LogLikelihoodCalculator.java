@@ -5,7 +5,9 @@ import yeswecan.phylo.AdvancedAlignment;
 
 import pal.tree.Node;
 import pal.tree.Tree;
+import yeswecan.phylo.ReorderFrequencies;
 import yeswecan.phylo.States;
+import yeswecan.utils.ArrayPrinter;
 import yeswecan.utils.MatrixPrinter;
 
 /**
@@ -23,7 +25,8 @@ public class LogLikelihoodCalculator {
         
         double sum = 0.0;
         double[] rootConditionals = downTree( tree.getRoot(), alignment, tree, site, pGenerator );
-                
+        //System.out.println("now");
+        //ArrayPrinter.print(ReorderFrequencies.alphaToPaml(pGenerator.getQ().getBaseFrequencies().get()), ",");
         for (int iRootState = 0; iRootState < States.NT_STATES; iRootState++) {
             sum +=  pGenerator.getQ().getBaseFrequencies().get()[iRootState] * rootConditionals[iRootState]; //TODO surely we can make this more efficient
         }
@@ -65,7 +68,9 @@ public class LogLikelihoodCalculator {
                 double t = child.getBranchLength();
                 
                 double[][] P_t = pGenerator.getP(t).getData(); //don't need double[][], could use RealMatrix getElement method
-
+                
+                //MatrixPrinter.PrintMatrix(P_t, "P t="+t);
+                
                 double[] childConditionals = downTree(child, alignment, tree, site, pGenerator);
                 
                 for (int iParentState = 0; iParentState < States.NT_STATES; iParentState++) { //iParentState == x_i in Yang (2006) equation 4.4
@@ -78,14 +83,13 @@ public class LogLikelihoodCalculator {
                 }// iParentState
             }//for iChild
             
-//           String conditionalsString = "";
-//            for (int i = 0; i < 4; i++) {
-//                conditionalsString += "," + Double.toString(parentConditionals[i]);
-//            }
-//            System.out.println(parent.getNumber() + "\t" + parent.getBranchLength() + "\t" + conditionalsString);
-            
+//     
         }//else (if not leaf)
-
+        
+        //ArrayPrinter.print(ReorderFrequencies.alphaToPaml(parentConditionals), ",");
+        //System.out.println(parent.toString());
+        //System.out.println("");
+        
         return parentConditionals;
     
     }//downTree()

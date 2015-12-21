@@ -26,8 +26,14 @@ public class ReorderFrequencies {
         return acgt;
     }
     
-    //TODO the reverse
-    
+    public static double[] alphaToPaml(double[] acgt){
+        double[] tcag = new double[4];
+        tcag[2] = acgt[0];
+        tcag[1] = acgt[1];
+        tcag[3] = acgt[2];
+        tcag[0] = acgt[3];
+        return tcag;
+    }
     
     
 }
