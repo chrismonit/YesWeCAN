@@ -50,37 +50,7 @@ public class Function implements MultivariateFunction {
         
     }
     
-    
-    // for testing without mapping
-//    public double value(double[] point){
-//
-//        // make Q matrix
-//        RateMatrix Q = new RateMatrix(new TsTvRatioAdvanced(point[0]), new BaseFrequencies(new double[]{ point[1], point[2], point[3], point[4]}));
-//
-//        //MatrixPrinter.PrintMatrix(Q.getData(), "Q:");
-//        
-//        //make P matrix generrator
-//        ProbMatrixGenerator P = ProbMatrixFactory.getPGenerator(Q);
-//
-//        // can then compute likelihood
-//
-//        double lnL = 0.0;
-//        for (int iSite=0; iSite < this.alignment.getLength(); iSite++){
-//            double sitelnL = LogLikelihoodCalculator.calculateSiteLogLikelihood(this.alignment, this.tree, iSite, P);
-//            //System.out.println("site_"+iSite + "\t" + sitelnL);
-//            lnL += sitelnL;
-//        }
-//        return lnL;
-//    }
-    
-    
-    
-    
-    
-    
-    private int i = 0; // debugging
-    
-    // normal value method, includes mapping
+
     public double value(double[] point){
   
         /* point vector arrives with values in optim space.
@@ -89,44 +59,11 @@ public class Function implements MultivariateFunction {
  
         Mapper.setOptimisable(this.mutModel.getParameters(), point);
 
-        //System.out.print("i: " + i +"\t");
-        i++;
-        
-        boolean verbose = false;
-        
-        if (verbose) {
-            System.out.print(this.mutModel.getKappa().toString() + "\t");
-    //        System.out.println("point[0]: " + point[0]);
-    //        System.out.println("");
-
-//            System.out.println(mutModel.getPi().toString());
-//
-//            System.out.println("length: " + point.length);
-//
-//            String pointString = "";
-//                for (int i = 0; i < point.length; i++) {
-//                    pointString += "," + Double.toString(point[i]);
-//            }
-//            System.out.println("pointString: " + pointString);
-//            //MatrixPrinter.PrintMatrix(Q.getData(), "Q: " + i);
-//
-//            System.out.println("");
-//            System.out.println("");
-
-        }
-        
-        
         // make Q matrix
         RateMatrix Q = new RateMatrix(this.mutModel.getKappa(), this.mutModel.getPi());
-
-//        MatrixPrinter.PrintMatrix(Q.getData(), "Q:");
-//        System.out.println(this.mutModel.getKappa().toString());
-//        System.out.println(this.mutModel.getPi().toString());
-        
         
         //make P matrix generator
-        ProbMatrixGenerator P = ProbMatrixFactory.getPGenerator(Q);
-        
+        ProbMatrixGenerator P = ProbMatrixFactory.getPGenerator(Q);        
         
         // can then compute likelihood
 
@@ -137,11 +74,6 @@ public class Function implements MultivariateFunction {
             
             lnL += sitelnL;
         }
-        
-
-        //System.out.println("lnL: " + lnL);
-        
-        //System.out.println("");
 
         return lnL;
     }// value

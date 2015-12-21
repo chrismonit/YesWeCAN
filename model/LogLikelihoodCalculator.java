@@ -21,12 +21,10 @@ public class LogLikelihoodCalculator {
     
     public static double calculateSiteLogLikelihood(AdvancedAlignment alignment, Tree tree, int site, ProbMatrixGenerator pGenerator){ 
         
-        //System.out.println("root:" + tree.getRoot().toString());
         
         double sum = 0.0;
         double[] rootConditionals = downTree( tree.getRoot(), alignment, tree, site, pGenerator );
-        //System.out.println("now");
-        //ArrayPrinter.print(ReorderFrequencies.alphaToPaml(pGenerator.getQ().getBaseFrequencies().get()), ",");
+
         for (int iRootState = 0; iRootState < States.NT_STATES; iRootState++) {
             sum +=  pGenerator.getQ().getBaseFrequencies().get()[iRootState] * rootConditionals[iRootState]; //TODO surely we can make this more efficient
         }
@@ -36,22 +34,18 @@ public class LogLikelihoodCalculator {
     private static double[] downTree(Node parent, AdvancedAlignment alignment, Tree tree, int site, ProbMatrixGenerator pGenerator){
         //Felsenstein's Pruning Algorithm. Inspired by (virtually copied from) R. Goldstein's downTree method in Play.java
         double[] parentConditionals = new double[States.NT_STATES]; //number of nucleotide states
-        //System.out.println("node id: " + parent.getIdentifier());
         
         if (parent.isLeaf()){ // 'parent' is terminal node, i.e. has no children.
         
             String taxonName = parent.getIdentifier().getName();
             int state = alignment.getStateBySequenceName(taxonName, site);
-            //System.out.println("site: " + site + "\t" + "taxonName: " + taxonName + "\t" + "state: " + state + "\t");
         
             if (state >= 0 && state < States.NT_STATES){ //the observed state is recognised as a nucleotide
-                //System.out.println("state: " + state);
                 parentConditionals[state] = 1.0;
             }
             else  {
                 for (int i = 0; i < parentConditionals.length; i++) {
                     parentConditionals[i] = 1.0; //observed state is not recognised as nucleotide (may be gap). Treated as missing data. All conditional probabilities = 1.0.
-                    //System.out.println("ELSE state: " + state);
                 }
             }
         }//if leaf
@@ -59,7 +53,6 @@ public class LogLikelihoodCalculator {
             //parentConditionals dependent on children conditionals
             for (int i = 0; i < parentConditionals.length; i++) 
                 parentConditionals[i] = 1.0; // set all to one at first, will multiply by probabilities for each child, below
-            //System.out.println(parent.getNumber() + "\t" + parent.getChildCount() + "\t" + parent.getBranchLength());
             
             
             for (int iChild = 0; iChild < parent.getChildCount(); iChild++){ //for every child of this parent node
@@ -86,9 +79,6 @@ public class LogLikelihoodCalculator {
 //     
         }//else (if not leaf)
         
-        //ArrayPrinter.print(ReorderFrequencies.alphaToPaml(parentConditionals), ",");
-        //System.out.println(parent.toString());
-        //System.out.println("");
         
         return parentConditionals;
     

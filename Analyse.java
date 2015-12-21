@@ -74,8 +74,6 @@ public class Analyse {
         // calculate lnL with fixed params
         if (Boolean.parseBoolean(this.comArgs.fix())){
             calculateFixed(
-                    // for testing WITHOUT mapping. TEMPORARY
-                    //new double[]{ this.comArgs.kappa(), this.comArgs.pi()[2], this.comArgs.pi()[1], this.comArgs.pi()[3], this.comArgs.pi()[0] },
                     makeModel(),
                     this.tree,
                     this.alignment
@@ -119,7 +117,6 @@ public class Analyse {
         }
 
         BaseFrequencies pi = new BaseFrequencies(frequencies);
-        //System.out.println("make model frequencies:" + pi.toString());
         return Arrays.asList(kappa, pi);        
     }
     
@@ -131,17 +128,7 @@ public class Analyse {
         System.out.println("lnL: " + lnL + " "); // better to have it print the input parameters too, so you can see input and output together
     }
     
-    // testing without mapping
-//    public static void calculateFixed(double[] realParams, Tree tree, AdvancedAlignment alignment){
-//        //double[] optimisableParams = Mapper.getOptimisable(model); // map parameters to optimisation space, so Function.value can use them
-//        
-//        Function calculator = new Function(alignment, tree);
-//        
-//        double lnL = calculator.value(realParams);
-//        
-//        System.out.println("lnL with real params (not mapped): " + lnL + " "); // better to have it print the input parameters too, so you can see input and output together
-//    }
-//    
+
     
     //TODO
     // start the optimisation
