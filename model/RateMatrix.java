@@ -82,23 +82,15 @@ public class RateMatrix extends Array2DRowRealMatrix {
         }
         
         //MatrixPrinter.PrintMatrix(matrixData, "matrix data after scaling");
-
         
+       
         super.setSubMatrix(matrixData, 0, 0); //replace the (hitherto blank) matrix data
                
     }//constructor
     
     
     
-    public static void main(String[] args){
-        System.out.println("Testing RateMatrix");
-        TsTvRatioAdvanced k = new TsTvRatioAdvanced(2.0);
-        BaseFrequencies freqs = new BaseFrequencies(new double[]{ 0.25, 0.25, 0.25, 0.25 });
-        
-        RateMatrix Q = new RateMatrix( k, freqs );
-        double[][] matrixData = Q.getData();
-        MatrixPrinter.PrintMatrix(matrixData, "matrix data");
 
-    }
+    
 
 }//class
