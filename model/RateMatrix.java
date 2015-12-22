@@ -21,6 +21,8 @@ public class RateMatrix extends Array2DRowRealMatrix {
     private BaseFrequencies pi; 
     private TsTvRatioAdvanced kappa;
     
+    private int numStates;
+    
     public BaseFrequencies getBaseFrequencies(){ 
         return this.pi; 
     }
@@ -37,7 +39,7 @@ public class RateMatrix extends Array2DRowRealMatrix {
         this.pi = pi;
         
         
-        int numStates = this.pi.get().length;
+        this.numStates = this.pi.get().length;
         
         double[][] matrixData = new double[numStates][numStates];
                 
@@ -61,35 +63,47 @@ public class RateMatrix extends Array2DRowRealMatrix {
             matrixData[i][i] = -rowSum;
         }
         
-        //MatrixPrinter.PrintMatrix(matrixData, "matrix data before scaling");
         
         // scale matrix such that average substitution rate is 1
         
-        // compute nu
+//        // compute nu
+//
+//        double nuDenominator = 0.0;
+//        
+//        for (int i = 0; i < numStates; i++) {
+//            nuDenominator += this.pi.get()[i] * matrixData[i][i];
+//        }
+//        double nu = 1.0 / -nuDenominator;
+//        
+//        // do the scaling
+//        for (int i = 0; i < numStates; i++) {
+//            for (int j = 0; j < numStates; j++) {
+//                matrixData[i][j] *= nu;
+//            }
+//        }
 
-        double nuDenominator = 0.0;
-        
-        for (int i = 0; i < numStates; i++) {
-            nuDenominator += this.pi.get()[i] * matrixData[i][i];
-        }
-        double nu = 1.0 / -nuDenominator;
-        
-        // do the scaling
-        for (int i = 0; i < numStates; i++) {
-            for (int j = 0; j < numStates; j++) {
-                matrixData[i][j] *= nu;
-            }
-        }
-        
-        //MatrixPrinter.PrintMatrix(matrixData, "matrix data after scaling");
-        
-       
         super.setSubMatrix(matrixData, 0, 0); //replace the (hitherto blank) matrix data
-               
+        
+        this.scale();
     }//constructor
     
     
-    
+    private void scale(){
+            // scale matrix such that average substitution rate is 1
+        
+        // compute nu
+        
+        
+        double nuDenominator = 0.0;
+        
+        for (int i = 0; i < this.numStates; i++) {
+            nuDenominator += this.pi.get()[i] * this.getEntry(i, i);
+        }
+        double nu = 1.0 / -nuDenominator;
+        
+        // apply the scaling
+        super.setSubMatrix(this.scalarMultiply(nu).getData(), 0, 0);
+    }
 
     
 
