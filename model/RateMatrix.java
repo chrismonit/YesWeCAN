@@ -63,24 +63,6 @@ public class RateMatrix extends Array2DRowRealMatrix {
             matrixData[i][i] = -rowSum;
         }
         
-        
-        // scale matrix such that average substitution rate is 1
-        
-//        // compute nu
-//
-//        double nuDenominator = 0.0;
-//        
-//        for (int i = 0; i < numStates; i++) {
-//            nuDenominator += this.pi.get()[i] * matrixData[i][i];
-//        }
-//        double nu = 1.0 / -nuDenominator;
-//        
-//        // do the scaling
-//        for (int i = 0; i < numStates; i++) {
-//            for (int j = 0; j < numStates; j++) {
-//                matrixData[i][j] *= nu;
-//            }
-//        }
 
         super.setSubMatrix(matrixData, 0, 0); //replace the (hitherto blank) matrix data
         
