@@ -38,43 +38,40 @@ public class RateMatrix extends Array2DRowRealMatrix {
         this.kappa = kappa;
         this.pi = pi;
         
-        
         this.numStates = this.pi.get().length;
         
-        double[][] matrixData = new double[numStates][numStates];
-                
+        super.setSubMatrix(new double[numStates][numStates], 0, 0); // makes a square zero matrix
+        
         //populate off-diagonal elements
         for (int i = 0; i < numStates; i++) {
             for (int j = 0; j < numStates; j++) {
                 
                 if (i == j) continue;
-                matrixData[i][j] = this.pi.get()[j] * this.kappa.getKappaIfTransition(i, j);
+                double q_ij = this.pi.get()[j] * this.kappa.getKappaIfTransition(i, j);
+                this.setEntry(i,j, q_ij);
             }// j
         }// i
+          
         
-        
-        //populate diagonal elements
-        
-        for (int i = 0; i < numStates; i++) {
-            double rowSum = 0.0;
-            for (int j = 0; j < numStates; j++) {
-                rowSum += matrixData[i][j];
-            }
-            matrixData[i][i] = -rowSum;
-        }
-        
-
-        super.setSubMatrix(matrixData, 0, 0); //replace the (hitherto blank) matrix data
-        
+        this.populateDiagonals();
         this.scale();
     }//constructor
     
     
-    private void scale(){
-            // scale matrix such that average substitution rate is 1
-        
+    public void populateDiagonals(){
+         for (int i = 0; i < numStates; i++) {
+                double rowSum = 0.0;
+                for (int j = 0; j < numStates; j++) {
+                    rowSum += this.getEntry(i, j);
+                }
+                this.setEntry(i, i, -rowSum);
+            }
+    }
+    
+    
+    public void scale(){
+        // scale matrix such that average substitution rate is 1
         // compute nu
-        
         
         double nuDenominator = 0.0;
         
