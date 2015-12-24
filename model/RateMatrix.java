@@ -62,6 +62,7 @@ public class RateMatrix extends Array2DRowRealMatrix {
          for (int i = 0; i < numStates; i++) {
                 double rowSum = 0.0;
                 for (int j = 0; j < numStates; j++) {
+                    if (i == j) continue;
                     rowSum += this.getEntry(i, j);
                 }
                 this.setEntry(i, i, -rowSum);

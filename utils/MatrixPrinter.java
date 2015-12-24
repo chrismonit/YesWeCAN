@@ -14,6 +14,10 @@ public final class  MatrixPrinter {
     
     private MatrixPrinter(){} //no instantiation
     
+    public static double roundDouble(double toRound, int decPlaces){
+        int tenMultiple = (int)Math.pow(10.0, (double)decPlaces);
+        return (double)Math.round( toRound * tenMultiple )  / tenMultiple;
+    }
     
     public static void Print3RowMatrix(int[][] matrix2D, String message){
         
@@ -77,14 +81,27 @@ public final class  MatrixPrinter {
         
     }
     
-    public static void main(String[] args){
-        double[][] matrix = new double[][]{
-            { 1.0, 0.0, 0.0, 0.0 },
-            { 0.0, 1.0, 0.0, 0.0 },
-            { 0.0, 0.0, 1.0, 0.0 },
-            { 0.0, 0.0, 0.0, 1.0 }
-        };
-        MatrixPrinter.PrintMatrix(matrix, "Testing MatrixPrinter");
+    public static void PrintMatrix(double[][] matrix2D, String message, String round){
+        int sigFigures = 4;
+        
+        StringBuilder[] builders = new StringBuilder[ matrix2D.length ];
+        
+        for (int iRow = 0; iRow < matrix2D.length; iRow++) {
+            builders[iRow] = new StringBuilder("");
+        }
+        
+        for (int iRow = 0; iRow < matrix2D.length; iRow++) {
+            for (int jColumn = 0; jColumn < matrix2D[0].length; jColumn++) {
+                builders[iRow].append( roundDouble(matrix2D[iRow][jColumn], sigFigures) + "\t" );
+            }
+        }
+        
+        System.out.println(message);
+        for (int iRow = 0; iRow < matrix2D.length; iRow++) {
+            System.out.println( builders[iRow].toString() );
+        }
+        System.out.println("------------");
+        
     }
     
     
