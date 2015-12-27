@@ -27,4 +27,8 @@ public class Constants {
     public static String ERROR_PREFIX = "ERROR: ";
     
     public static String PI_DELIMITER = ",";
+    
+    public static char[] FRAMES = {'A', 'B', 'C'};
+    
+    public static String LAYOUT = "LAYOUT"; // prefix for genetic structure diagram
 }
