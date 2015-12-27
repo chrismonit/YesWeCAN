@@ -67,6 +67,18 @@ public class GeneticStructure {
         }
     }
     
+    public int getPartitionIndex(int site){
+        for (int i = 0; i < this.partitions.length; i++) {
+            if (site >= this.partitions[i].getFirstSite() && site <= this.partitions[i].getLastSite()) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    
+    
+    
+    
     @Override
     public String toString(){
         String d = "\t"; // column delimiter
