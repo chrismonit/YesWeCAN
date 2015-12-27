@@ -128,9 +128,16 @@ public class GeneticStructure {
             {2,2,0,0,0},
             {3,3,3,3,0}
         };
-        int[] lengths = { 10, 20, 30, 40, 50 };
+        //int[] lengths = { 10, 20, 30, 40, 50 };
         
-        GeneticStructure structure = new GeneticStructure(genePositions, lengths);
+        String a = "0,1,1,1,2";
+        String b = "2,2,0,0,0";
+        String c = "3,3,3,3,0";
+        String lengths = "70,20,30,40,50";
+        
+        //GeneticStructure structure = new GeneticStructure(genePositions, lengths);
+        GeneticStructure structure = new GeneticStructure(a,b,c,lengths,",");
+        
         System.out.println(structure.toString());
     }
     
