@@ -15,7 +15,8 @@ import yeswecan.Constants;
 public class GeneticStructure {
     
     private Partition[] partitions;
-   
+    private int totalLength; // i.e. length of alignment
+    
     // version of constructore which takes strings, as if from command args
     public GeneticStructure(String aLayout, String bLayout, String cLayout,
         String partitionLengths, String delimiter){
@@ -50,8 +51,13 @@ public class GeneticStructure {
     }
     
     private void init(int[][] genePositions, int[] partitionLengths){
-       int numPartitions = genePositions[0].length;
+        int numPartitions = genePositions[0].length;
         this.partitions = new Partition[numPartitions];
+        
+        int sum = 0;
+        for (int i : partitionLengths)
+            sum += i; 
+        this.totalLength = sum;
         
         int partitionFirstSite = 0;
         for (int iPartition = 0; iPartition < numPartitions; iPartition++) {
