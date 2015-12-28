@@ -38,6 +38,11 @@ public class Simulator {
         double[] baseFrequencies = new double[]{.1,.2,.3,.4};
         double branchScaling = 1.0;
         
+        String a = "0,1,1,1,2";
+        String b = "2,2,0,0,0";
+        String c = "3,3,3,3,0";
+        String lengths = "50,50,50,50,50";
+        
         Simulator sim = new Simulator(treePath, kappa, baseFrequencies, branchScaling);
     }
     
