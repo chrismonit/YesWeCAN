@@ -88,7 +88,7 @@ public class GeneticStructure {
     }
     
     public int[] getGenes(int site){
-        return this.partitions[site].getGenes();
+        return this.partitions[this.getPartitionIndex(site)].getGenes();
     }
     
     public int getPartitionIndex(int site){

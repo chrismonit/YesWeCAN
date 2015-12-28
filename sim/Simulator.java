@@ -16,9 +16,13 @@ import pal.tree.ReadTree;
 import pal.tree.Tree;
 import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.BranchScaling;
+import swmutsel.model.parameters.Omega;
+import yeswecan.model.CodonAwareMatrix;
 import yeswecan.model.ProbMatrixFactory;
 import yeswecan.model.ProbMatrixGenerator;
 import yeswecan.model.RateMatrix;
+import yeswecan.model.RatioScaler;
+import yeswecan.model.RatioScalerFactory;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.FastaWriter;
 import yeswecan.phylo.GeneticStructure;
@@ -42,30 +46,40 @@ public class Simulator {
         String a = "0,1,1,1,2";
         String b = "2,2,0,0,0";
         String c = "3,3,3,3,0";
-        String lengths = "50,50,50,50,50";
+        String lengths = "5,5,5,5,5";
         
         GeneticStructure genStruct = new GeneticStructure(a,b,c,lengths,",");
         
-        Simulator sim = new Simulator(treePath, genStruct, kappa, baseFrequencies, branchScaling);
+        Simulator sim = new Simulator(treePath, genStruct, kappa, baseFrequencies, omegas, branchScaling);
+        Alignment aln = sim.simulate();
+        System.out.println(new FastaWriter().fastaString(aln));
     }
     
     private Tree tree;
     private GeneticStructure genStruct;
     private TsTvRatioAdvanced kappa;
     private BaseFrequencies freqs;
+    private Omega[] geneOmegas;
     private BranchScaling scaling;
             
     private Random rand = new Random();
     private AlignmentBuilder siteStates;
 
     
-    public Simulator(String treePath, GeneticStructure genStruct, double kappaValue, double[] baseFrequencyValues, double branchScalingValue){
+    public Simulator(String treePath, GeneticStructure genStruct, double kappaValue, double[] baseFrequencyValues, double[] omegaValues, double branchScalingValue){
+        
         this.tree = loadTree(treePath);
         this.genStruct = genStruct;
         this.kappa = new TsTvRatioAdvanced(kappaValue);
         this.freqs = new BaseFrequencies(baseFrequencyValues);
         this.scaling = new BranchScaling(branchScalingValue);
         
+        // geneOmegas[0] will be for 'no gene' regions, ie where omega=1
+        this.geneOmegas = new Omega[omegaValues.length+1];
+        this.geneOmegas[0] = new Omega(1.0); // neutral evolution
+        for (int i = 1; i < this.geneOmegas.length; i++) { // NB starting at i=1
+            this.geneOmegas[i] = new Omega(omegaValues[i-1]);
+        }
     }
     
     public Alignment simulate(){
@@ -77,11 +91,16 @@ public class Simulator {
             
             int siteType = iSite % 3;
             int[] genes = genStruct.getGenes(iSite); // the genes present in the three frames in this partition
-            
-            
+            Omega aOmega = this.geneOmegas[genes[0]]; // genes[0] is the gene present in frame A
+            Omega bOmega = this.geneOmegas[genes[1]]; 
+            Omega cOmega = this.geneOmegas[genes[2]]; 
+                        
             // make model
-            RateMatrix Q = new RateMatrix(kappa, freqs);
-            ProbMatrixGenerator Pgen = ProbMatrixFactory.getPGenerator(Q);
+            
+
+            RatioScaler ratioScaler = RatioScalerFactory.getRatioScaler();
+            CodonAwareMatrix canQ = new CodonAwareMatrix(this.kappa, this.freqs, ratioScaler, siteType, aOmega, bOmega, cOmega);            
+            ProbMatrixGenerator Pgen = ProbMatrixFactory.getPGenerator(canQ);
 
             // simulate according to process
             Node root = tree.getRoot();
@@ -98,7 +117,7 @@ public class Simulator {
         }
         
         Alignment allSites = new ConcatenatedAlignment(sites);
-        //System.out.println(new FastaWriter().fastaString(allSites));
+        //////System.out.println(new FastaWriter().fastaString(allSites));
         return allSites;
     }
     
