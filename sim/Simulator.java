@@ -21,6 +21,7 @@ import yeswecan.model.ProbMatrixGenerator;
 import yeswecan.model.RateMatrix;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.FastaWriter;
+import yeswecan.phylo.GeneticStructure;
 import yeswecan.phylo.States;
 import yeswecan.utils.ArrayPrinter;
 /**
@@ -29,7 +30,6 @@ import yeswecan.utils.ArrayPrinter;
  */
 public class Simulator {
     
-    // first making a simulator for HKY which can be extended
     
     public static void main(String[] args){
         // read in command args etc
@@ -38,49 +38,69 @@ public class Simulator {
         double[] baseFrequencies = new double[]{.1,.2,.3,.4};
         double branchScaling = 1.0;
         
+        double[] omegas = new double[]{0.1, 0.2, 0.3};
         String a = "0,1,1,1,2";
         String b = "2,2,0,0,0";
         String c = "3,3,3,3,0";
         String lengths = "50,50,50,50,50";
         
-        Simulator sim = new Simulator(treePath, kappa, baseFrequencies, branchScaling);
+        GeneticStructure genStruct = new GeneticStructure(a,b,c,lengths,",");
+        
+        Simulator sim = new Simulator(treePath, genStruct, kappa, baseFrequencies, branchScaling);
     }
     
-    Random rand = new Random();
+    private Tree tree;
+    private GeneticStructure genStruct;
+    private TsTvRatioAdvanced kappa;
+    private BaseFrequencies freqs;
+    private BranchScaling scaling;
+            
+    private Random rand = new Random();
     private AlignmentBuilder siteStates;
 
     
-    public Simulator(String treePath, double kappaValue, double[] baseFrequencyValues, double branchScalingValue){
-        Tree tree = loadTree(treePath);
-        TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(kappaValue);
-        BaseFrequencies freqs = new BaseFrequencies(baseFrequencyValues);
-        BranchScaling scaling = new BranchScaling(branchScalingValue);
-        int numberSites = 1000000;
+    public Simulator(String treePath, GeneticStructure genStruct, double kappaValue, double[] baseFrequencyValues, double branchScalingValue){
+        this.tree = loadTree(treePath);
+        this.genStruct = genStruct;
+        this.kappa = new TsTvRatioAdvanced(kappaValue);
+        this.freqs = new BaseFrequencies(baseFrequencyValues);
+        this.scaling = new BranchScaling(branchScalingValue);
         
-        Alignment[] sites = new Alignment[numberSites];
+    }
+    
+    public Alignment simulate(){
+       
+        Alignment[] sites = new Alignment[this.genStruct.getTotalLength()];
         
-        for (int iSite = 0; iSite < numberSites; iSite++) {
+        for (int iSite = 0; iSite < this.genStruct.getTotalLength(); iSite++) {
+            // determine process
             
+            int siteType = iSite % 3;
+            int[] genes = genStruct.getGenes(iSite); // the genes present in the three frames in this partition
+            
+            
+            // make model
             RateMatrix Q = new RateMatrix(kappa, freqs);
             ProbMatrixGenerator Pgen = ProbMatrixFactory.getPGenerator(Q);
 
+            // simulate according to process
             Node root = tree.getRoot();
 
             double r = rand.nextDouble();
             int rootState = draw(freqs.get(), r);
 
-            siteStates = new AlignmentBuilder(10);
+            siteStates = new AlignmentBuilder(this.tree.getExternalNodeCount()); // an 'alignment' for a single site, which will be populated with states by downTree.
 
             downTree(tree, Pgen, scaling, root, rootState);
 
+            // add this newly simulated site to the total set
             sites[iSite] = siteStates.generateAlignment(new Nucleotides());
         }
         
         Alignment allSites = new ConcatenatedAlignment(sites);
-        System.out.println(new FastaWriter().fastaString(allSites));
-        //System.out.println(allSites.toString());
+        //System.out.println(new FastaWriter().fastaString(allSites));
+        return allSites;
     }
-    
     
     
     

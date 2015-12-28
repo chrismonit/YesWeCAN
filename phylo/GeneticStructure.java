@@ -16,6 +16,7 @@ public class GeneticStructure {
     
     private Partition[] partitions;
     private int totalLength; // i.e. length of alignment
+    private int numberOfGenes;
     
     // version of constructore which takes strings, as if from command args
     public GeneticStructure(String aLayout, String bLayout, String cLayout,
@@ -59,6 +60,15 @@ public class GeneticStructure {
             sum += i; 
         this.totalLength = sum;
         
+        int max = -1;
+        for (int i = 0; i < genePositions.length; i++) {
+            for (int j = 0; j < genePositions[0].length; j++) {
+                max = Math.max(max, genePositions[i][j]);
+            }
+        }
+        this.numberOfGenes = max;
+        
+        // make Partition representations of each partition
         int partitionFirstSite = 0;
         for (int iPartition = 0; iPartition < numPartitions; iPartition++) {
             int[] genes = new int[3]; // for each of three frames
@@ -71,6 +81,14 @@ public class GeneticStructure {
             this.partitions[iPartition] = new Partition(genes, partitionFirstSite, partitionLastSite);
             partitionFirstSite = (partitionFirstSite+partitionLengths[iPartition]); // for the next iteration
         }
+    }
+    
+    public int getNumberOfGenes(){
+        return this.numberOfGenes;
+    }
+    
+    public int[] getGenes(int site){
+        return this.partitions[site].getGenes();
     }
     
     public int getPartitionIndex(int site){
@@ -124,7 +142,12 @@ public class GeneticStructure {
             this.lastSite = lastSite;
         }
         
-        public int getGene(int frame){
+        public int[] getGenes(){
+            return this.genes;
+        }
+        
+        // unlikely to use this
+        public int getGene(int frame){ 
             return this.genes[frame];
         }
         
