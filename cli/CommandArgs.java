@@ -40,6 +40,31 @@ public class CommandArgs {
     @Parameter(names = {"-frequencies", "-pi"}, required = false, description = "Stationary frequencies for nucleotides, delimited by comma. Default=\"0.25,0.25,0.25,0.25\"")
     private String pi = "0.25,0.25,0.25,0.25";
     
+    @Parameter(names = {"-omegas", "-w"}, required = true, description = "Initial omega values for each gene. Delimited by comma")
+    private String omegas = ""; // can't have default since don't know how many genes there are
+    
+    @Parameter(names = {"-scaling", "-c"}, required = false, description = "Scaling factor for branch lengths. Default=1.0")
+    private double scaling = Constants.DEFAULT_SCALING;
+    
+    
+    @Parameter(names = {"-frameA", "-a"}, required = true, description = "Gene layout for frame A, delimited by comma")
+    private String aFrame = "";
+    
+    @Parameter(names = {"-frameB", "-b"}, required = true, description = "Gene layout for frame B, delimited by comma")
+    private String bFrame = "";
+    
+    @Parameter(names = {"-frameC", "-c"}, required = true, description = "Gene layout for frame C, delimited by comma")
+    private String cFrame = "";
+    
+    
+    @Parameter(names = {"-lengths", "-l"}, required = true, description = "Lengths for each partition, delimted by comma")
+    private String lengths = ""; // can't have default since don't know how many genes there are
+    
+    
+    
+    
+    
+    
     @Parameter(names = {"-tcag"}, required = false, description = "Input frequencies are ordered: T,C,A,G (PAML style)")
     private String tcag = "false";
     
@@ -62,21 +87,20 @@ public class CommandArgs {
         return kappa.doubleValue();
     }
     
-    public double[] pi(){ //just makes a double[] from ArrayList<Double>
+    public double[] pi(){ 
         double[] toReturn = new double[States.NT_STATES];
         String[] piValueStrings;
         
         try{
-            piValueStrings = pi.split(Constants.PI_DELIMITER);
+            piValueStrings = pi.split(Constants.ARGS_DELIMITER);
             if (piValueStrings.length != States.NT_STATES){
-                String errorMsg = MessageFormat.format( "-frequences: Must have {0} floating point values, delimited by \"{1}\"", States.NT_STATES, Constants.PI_DELIMITER );
+                String errorMsg = MessageFormat.format( "-frequences: Must have {0} floating point values, delimited by \"{1}\"", States.NT_STATES, Constants.ARGS_DELIMITER );
                 throw new ParameterException(errorMsg);
             }
             
             for (int i = 0; i < States.NT_STATES; i++) {
                 toReturn[i] = Double.parseDouble(piValueStrings[i]);
             }
-
         }
         catch(Exception e){
             e.printStackTrace();
@@ -84,6 +108,13 @@ public class CommandArgs {
         }
         return toReturn;
     }// pi
+    
+    public double[] omegas(){
+        String[] omegasStrings = this.omegas.split(Constants.ARGS_DELIMITER);
+    
+    }
+    
+    
     
     public String fix(){
         return fix;

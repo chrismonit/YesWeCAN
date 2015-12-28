@@ -97,7 +97,6 @@ public class Simulator {
                         
             // make model
             
-
             RatioScaler ratioScaler = RatioScalerFactory.getRatioScaler();
             CodonAwareMatrix canQ = new CodonAwareMatrix(this.kappa, this.freqs, ratioScaler, siteType, aOmega, bOmega, cOmega);            
             ProbMatrixGenerator Pgen = ProbMatrixFactory.getPGenerator(canQ);
