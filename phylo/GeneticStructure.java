@@ -82,7 +82,9 @@ public class GeneticStructure {
         return -1;
     }
     
-    
+    public int getTotalLength(){
+        return this.totalLength;
+    }
     
     
     @Override
