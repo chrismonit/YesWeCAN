@@ -47,6 +47,13 @@ public class GeneticStructure {
         init(genePositions, lengths);
     }
         
+    public GeneticStructure(int[] aFrame, int[] bFrame, int[] cFrame, int[] partitionLengths){
+        int[][] genePositions = new int[][]{
+            aFrame, bFrame, cFrame
+        };
+        init(genePositions, partitionLengths);
+    }
+    
     public GeneticStructure(int[][] genePositions, int[] partitionLengths){
         init(genePositions, partitionLengths);
     }
