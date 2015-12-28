@@ -42,7 +42,8 @@ public class Simulator {
     }
     
     Random rand = new Random();
-    
+    private AlignmentBuilder siteStates;
+
     
     public Simulator(String treePath, double kappaValue, double[] baseFrequencyValues, double branchScalingValue){
         Tree tree = loadTree(treePath);
@@ -76,7 +77,6 @@ public class Simulator {
     }
     
     
-    private AlignmentBuilder siteStates;
     
     
     public void downTree(Tree tree, ProbMatrixGenerator Pgen, BranchScaling scaling, 
