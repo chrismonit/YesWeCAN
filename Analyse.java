@@ -18,7 +18,7 @@ import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Parameter;
 import swmutsel.model.parameters.TsTvRatio;
 import yeswecan.cli.CommandArgs;
-import yeswecan.model.Function;
+import yeswecan.model.FunctionHKY;
 import yeswecan.model.MutationModel;
 import yeswecan.model.SubstitutionModel;
 import yeswecan.optim.Optimise;
@@ -122,8 +122,8 @@ public class Analyse {
     
     //original
     public static void calculateFixed(List<Parameter> model, Tree tree, AdvancedAlignment alignment){
-        double[] optimisableParams = Mapper.getOptimisable(model); // map parameters to optimisation space, so Function.value can use them
-        Function calculator = new Function(alignment, tree);
+        double[] optimisableParams = Mapper.getOptimisable(model); // map parameters to optimisation space, so FunctionHKY.value can use them
+        FunctionHKY calculator = new FunctionHKY(alignment, tree);
         double lnL = calculator.value(optimisableParams);
         System.out.println("lnL: " + lnL + " "); // better to have it print the input parameters too, so you can see input and output together
     }
@@ -133,7 +133,7 @@ public class Analyse {
     //TODO
     // start the optimisation
     public void fit(){
-        Function optFunction = new Function(this.alignment, this.tree);
+        FunctionHKY optFunction = new FunctionHKY(this.alignment, this.tree);
         Optimise opt = new Optimise();
         SubstitutionModel result = opt.optNMS(optFunction, new MutationModel(makeModel()));
         

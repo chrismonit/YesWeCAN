@@ -29,13 +29,13 @@ import yeswecan.utils.MatrixPrinter;
  *
  * @author cmonit1
  */
-public class Function implements MultivariateFunction {
+public class FunctionHKY implements MultivariateFunction {
     
     private AdvancedAlignment alignment;
     private Tree tree;
     private MutationModel mutModel;
     
-    public Function(AdvancedAlignment alignment, Tree tree){
+    public FunctionHKY(AdvancedAlignment alignment, Tree tree){
         this.alignment = alignment;
         this.tree = tree;
         
