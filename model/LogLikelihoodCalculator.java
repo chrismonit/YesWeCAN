@@ -19,11 +19,11 @@ public class LogLikelihoodCalculator {
 
     public LogLikelihoodCalculator(){}
     
-    public static double calculateSiteLogLikelihood(AdvancedAlignment alignment, Tree tree, int site, ProbMatrixGenerator pGenerator){ 
+    public static double calculateSiteLogLikelihood(AdvancedAlignment alignment, Tree tree, int site, ProbMatrixGenerator pGenerator, double branchScaling){ 
         
         
         double sum = 0.0;
-        double[] rootConditionals = downTree( tree.getRoot(), alignment, tree, site, pGenerator );
+        double[] rootConditionals = downTree( tree.getRoot(), alignment, tree, site, pGenerator, branchScaling);
 
         for (int iRootState = 0; iRootState < States.NT_STATES; iRootState++) {
             sum +=  pGenerator.getQ().getBaseFrequencies().get()[iRootState] * rootConditionals[iRootState]; //TODO surely we can make this more efficient
@@ -31,7 +31,7 @@ public class LogLikelihoodCalculator {
         return Math.log(sum);
     }
     
-    private static double[] downTree(Node parent, AdvancedAlignment alignment, Tree tree, int site, ProbMatrixGenerator pGenerator){
+    private static double[] downTree(Node parent, AdvancedAlignment alignment, Tree tree, int site, ProbMatrixGenerator pGenerator, double branchScaling){
         //Felsenstein's Pruning Algorithm. Inspired by (virtually copied from) R. Goldstein's downTree method in Play.java
         double[] parentConditionals = new double[States.NT_STATES]; //number of nucleotide states
         
@@ -59,12 +59,12 @@ public class LogLikelihoodCalculator {
                 Node child = parent.getChild(iChild);
                 
                 double t = child.getBranchLength();
-                
-                double[][] P_t = pGenerator.getP(t).getData(); //don't need double[][], could use RealMatrix getElement method
+                double t_scaled = t * branchScaling;
+                double[][] P_t = pGenerator.getP(t_scaled).getData(); //don't need double[][], could use RealMatrix getElement method
                 
                 //MatrixPrinter.PrintMatrix(P_t, "P t="+t);
                 
-                double[] childConditionals = downTree(child, alignment, tree, site, pGenerator);
+                double[] childConditionals = downTree(child, alignment, tree, site, pGenerator, branchScaling);
                 
                 for (int iParentState = 0; iParentState < States.NT_STATES; iParentState++) { //iParentState == x_i in Yang (2006) equation 4.4
                     double nodeConditionalLikelihood = 0.0; //prob of observing data below this node, if the state at this node were iParentState (i.e. 'conditional' on state being iParentState). This is L_i(x_i) in Yang (2006) eq 4.4
