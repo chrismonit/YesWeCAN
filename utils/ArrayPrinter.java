@@ -12,14 +12,16 @@ package yeswecan.utils;
  */
 public class ArrayPrinter {
     
-    public static void print(double[] array, String delim){
+    public static String toString(double[] array, String delim){
         String str = "";
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < array.length; i++) {
             str += delim + Double.toString(array[i]);
         }
-        System.out.println(str);
-            
+        return str;
+    }
     
+    public static void print(double[] array, String delim){
+        System.out.println(toString(array,delim));
     }
     
 }

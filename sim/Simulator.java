@@ -62,8 +62,6 @@ public class Simulator {
     }
   
     
-    
-    
     private Tree tree;
     private GeneticStructure genStruct;
     private TsTvRatioAdvanced kappa;
@@ -97,8 +95,11 @@ public class Simulator {
        
         Alignment[] sites = new Alignment[this.genStruct.getTotalLength()];
         
+        System.out.println(genStruct.toString());
+        
+        System.out.println("site\tpart\ttype\tcount");
         for (int iSite = 0; iSite < this.genStruct.getTotalLength(); iSite++) {
-            // determine process
+            // determine evolutionary process (from site type and partition)
             
             int siteType = iSite % 3;
             int[] genes = genStruct.getGenes(iSite); // the genes present in the three frames in this partition
@@ -119,9 +120,13 @@ public class Simulator {
             int rootState = draw(freqs.get(), r);
 
             siteStates = new AlignmentBuilder(this.tree.getExternalNodeCount()); // an 'alignment' for a single site, which will be populated with states by downTree.
-
-            downTree(tree, Pgen, scaling, root, rootState);
-
+            
+            SubCount count = new SubCount();
+            
+            downTree(tree, Pgen, scaling, root, rootState, count);
+            
+            System.out.println(iSite + "\t" + genStruct.getPartitionIndex(iSite) + "\t" + iSite%3 + "\t" + count.count);
+            
             // add this newly simulated site to the total set
             sites[iSite] = siteStates.generateAlignment(new Nucleotides());
         }
@@ -134,7 +139,7 @@ public class Simulator {
     
     
     public void downTree(Tree tree, ProbMatrixGenerator Pgen, BranchScaling scaling, 
-            Node parentNode, int parentState){
+            Node parentNode, int parentState, SubCount count){
         
         if (parentNode.isLeaf()) {
             siteStates.addSequence(new int[]{parentState}, parentNode.getIdentifier().getName());
@@ -147,7 +152,12 @@ public class Simulator {
                 double[] transProbDistribution = P.getRow(parentState);
                 
                 int childState = draw(transProbDistribution, rand.nextDouble());
-                downTree(tree, Pgen, scaling, childNode, childState);
+                
+                if (childState != parentState) {
+                    count.count += 1;
+                }
+                
+                downTree(tree, Pgen, scaling, childNode, childState, count);
             }// for iChild
         }// else (not leaf)
         
@@ -171,7 +181,10 @@ public class Simulator {
         return distribution.length-1; 
     }
     
-
+    private class SubCount{
+        
+        int count = 0;
+    }
     
     
 }

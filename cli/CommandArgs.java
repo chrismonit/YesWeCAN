@@ -127,11 +127,11 @@ public class CommandArgs {
     }
     
     public int[] bFrame(){
-        return stringToIntArray(this.aFrame, Constants.ARGS_DELIMITER);
+        return stringToIntArray(this.bFrame, Constants.ARGS_DELIMITER);
     }
     
     public int[] cFrame(){
-        return stringToIntArray(this.aFrame, Constants.ARGS_DELIMITER);
+        return stringToIntArray(this.cFrame, Constants.ARGS_DELIMITER);
     }
     
     public int[] lengths(){

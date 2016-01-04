@@ -42,10 +42,15 @@ public class Simulate {
         }
         
         Tree tree = loadTree(this.comArgs.tree());
+        
+        
         GeneticStructure genStruct = new GeneticStructure(this.comArgs.aFrame(),
                                                             this.comArgs.bFrame(),
                                                             this.comArgs.cFrame(),
                                                             this.comArgs.lengths());
+        
+        //System.out.println(genStruct.toString());
+                
         double kappa = this.comArgs.kappa();
         double[] baseFrequencies = this.comArgs.pi();
         double[] omegaValues = this.comArgs.omegas();
@@ -53,6 +58,7 @@ public class Simulate {
         
         Simulator sim = new Simulator(tree, genStruct, kappa, baseFrequencies, omegaValues, scaling);
         Alignment result = sim.simulate();
+        
         
         new FastaWriter().writeFasta(result, this.comArgs.alignment());
         System.out.println("Done");
