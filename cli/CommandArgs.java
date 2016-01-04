@@ -43,7 +43,7 @@ public class CommandArgs {
     @Parameter(names = {"-omegas", "-w"}, required = true, description = "Initial omega values for each gene. Delimited by comma")
     private String omegas = ""; // can't have default since don't know how many genes there are
     
-    @Parameter(names = {"-scaling", "-c"}, required = false, description = "Scaling factor for branch lengths. Default=1.0")
+    @Parameter(names = {"-scaling"}, required = true, description = "Scaling factor for branch lengths.")
     private double scaling = Constants.DEFAULT_SCALING;
     
     
@@ -83,8 +83,12 @@ public class CommandArgs {
         return treePath;
     }
     
+    public double scaling(){
+        return scaling;
+    }
+    
     public double kappa(){
-        return kappa.doubleValue();
+        return kappa.doubleValue(); // does doubleValue() here actually do anything??
     }
     
     public double[] pi(){ 
@@ -111,9 +115,37 @@ public class CommandArgs {
     
     public double[] omegas(){
         String[] omegasStrings = this.omegas.split(Constants.ARGS_DELIMITER);
-    
+        double[] omegas = new double[omegasStrings.length];
+        for (int i = 0; i < omegas.length; i++) {
+            omegas[i] = Double.parseDouble(omegasStrings[i]);
+        }
+        return omegas;
     }
     
+    public int[] aFrame(){
+        return stringToIntArray(this.aFrame, Constants.ARGS_DELIMITER);
+    }
+    
+    public int[] bFrame(){
+        return stringToIntArray(this.aFrame, Constants.ARGS_DELIMITER);
+    }
+    
+    public int[] cFrame(){
+        return stringToIntArray(this.aFrame, Constants.ARGS_DELIMITER);
+    }
+    
+    public int[] lengths(){
+        return stringToIntArray(this.lengths, Constants.ARGS_DELIMITER);
+    }
+    
+    private static int[] stringToIntArray(String argument, String delimiter){
+        String[] argumentArray = argument.split(delimiter);
+        int[] toReturn = new int[argumentArray.length];
+        for (int i = 0; i < argumentArray.length; i++) {
+            toReturn[i] = Integer.parseInt(argumentArray[i]);
+        }
+        return toReturn;
+    }
     
     
     public String fix(){

@@ -5,6 +5,8 @@
  */
 
 package yeswecan.sim;
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
 import java.util.Random;
 import org.apache.commons.math3.linear.RealMatrix;
 import pal.alignment.Alignment;
@@ -17,6 +19,7 @@ import pal.tree.Tree;
 import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Omega;
+import yeswecan.cli.CommandArgs;
 import yeswecan.model.CodonAwareMatrix;
 import yeswecan.model.ProbMatrixFactory;
 import yeswecan.model.ProbMatrixGenerator;
@@ -36,6 +39,7 @@ public class Simulator {
     
     
     public static void main(String[] args){
+        
         // read in command args etc
         String treePath = "/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/simulator_tests/basic.tre";
         double kappa = 2.0;
@@ -50,10 +54,15 @@ public class Simulator {
         
         GeneticStructure genStruct = new GeneticStructure(a,b,c,lengths,",");
         
-        Simulator sim = new Simulator(treePath, genStruct, kappa, baseFrequencies, omegas, branchScaling);
-        Alignment aln = sim.simulate();
-        System.out.println(new FastaWriter().fastaString(aln));
+        //Simulator sim = new Simulator(tree, genStruct, kappa, baseFrequencies, omegas, branchScaling);
+        //Alignment aln = sim.simulate();
+        //System.out.println(new FastaWriter().fastaString(aln));
+    
+        
     }
+  
+    
+    
     
     private Tree tree;
     private GeneticStructure genStruct;
@@ -64,11 +73,13 @@ public class Simulator {
             
     private Random rand = new Random();
     private AlignmentBuilder siteStates;
+    private CommandArgs comArgs;
 
     
-    public Simulator(String treePath, GeneticStructure genStruct, double kappaValue, double[] baseFrequencyValues, double[] omegaValues, double branchScalingValue){
+    public Simulator(Tree tree, GeneticStructure genStruct, double kappaValue, double[] baseFrequencyValues, double[] omegaValues, double branchScalingValue){
         
-        this.tree = loadTree(treePath);
+      
+        this.tree = tree;
         this.genStruct = genStruct;
         this.kappa = new TsTvRatioAdvanced(kappaValue);
         this.freqs = new BaseFrequencies(baseFrequencyValues);
@@ -160,21 +171,7 @@ public class Simulator {
         return distribution.length-1; 
     }
     
-    
-    
-    
-    public Tree loadTree(String treePath){
-        try{
-            return new ReadTree(treePath);
-        }
-        catch(Exception e){
-            System.out.println("Failed to read in tree for Simulator");
-            e.printStackTrace();
-            System.exit(1);
-        }
-        return null;
-    }
-    
+
     
     
 }
