@@ -43,7 +43,7 @@ public class CommandArgs {
     @Parameter(names = {"-omegas", "-w"}, required = true, description = "Initial omega values for each gene. Delimited by comma")
     private String omegas = ""; // can't have default since don't know how many genes there are
     
-    @Parameter(names = {"-scaling"}, required = true, description = "Scaling factor for branch lengths.")
+    @Parameter(names = {"-scaling", "-sc"}, required = true, description = "Scaling factor for branch lengths.")
     private double scaling = Constants.DEFAULT_SCALING;
     
     
