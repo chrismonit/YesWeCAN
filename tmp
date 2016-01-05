@@ -1,0 +1,392 @@
+commit a0ac6a84e8a783c492d9f5f857eba921571bc201
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Mon Jan 4 16:41:03 2016 +0000
+
+    changed LogLikelihoodCalculator.java so it allows a branch scaling factor
+
+commit fcb7b04a98f3981821a71dc59d4fc28e86ef6787
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Mon Jan 4 14:15:36 2016 +0000
+
+    renamed Function to FunctionHKY. Preparing for implementing CAN as optimisible model
+
+commit ec28c8e1952625879b0d191cf84315ecc0c62e0d
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Mon Jan 4 13:54:37 2016 +0000
+
+    added some print statements to Simulator.java so it will print out the numbers of substitutions which have occured at each site.
+
+commit 8ab48824b427779778ec12354308a8c6c49ba86b
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Mon Jan 4 10:34:37 2016 +0000
+
+    added -sc as a flag for scaling param
+
+commit f1784986c424d85e1941261eb54cfd5be9878be4
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Mon Jan 4 10:32:56 2016 +0000
+
+    made scaling parameter (starting for opt and actual for sim) a compulsary option
+
+commit e69b4e7fede86f8d3308b46e509a2ff4f78194fc
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Mon Dec 28 17:43:05 2015 +0000
+
+    added yet another constructor so it will take int[]s directly for the three frames
+
+commit 3d9feb33edd0c585416ae6a5bd8049d527a7a5ac
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Mon Dec 28 16:36:53 2015 +0000
+
+    adding extra code to CommandArgs.java, so it is ready for CAN rather than just hky as before. I've replaced every instnace of Constants.PI_DELIMITER with Constants.ARGS_DELIMITER
+
+commit 9aadfeed38793f3c8f6c0e2f51e23a1fd8fb129e
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Mon Dec 28 15:28:59 2015 +0000
+
+    completed CAN simulation code in Simulator.java. Still needs proper testing etc
+
+commit 26bff0e88f3c0ad2492f75b8945dfc7c309472f9
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Mon Dec 28 11:25:32 2015 +0000
+
+    added numberOfGenes function to GeneticStrucutre. some intermediate changes in Simulator also
+
+commit f81e62d725e7065bcf1d0f3d02672bda9b4de444
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Mon Dec 28 10:40:08 2015 +0000
+
+    added get method for total length
+
+commit ca46cd50d3815abe30bf38c8edcec07e664ce964
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Mon Dec 28 10:39:14 2015 +0000
+
+    added totalLength field to genetic strucutre
+
+commit 3c1a1b1d2acb03d634788030856b28a1745d9205
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Mon Dec 28 10:27:34 2015 +0000
+
+    added frame layout strings to Simulator class. about to start making changes to simulation algorithm
+
+commit 76822bf395d65e6a520ec6ec7e99c7ce2a0e688f
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Mon Dec 28 10:24:09 2015 +0000
+
+    deleted copy of command args class from previous commit - may be able to get the simulator to use the original command args class anyway
+
+commit 6cd29a8e34b384d436497a035cdaafb2a4dd57b3
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Mon Dec 28 10:21:10 2015 +0000
+
+    added new class for command arguments for simulator. currently just a copy of the original CLI class, need to change stuff
+
+commit e41b659c23fa78e8d920973b78a79485a2ac7524
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Sun Dec 27 19:58:08 2015 +0000
+
+    added getPartitionIndex method to
+
+commit 768f09e21401ffa86478d91caaff23e2d06ef1d5
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Sun Dec 27 19:48:42 2015 +0000
+
+    tested GeneticStructure string arguments, success
+
+commit 79570e7ca015a8d41e39c4b29893368f484f282d
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Sun Dec 27 18:20:58 2015 +0000
+
+    made phylo/GeneticStructure class for organising layouts of genes across reading frames. have yet to test version of constructor which takes string representations, as if from command line
+
+commit 1ca686d6150bbc6942641cd21ee91025bcd5f983
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Thu Dec 24 18:04:48 2015 +0000
+
+    added simulator pacakge and class. current implementation simulates according to HKY only. also made class WriteFasta which has methods for making fasta alignment strings and writing them to disk
+
+commit 02de482d2b27f5b3ed972df69a22efc1f0f379ac
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Wed Dec 23 15:43:34 2015 +0000
+
+    changed RateMatrix so that populating diagonal elements is done in a method, outside of constructor. Also change it to make use of getEntry method of RealMatrix
+
+commit a50593d3b938c91de65dea023a64c80ddd3927d1
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Tue Dec 22 17:02:36 2015 +0000
+
+    deleted original scaling code in RateMatrix constructor
+
+commit 7c239411c92313ffafdb00365eff08b63153ad61
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Tue Dec 22 17:02:02 2015 +0000
+
+    rearranged scaling of RateMatrix so that it it is done by a method, separate from the constructor. Tested that resulting matrices match those with the original scaling approach and results are identical
+
+commit d6b3ec35d12a77a554db12f5510e5578971c3526
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Tue Dec 22 16:05:28 2015 +0000
+
+    added classes for scaling ratio by site type and frame: RatioScaler inferface, RatioScalerFactory class and ProportionScaler class. Proportion scaler class has most basic way of estimating probs of changes being nonsynonymous - just counting over all codons
+
+commit 0e31875e4753fe41ab5de39927387dcebe445ab1
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Mon Dec 21 17:23:12 2015 +0000
+
+    deleted some of the debug code in RateMatrix, Analyse, Function and LLC
+
+commit 97caac65ceedf24f515f9a1752049eeb679fc4f1
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Mon Dec 21 17:15:28 2015 +0000
+
+    I had been experiencing a very pernicious bug. CAN would mysteriously
+    fail to compute same lnL as baseml for a given datasets, with the
+    same paramter values. Consequently the optimisation was hopelessly unable to get correct param values.
+    
+    Richard eventually suggested this was a scaling problem - and behold,
+    I had failed to scale the rate matrix Q such that the average sub rate = 1.
+    
+    This scaling implemented, the correct lnL is now computed.
+    
+    As this follows a lot of desperate debugging, there is a lot of stuff (e.g. print statements) to tidy up in this commit
+
+commit 32cec617905429dc3cf48ed3c9f65d022d65eecb
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Fri Oct 30 12:59:29 2015 +0000
+
+    added ability to calculate lnL from fixed param values on the command line. Also added ReorderFrequencies class for converting between TCAG and ACGT. Also added ArrayPrinter class so I can see array values while debugging
+
+commit 1ae3c3552801ccdc92c98f40e482479684928805
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Fri Oct 30 11:46:43 2015 +0000
+
+    I've been testing CAN against baseml. Found that CAN arrives at slightly different lnL values than baseml, given the same dataset and parameter values. This is disturbing. Introduced a lot of test code in TestOptim while investigating this
+
+commit d8dda637c90041f2a9bf25be3878cfe99ad594d7
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Sun Aug 30 16:33:39 2015 +0100
+
+    Deleted optim/ParamMap.java as I've implemented Asif's mapping system instead of my own
+
+commit d76c745858b4fab11aa07d971018bb3cb7b740ff
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Sun Aug 30 16:24:33 2015 +0100
+
+    Completed implementation of Asif's Parameter classes.
+    He allows the optimiser to work in a different space to the parameter values,
+    so that the constraints required are maintained (i.e. kappa >=0, pi sum to 1)
+    
+    This requires a mapping between these spaces. I've realised that the mapping
+    requires the implementation of another class, which houses the parameter instances.
+    
+    In swmutsel, this is SwMut (and SwMutSel). My version is MutationModel,
+    which like SwMut descendes from an abstract base class called Substitution model.
+    This is effectively an HKY.
+    I'll later write a similar class which includes the selection parameters (the CAN)
+    
+    These changes required some alterations to the TestModel class, in testFunction().
+    Passes all tests.
+    
+    I also added default values for kappa and pi in Constants.java
+    and have other classes (CommandAegs and TsTvRatioAdvanced), which assign kappa,
+    refer to these defaults
+
+commit bccbeab2602e8e091d70ba858a52f75e72866bb3
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Sun Aug 30 12:02:57 2015 +0100
+
+    replaced all instances of my BaseFrequencies class with Asif's. This required very little change, because they have the same constructor and get() methods - it's as if they implement the same interface. Deleted my version of the class. passes unit tests.
+
+commit 24161edb45e3c9c53ca0658bbc8c77d5edc1c31b
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Thu Aug 6 19:19:55 2015 +0100
+
+    renamed my kappa classed to TsTvRatioAdvanced. Planning to have this decend from Asif's version of the same class. also deleted my Parameter base class (and references to it) because it wasn't doing anything useful
+
+commit 582a1ede397a7eedfd45edd6099a36477999a4ee
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Thu Aug 6 10:31:18 2015 +0100
+
+    Created ProbMatrixFactory class, so that the algorithm used to compute the P(t) matrix can be changed easily. written several tests for function and LLC, including one which tests whether Pi values are being used appropriately (and therebyt hat states are being recognised appropriately). Began complicated method for testing whether kappa is being applied correclty but this may be unnecessarily thorough - testing whether kappa is being used correctly is only really relevent to the generation of the Q matrix
+
+commit 72671b5ce37e02fc4f1280c8733874287695bb42
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Sun Jul 26 19:51:23 2015 +0100
+
+    fixed bug in YangEigenDecomposition. Now the resulting P(t) matches that produced with the series expansion
+
+commit 66599d4b8c703936c3316acfdff9dfc222355df4
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Sun Jul 26 18:53:24 2015 +0100
+
+    applied changes to YangEigenDecomposition. still need to test
+
+commit d561ac21a8c1518e026417a204553d2581fe0775
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Sun Jul 26 11:24:11 2015 +0100
+
+    implemented series expansion method of computing P in PtSeriesExpansion. Not yet tested
+
+commit 645c995c69332a3f8be2117d56b235a3c625da8d
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Sun Jul 26 10:57:37 2015 +0100
+
+    made modifications to YangEigenDecomposition - much work to do on this. Created class PtSeriesExpansion, which will yield a P(t) matrix by using the taylor series approximation of matrix exponentiation. This will be highly inefficient and is meant for testing and comparing with other methods, rather than for production code
+
+commit 2b6d39c37d548cabc0f182ecc70cd30bee87c91a
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Sat Jul 25 17:49:53 2015 +0100
+
+    TransitionProbabilityMatrix implements ProbMatrixGenerator
+
+commit 940a4d76140d5000585ba65686a76fb152788ee3
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Sat Jul 25 17:46:48 2015 +0100
+
+    I suspect the P matrix is being computed incorrectly, using the eigen ecomposition object implement in apache commons math. It seems to work when the rate matrix is symmetric. I think in my test cases the rate matrix is not symmetric, so the decomposition doesn't work as I expect. see the apache commons EigenDecomposition docs. I think this possibility is described in Yang 2006, p69, in which Yang describes an algorithm for computing P which is more stable. Asif implements this approach in swmutsel.  Therefore I will have multiple objects which can compute P, all implementing an interface called ProbMatrixGenerator. Renamed this original class by this name as PtEigenDecomposition, because it computes P with standard eigen decompositon and not the fancy algorithm. I'll continue working on TransitionProbailityMatrix.java, which I started originally, which does implement the Yang approach
+
+commit 5a16fb6cc58ef490eafb8b5487faeeca05cb172e
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Sat Jul 25 17:30:37 2015 +0100
+
+    prepared tests for likelihood calculation. Included test where there is complete conservation across tree (e.g. all A) and state freqs are 1,0,0,0. Likelihood calculation failed test. Found P(t) is not being computed correctly, having rows which do not sum to 1.
+
+commit 746f90967817ab043700e5809a8840cca351ff4e
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Thu Jul 23 18:46:25 2015 +0100
+
+    continued work on Analyse
+
+commit 5d4fec9ab1dc20aee6af9e0237c143b250fae3c2
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Thu Jul 23 18:24:01 2015 +0100
+
+    Building on Analyse class (previous this was an empty shell). This will take the input parameters and prepare the data for the model fitting
+
+commit 172e686f5e016270ebbf705d4c17c162ed5d53b3
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Thu Jul 23 17:54:24 2015 +0100
+
+    I have added the swmutsel jar file as a dependency, with a view to using Asif's Parameter classes, which I've found do exactly what I had in mind. I've also added an Optimise class, which houses the optimisation machinery
+
+commit 0256aae86dbb1a28e06d3cc7d64bcb2328134fc7
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Thu Jul 23 16:11:08 2015 +0100
+
+    added class for reading in command arguments (using jcommander) and a test class for this
+
+commit 1e86bc34da5a835ac5afaccc890073e1ea5027fc
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Thu Jul 23 15:04:11 2015 +0100
+
+    added cli package for command line interface. Added JCommander to lib
+
+commit 94c44211ba790ba801cd66ac0456a291d9a94121
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Mon Jul 20 07:43:57 2015 +0100
+
+    Function.value produces likelihood for all sites in alignment
+    Currently hard coded in such a way that it only works for a
+    single dataset partition and with HKY85 only, temporary.
+    Not yet tested
+
+commit 41c0313317b2c42e74cae00b4e3022468246b94d
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Sun Jul 19 19:16:41 2015 +0100
+
+    added error check in BaseFrequences, which makes
+    sure base frequencies sum to 1
+
+commit c4760c9df080b89271502c259b24884f08c71821
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Sun Jul 19 19:06:23 2015 +0100
+
+    added class ParamMap which is meant to act to map
+    elements of the 'point' double[] used by the optimisation machinery
+    to param values. This is not finished. Need to think about it more
+    because I may want to include the ability to hold some parameters constant
+    
+    Also added Constants class, exactly analogous to the Constants.java
+    used by Asif in swmutsel
+
+commit 4cb247d448e1ae2c1a6bc3f418270e5edda36d09
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Fri Jul 10 17:58:52 2015 +0100
+
+    Added Function class, but this doesn't do much yet
+
+commit 379668afd4ae679d2ad276202b824e0c53806f2b
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Fri Jul 10 17:26:27 2015 +0100
+
+    made modifications to LLC. I've taken the philosophy that it's better for mathematical code to be more function-oriented, meaning each function takes inputs and produces directly corresponding output, with no change to the state of the object involved. This allows for much easier testing and, I suspect, much easier modifications in fucture, because you don't have to re-wire a whole class, just change functions.  I've tested the LLC with the example in Yang (2006) p103-105 and found it correctly computes the lnL. More thorough testing needed, but a very good start
+
+commit b1a37853304622834a3004491c19c73dc25bf21c
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Fri Jul 10 16:30:27 2015 +0100
+
+    renamed LikelihoodCalculator as LogLikelihoodCalculator
+
+commit f9abb1964cf467865d59b35827a9b3a9d4cdf2e5
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Fri Jul 10 16:17:39 2015 +0100
+
+    made minor changes to lnL calculator, i.e. formatting changes. Also I changed the order of nucleotides in States.java back to ACGT, because this is what PAL uses, and I'm using the PAL alignment object
+
+commit 0df72fe7cdd8f071932df18b75dd1d4ab0a004c3
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Fri Jul 10 16:05:55 2015 +0100
+
+    completed code which produces P(t). Refering to examples in Yang (2006) p106, I've tested the calculation of P = exp(Qt) and found it produces the correct values when Q = K2P model with k=2 and t=0.1 or t=0.2. Stricter testing required but very encouraging
+
+commit 621330f26a576d6827dd20c71d0779969a74c017
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Fri Jul 10 15:50:52 2015 +0100
+
+    added code which performs eigendecomposition and exponentiation etc of rate matrix, to give P_t, given Q and t
+
+commit 3a62b1b941d8a7aa4ca8dc50a755b3fc5f6c2767
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Fri Jul 10 15:02:46 2015 +0100
+
+    added test package and class for testing model classes
+
+commit 1b695e199fdef1dd7185e65749b355ef3076705d
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Fri Jul 10 14:50:40 2015 +0100
+
+    created TransProbMatrix class. Will use library code to do eigendecompositon
+
+commit 616cf80a39bcff464da549d63df60e4957019ba7
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Fri Jul 10 14:25:00 2015 +0100
+
+    10/7/15
+    This commit follows (yet another)  long break since I've looked at this code.
+    in the past few weeks I have played with the maths/optimisation code in PAL and concluded that it won't work for the sort of thing I want it to do (or indeed what it was designed for).
+    It seems it was abandoned before becomming being a coherent package.
+    
+    So I think I will just make my own lnL calculating and optimising components, and therefore returning to this code.
+    I now think some elements of the code here are over complicated, such as the parameter classes, which I think are unnecessary for now
+    
+    Must focus solely on getting P matrix
+
+commit 188188e877452ef5787a08cc4bee4c639a1adfef
+Author: Chris Monit <c.monit.12@ucl.ac.uk>
+Date:   Sun Jul 20 11:39:07 2014 +0100
+
+    First commit for Codon-Aware-Nucleotide model.
+    Building and testing several components of model, which will depend on each other
+    Likelihood calculator. Starting this was a bit premature, since it will rely on transition probability matrix
+    Implemented pruning algorithm and tested with set tree, alignment and fixed transition probability matrix
+    Only done very simple test so far: when states in alignment are all idenical (i.e. all A) and P = I,
+    lnL of 0.0 is returned, correctly. Also, when one of the states deviates from A and P = I, lnL = -Infinity (correct)
+    I am delaying further tests until I have a transition probability matrix object
+    
+    Transition probability matrix
+    Planning to use Apache Commons Math library for computing matrix exponential
+    Created my own RateMatrix object, which extends the apache Array2DRowRealMatrix
+    Created parameter classes for BaseFrequencies and TsTvRatio
+    
+    Tested rate matrix, with version of constructor which establishes a classic HKY85 Q matrix, looks good

@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
 package yeswecan;
 
@@ -7,47 +12,38 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import pal.alignment.Alignment;
 import pal.alignment.AlignmentReaders;
 import pal.alignment.SimpleAlignment;
 import pal.datatype.Nucleotides;
 import pal.tree.ReadTree;
 import pal.tree.Tree;
 import swmutsel.model.parameters.BaseFrequencies;
+import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Mapper;
+import swmutsel.model.parameters.Omega;
 import swmutsel.model.parameters.Parameter;
 import swmutsel.model.parameters.TsTvRatio;
 import yeswecan.cli.CommandArgs;
+import yeswecan.model.CANFunction;
+import yeswecan.model.CANModel;
 import yeswecan.model.FunctionHKY;
 import yeswecan.model.MutationModel;
 import yeswecan.model.SubstitutionModel;
 import yeswecan.optim.Optimise;
 import yeswecan.phylo.AdvancedAlignment;
+import yeswecan.phylo.GeneticStructure;
 import yeswecan.phylo.ReorderFrequencies;
 import yeswecan.phylo.States;
-import yeswecan.utils.ArrayPrinter;
 
 /**
  *
- * @author Christopher Monit (c.monit.12@ucl.ac.uk)
+ * @author Christopher Monit <c.monit.12@ucl.ac.uk>
  */
-public class Analyse {
-
-    /**
-     * Read in arguments
- 
- data: create tree and alignment instances
- model: construct list of Parameter instances from input options 
- (these make up the model, including whether variables are fixed)
- 
- fitHKY model to data
- 
- produce output
-     * 
-     */
+public class Analyse2 {
+    
     public static void main(String[] args) {
         
-        new Analyse(args);
+        new Analyse2(args);
 
     }// main
     
@@ -55,7 +51,9 @@ public class Analyse {
     private Tree tree;
     private CommandArgs comArgs;
     
-    public Analyse(String[] args){
+    private GeneticStructure genStruct;
+    
+    public Analyse2(String[] args){
         this.comArgs = new CommandArgs();
         JCommander jcom = new JCommander(this.comArgs);
         
@@ -67,20 +65,23 @@ public class Analyse {
         }
         
         loadData(this.comArgs.alignment(), this.comArgs.tree());
-        //TODO
-        // params = makeHKY(...)
-        // fitHKY(data, model)
+ 
+        this.genStruct = new GeneticStructure(this.comArgs.aFrame(),
+                                                            this.comArgs.bFrame(),
+                                                            this.comArgs.cFrame(),
+                                                            this.comArgs.lengths());
+        
         
         // calculate lnL with fixed params
         if (Boolean.parseBoolean(this.comArgs.fix())){
             calculateFixed(
-                    makeHKY(),
+                    canParameters(),
                     this.tree,
                     this.alignment
             ); 
         }
         else{
-            fitHKY();
+            fitCAN();
         }
         
     }
@@ -103,10 +104,13 @@ public class Analyse {
     }//loadData
     
     
-    // only HKY at the moment
-    public List<Parameter> makeHKY(){
-        TsTvRatio kappa = new TsTvRatio(this.comArgs.kappa());
+    // need to set whether these are fixed or not at this point
+    public List<Parameter> canParameters(){
+        ArrayList<Parameter> parameters = new ArrayList<Parameter>();
         
+        TsTvRatio kappa = new TsTvRatio(this.comArgs.kappa());
+        parameters.add(kappa);
+      
         double[] frequencies = new double[States.NT_STATES]; // will be in correct order, whatever that may be
         
         if (Boolean.parseBoolean(this.comArgs.tcag())){
@@ -117,13 +121,30 @@ public class Analyse {
         }
 
         BaseFrequencies pi = new BaseFrequencies(frequencies);
-        return Arrays.asList(kappa, pi);        
+        parameters.add(pi);
+        
+        BranchScaling scaling = new BranchScaling(this.comArgs.scaling());
+        parameters.add(scaling);
+        
+        Omega neutral = new Omega(1.0); // for frames where there is no gene
+        neutral.setOptimisable(false); // don't want this to change in optimisation
+        parameters.add(neutral);
+        
+        // if a given omega is meant to be fixed, can do so here
+        for (double w : this.comArgs.omegas()) {
+            parameters.add(new Omega(w));
+        }
+        
+        return parameters;
     }
     
     
-    public static void calculateFixed(List<Parameter> model, Tree tree, AdvancedAlignment alignment){
-        double[] optimisableParams = Mapper.getOptimisable(model); // map parameters to optimisation space, so FunctionHKY.value can use them
-        FunctionHKY calculator = new FunctionHKY(alignment, tree);
+    public void calculateFixed(List<Parameter> parameters, Tree tree, AdvancedAlignment alignment){
+        
+        //NB this might get confusing with some parameters being fixed and others not...
+        double[] optimisableParams = Mapper.getOptimisable(parameters); // map parameters to optimisation space, so FunctionHKY.value can use them
+        
+        CANFunction calculator = new CANFunction(alignment, tree, genStruct, new CANModel(parameters));
         double lnL = calculator.value(optimisableParams);
         System.out.println("lnL: " + lnL + " "); // better to have it print the input parameters too, so you can see input and output together
     }
@@ -132,15 +153,21 @@ public class Analyse {
     
     
     // start the optimisation
-    public void fitHKY(){
-        FunctionHKY optFunction = new FunctionHKY(this.alignment, this.tree);
+    public void fitCAN(){
+        System.out.println("hello");
+        List<Parameter> parameters = canParameters();
+        for (Parameter p : parameters) {
+            System.out.println(p.toString());
+        }
+        CANFunction optFunction = new CANFunction(this.alignment, this.tree, genStruct, new CANModel(parameters));
         Optimise opt = new Optimise();
-        SubstitutionModel result = opt.optNMS(optFunction, new MutationModel(makeHKY()));
+        SubstitutionModel result = opt.optNMS(optFunction, new CANModel(canParameters()));
         
         System.out.println("opt lnL: "+result.getLnL());
-        System.out.println( result.getParameters().get(0).toString());
-        System.out.println(result.getParameters().get(1).toString());
+        for (Parameter p : result.getParameters()) {
+            System.out.println(p.toString());
+        }
     }
     
     
-}// class
+}
