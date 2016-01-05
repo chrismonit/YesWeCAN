@@ -97,19 +97,14 @@ public class CANFunction implements MultivariateFunction {
                     siteType,
                     aOmega, bOmega, cOmega
             );
-            
-            MatrixPrinter.PrintMatrix(Q.getData(), "before scaling", null);
-            
-            Q.scale();
-            
-            MatrixPrinter.PrintMatrix(Q.getData(), "after scaling", null);
+        
 
             ProbMatrixGenerator P = ProbMatrixFactory.getPGenerator(Q);
 
             
             
             double sitelnL = LogLikelihoodCalculator.calculateSiteLogLikelihood(this.alignment, this.tree, iSite, P, branchScaling);
-            //System.out.println("site_"+iSite + "\t" + sitelnL);
+            System.out.println("site_"+iSite + "\t" + sitelnL);
             
             lnL += sitelnL;
             
