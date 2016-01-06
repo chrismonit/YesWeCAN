@@ -15,7 +15,7 @@ public class ArrayPrinter {
     public static String toString(double[] array, String delim){
         String str = "";
         for (int i = 0; i < array.length; i++) {
-            str += delim + Double.toString(array[i]);
+            str +=  Double.toString(array[i]) + delim;
         }
         return str;
     }

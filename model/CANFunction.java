@@ -13,9 +13,11 @@ import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
+import swmutsel.model.parameters.Parameter;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.GeneticStructure;
+import yeswecan.utils.ArrayPrinter;
 import yeswecan.utils.MatrixPrinter;
 
 /**
@@ -30,7 +32,7 @@ public class CANFunction implements MultivariateFunction {
     private CANModel canModel;
     
   
-    public CANFunction(AdvancedAlignment alignment, Tree tree, GeneticStructure genStruct, CANModel canModel){
+    public CANFunction(AdvancedAlignment alignment, Tree tree, GeneticStructure genStruct){
         this.alignment = alignment;
         this.tree = tree;
         this.genStruct = genStruct;
@@ -69,9 +71,13 @@ public class CANFunction implements MultivariateFunction {
     public double value(double[] point) {
         
         // NB 0th omega is fixed to 1.0 for neutral evolution
+        //ArrayPrinter.print(point, ",");
         
         Mapper.setOptimisable(this.canModel.getParameters(), point);
         double branchScaling = this.canModel.getScaling().get();
+        
+        //System.out.println("pi: " + this.canModel.getPi().toString());
+      
         
         double lnL = 0.0;
         
@@ -97,14 +103,29 @@ public class CANFunction implements MultivariateFunction {
                     siteType,
                     aOmega, bOmega, cOmega
             );
-        
-
-            ProbMatrixGenerator P = ProbMatrixFactory.getPGenerator(Q);
-
+            
+            //System.out.println("w1: " + this.canModel.getOmegas().get(1).toString());
+            
+            ProbMatrixGenerator P;
+            try{
+                P = ProbMatrixFactory.getPGenerator(Q);
+            }
+            catch(Exception e){
+                System.out.println("\t\tFAILURE: " + iSite);
+                
+                for (Parameter p : this.canModel.getParameters()){
+                    System.out.println(p.toString());
+                }
+                //MatrixPrinter.PrintMatrix(Q.getData(), "Q");
+                //P = null;
+                //e.printStackTrace();
+                //System.exit(1);
+                return Double.NEGATIVE_INFINITY;
+            }
             
             
             double sitelnL = LogLikelihoodCalculator.calculateSiteLogLikelihood(this.alignment, this.tree, iSite, P, branchScaling);
-            System.out.println("site_"+iSite + "\t" + sitelnL);
+            //System.out.println("site_"+iSite + "\t" + sitelnL);
             
             lnL += sitelnL;
             

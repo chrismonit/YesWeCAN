@@ -10,7 +10,6 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import pal.alignment.AlignmentReaders;
 import pal.alignment.SimpleAlignment;
@@ -34,6 +33,7 @@ import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.phylo.ReorderFrequencies;
 import yeswecan.phylo.States;
+import yeswecan.utils.ArrayPrinter;
 
 /**
  *
@@ -141,10 +141,19 @@ public class Analyse2 {
     
     public void calculateFixed(List<Parameter> parameters, Tree tree, AdvancedAlignment alignment){
         
-        //NB this might get confusing with some parameters being fixed and others not...
+        System.out.println("Input from CLI:");
+        for (Parameter p : parameters){
+                    System.out.println(p.toString());
+                }
+        System.out.println("");
+          //NB this might get confusing with some parameters being fixed and others not...
+        //System.out.println("map input params to optspace:");
         double[] optimisableParams = Mapper.getOptimisable(parameters); // map parameters to optimisation space, so FunctionHKY.value can use them
+        //ArrayPrinter.print(optimisableParams, ",");
         
-        CANFunction calculator = new CANFunction(alignment, tree, genStruct, new CANModel(parameters));
+        
+        CANFunction calculator = new CANFunction(alignment, tree, genStruct);
+        //System.out.println("\n\ncalculating");
         double lnL = calculator.value(optimisableParams);
         System.out.println("lnL: " + lnL + " "); // better to have it print the input parameters too, so you can see input and output together
     }
@@ -154,19 +163,26 @@ public class Analyse2 {
     
     // start the optimisation
     public void fitCAN(){
-        System.out.println("hello");
-        List<Parameter> parameters = canParameters();
-        for (Parameter p : parameters) {
-            System.out.println(p.toString());
-        }
-        CANFunction optFunction = new CANFunction(this.alignment, this.tree, genStruct, new CANModel(parameters));
+//        System.out.println("hello");
+//        List<Parameter> parameters = canParameters();
+//        for (Parameter p : parameters) {
+//            System.out.println(p.toString());
+//        }
+        
+        CANFunction optFunction = new CANFunction(this.alignment, this.tree, genStruct);
         Optimise opt = new Optimise();
         SubstitutionModel result = opt.optNMS(optFunction, new CANModel(canParameters()));
         
-        System.out.println("opt lnL: "+result.getLnL());
+        
+        System.out.println("MLEs real space: ");
         for (Parameter p : result.getParameters()) {
-            System.out.println(p.toString());
+            System.out.println("MLE: " + p.toString());
         }
+        
+//        System.out.println("MLEs mapped BACK to opt space");
+//        ArrayPrinter.print(Mapper.getOptimisable(result.getParameters()), ",");
+        
+        System.out.println("opt lnL: "+result.getLnL());
     }
     
     

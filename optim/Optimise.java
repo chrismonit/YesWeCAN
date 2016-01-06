@@ -19,6 +19,7 @@ import swmutsel.model.parameters.Mapper;
 //import swmutsel.model.parameters.Parameter;
 import yeswecan.Constants;
 import yeswecan.model.SubstitutionModel;
+import yeswecan.utils.ArrayPrinter;
 
 
 
@@ -67,6 +68,9 @@ public class Optimise {
         // let's go:
         PointValuePair result = mySO.optimize( maxeval, maxiter, myNMS, myOF, guess );
         
+//        System.out.println("");
+//        System.out.println("Optimise. MLE opt space:");
+//        ArrayPrinter.print(result.getPoint(), ",");
         
         Mapper.setOptimisable(model.getParameters(), result.getPoint()); // map values from optimisation space back to parameter space
         model.setLnL(result.getValue()); 
