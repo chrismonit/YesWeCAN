@@ -26,6 +26,7 @@ import yeswecan.cli.CommandArgs;
 import yeswecan.model.CANFunction;
 import yeswecan.model.CANModel;
 import yeswecan.model.SubstitutionModel;
+import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.optim.Optimise;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.GeneticStructure;
@@ -73,7 +74,7 @@ public class Analyse2 {
         // calculate lnL with fixed params
         if (this.comArgs.fix().contains("all")){
             calculateFixed(
-                    canParameters(),
+                    makeCAN(),
                     this.tree,
                     this.alignment
             ); 
@@ -103,11 +104,18 @@ public class Analyse2 {
     
     
     // need to set whether these are fixed or not at this point
-    public List<Parameter> canParameters(){
-        ArrayList<Parameter> parameters = new ArrayList<Parameter>();
+    public CANModel makeCAN(){
+        //System.out.println(this.comArgs.fix().size());
         
-        TsTvRatio kappa = new TsTvRatio(this.comArgs.kappa());
-        parameters.add(kappa);
+        
+                
+        //ArrayList<Parameter> parameters = new ArrayList<Parameter>();
+        
+        TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(this.comArgs.kappa());
+        if (this.comArgs.fix().contains(Constants.FIX_KAPPA)) {
+            kappa.setOptimisable(false);
+        }
+        //parameters.add(kappa);
       
         double[] frequencies = new double[States.NT_STATES]; // will be in correct order, whatever that may be
         
@@ -119,39 +127,51 @@ public class Analyse2 {
         }
 
         BaseFrequencies pi = new BaseFrequencies(frequencies);
-        parameters.add(pi);
+        
+        if (this.comArgs.fix().contains(Constants.FIX_FREQUENCIES)) {
+            pi.setOptimisable(false);
+        }
+        //parameters.add(pi);
         
         BranchScaling scaling = new BranchScaling(this.comArgs.scaling());
-        parameters.add(scaling);
+        if (this.comArgs.fix().contains(Constants.FIX_SCALING)) {
+            scaling.setOptimisable(false);
+        }
+        //parameters.add(scaling);
+        
+        List<Omega> omegas = new ArrayList<Omega>();
         
         Omega neutral = new Omega(1.0); // for frames where there is no gene
-        neutral.setOptimisable(false); // don't want this to change in optimisation
-        parameters.add(neutral);
+        neutral.setOptimisable(false); // never want this to change in optimisation
+        //parameters.add(neutral);
+        omegas.add(neutral);
         
-        // if a given omega is meant to be fixed, can do so here
-        for (double w : this.comArgs.omegas()) {
-            parameters.add(new Omega(w));
+        // positions of omegas correspond to the genes they represent (i.e. gene 1 omega is first)
+        for (int i = 0; i < this.comArgs.omegas().length; i++) {
+            double omegaValue = this.comArgs.omegas()[i];
+            Omega w = new Omega( omegaValue );
+            if ( this.comArgs.fix().contains(Integer.toString(i+1)) ) { // +1 because 0th omega is neutral
+                w.setOptimisable(false);
+            }
+            //parameters.add( w );
+            omegas.add(w);
         }
-        
-        return parameters;
+
+        return new CANModel(kappa, pi, scaling, omegas);
     }
     
     
-    public void calculateFixed(List<Parameter> parameters, Tree tree, AdvancedAlignment alignment){
+    public void calculateFixed(CANModel can, Tree tree, AdvancedAlignment alignment){
         
-        System.out.println("Input from CLI:");
-        for (Parameter p : parameters){
-                    System.out.println(p.toString());
-                }
+        System.out.println("Calculating with fixed values. Input from CLI:");
+        for (Parameter p : can.getParameters()){
+            System.out.println(p.toString());
+        }
         System.out.println("");
-          //NB this might get confusing with some parameters being fixed and others not...
-        //System.out.println("map input params to optspace:");
-        double[] optimisableParams = Mapper.getOptimisable(parameters); // map parameters to optimisation space, so FunctionHKY.value can use them
-        //ArrayPrinter.print(optimisableParams, ",");
+
+        double[] optimisableParams = Mapper.getOptimisable(can.getParameters()); // map parameters to optimisation space, so FunctionHKY.value can use them
         
-        
-        CANFunction calculator = new CANFunction(alignment, tree, genStruct);
-        //System.out.println("\n\ncalculating");
+        CANFunction calculator = new CANFunction(alignment, tree, genStruct, can);
         double lnL = calculator.value(optimisableParams);
         System.out.println("lnL: " + lnL + " "); // better to have it print the input parameters too, so you can see input and output together
     }
@@ -161,20 +181,33 @@ public class Analyse2 {
     
     // start the optimisation
     public void fitCAN(){
-//        System.out.println("hello");
-//        List<Parameter> parameters = canParameters();
+        // need code which produces report about this analysis
+        // i.e. the initial params, which are being fixed, the genetic structure, name of input aln and tree
+        
+        System.out.println("Codon Aware Nucleotide model. Optimising...\n");
+
+//        List<Parameter> parameters = makeCAN();
 //        for (Parameter p : parameters) {
 //            System.out.println(p.toString());
 //        }
+        //System.exit(1);
         
-        CANFunction optFunction = new CANFunction(this.alignment, this.tree, genStruct);
+        
+        CANModel can = makeCAN(); // only one instance of CANModel is ever created. First populated with initial parameter values and, by end of optimisation, populated with MLEs
+        CANFunction optFunction = new CANFunction(this.alignment, this.tree, genStruct, can);
         Optimise opt = new Optimise();
-        SubstitutionModel result = opt.optNMS(optFunction, new CANModel(canParameters()));
+        SubstitutionModel result = opt.optNMS(optFunction, can);
         
-        
-        System.out.println("MLEs real space: ");
+        System.out.println("Finished. MLEs:");
         for (Parameter p : result.getParameters()) {
-            System.out.println("MLE: " + p.toString());
+            String fixedOrFree = "";
+            if (p.isOptimisable()) {
+                fixedOrFree = "Free";
+            }else{
+                fixedOrFree = "Fixed";
+            }
+            
+            System.out.println(fixedOrFree + "\t" + p.toString());
         }
         
 //        System.out.println("MLEs mapped BACK to opt space");
@@ -182,6 +215,5 @@ public class Analyse2 {
         
         System.out.println("opt lnL: "+result.getLnL());
     }
-    
     
 }

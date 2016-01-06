@@ -74,8 +74,7 @@ public class CommandArgs {
 //    private String fix = "false"; // need to change so no argument required, just looks whether the flag is present or not
 //    //private List<String> fix = new ArrayList<>();
     
-    @Parameter(names = {"-fix"}, required = false, description = "Parameters to be fixed at initial values")
-    //private String fix = "false"; // need to change so no argument required, just looks whether the flag is present or not
+    @Parameter(names = {"-fix"}, variableArity = true, required = false, description = "Parameters to be fixed at initial values")
     private List<String> fix = new ArrayList<>();
     
     public List<String> fix(){

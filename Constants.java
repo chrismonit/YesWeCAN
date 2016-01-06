@@ -32,4 +32,12 @@ public class Constants {
     public static char[] FRAMES = {'A', 'B', 'C'};
     
     public static String LAYOUT = "LAYOUT"; // prefix for genetic structure diagram
+    
+    // arguments for -fix option
+    // e.g. "-fix kappa pi" will fix kappa and pi parameters, but omegas and scaling will be optimised
+    public static String FIX_ALL = "all"; // compute lnL only
+    public static String FIX_KAPPA = "kappa"; 
+    public static String FIX_FREQUENCIES = "pi";
+    public static String FIX_SCALING = "sc";
+    
 }

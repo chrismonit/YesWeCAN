@@ -8,6 +8,7 @@ package yeswecan.model;
 
 import java.util.ArrayList;
 import org.apache.commons.math3.analysis.MultivariateFunction;
+import org.apache.commons.math3.exception.MaxCountExceededException;
 import pal.tree.Tree;
 import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.BranchScaling;
@@ -32,52 +33,36 @@ public class CANFunction implements MultivariateFunction {
     private CANModel canModel;
     
   
-    public CANFunction(AdvancedAlignment alignment, Tree tree, GeneticStructure genStruct){
+    public CANFunction(AdvancedAlignment alignment, Tree tree, GeneticStructure genStruct, CANModel can){
         this.alignment = alignment;
         this.tree = tree;
         this.genStruct = genStruct;
         
-        ArrayList<Omega> omegas = new ArrayList<Omega>();
-        Omega neutral = new Omega(1.0);
-        neutral.setOptimisable(false);
-        omegas.add(neutral);
+//        ArrayList<Omega> omegas = new ArrayList<Omega>();
+//        Omega neutral = new Omega(1.0);
+//        neutral.setOptimisable(false);
+//        omegas.add(neutral);
+//        
+//        for (int i = 0; i < this.genStruct.getNumberOfGenes(); i++) {
+//            omegas.add(new Omega(-1.0));
+//        }
         
-        for (int i = 0; i < this.genStruct.getNumberOfGenes(); i++) {
-            omegas.add(new Omega(-1.0));
-        }
-        
-        this.canModel = new CANModel(
-                new TsTvRatioAdvanced(-1.0),
-                new BaseFrequencies(), // default
-                new BranchScaling(-1.0),
-                omegas
-        );
-        
-        
-        
+        this.canModel = can;
+
         // NB 0th omega is fixed to 1.0 for neutral evolution
         
-        /* NB while this instance of CANmodel is defined here with parameter
-        (the default) values, they are never used. The only way to get anything
-        out from this class is through the value() method, which always populates
-        the CANModel instance anew 
-        */
-
     }
     
     
-    
+ 
     @Override
     public double value(double[] point) {
-        
+        //System.out.println("value");
         // NB 0th omega is fixed to 1.0 for neutral evolution
-        //ArrayPrinter.print(point, ",");
-        
+
         Mapper.setOptimisable(this.canModel.getParameters(), point);
-        double branchScaling = this.canModel.getScaling().get();
         
-        //System.out.println("pi: " + this.canModel.getPi().toString());
-      
+        double branchScaling = this.canModel.getScaling().get();
         
         double lnL = 0.0;
         
@@ -92,7 +77,6 @@ public class CANFunction implements MultivariateFunction {
             Omega aOmega = this.canModel.getOmegas().get(genes[0]);
             Omega bOmega = this.canModel.getOmegas().get(genes[1]);
             Omega cOmega = this.canModel.getOmegas().get(genes[2]);
-            
             
             // make rate matrix, make p matrix, compute lnL for site
             
@@ -110,8 +94,8 @@ public class CANFunction implements MultivariateFunction {
             try{
                 P = ProbMatrixFactory.getPGenerator(Q);
             }
-            catch(Exception e){
-                System.out.println("\t\tFAILURE: " + iSite);
+            catch(MaxCountExceededException e){
+                System.out.println("Eigendecomposition failure: " + iSite);
                 
                 for (Parameter p : this.canModel.getParameters()){
                     System.out.println(p.toString());

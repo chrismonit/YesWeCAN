@@ -25,10 +25,10 @@ public class CANModel extends SubstitutionModel {
     private List<Omega> omegas;
     private BranchScaling scaling;
     
-    public CANModel(List<Parameter> parameters){
-        super.clearParameters();
-        super.setParameters(parameters);
-    }
+//    public CANModel(List<Parameter> parameters){
+//        super.clearParameters();
+//        super.setParameters(parameters);
+//    }
     
     public CANModel(TsTvRatioAdvanced kappa, BaseFrequencies pi, BranchScaling scaling, List<Omega> omegas){
         // NB the 0th omega has to be an unoptimisible 1.0 value
