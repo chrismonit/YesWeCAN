@@ -25,15 +25,13 @@ import swmutsel.model.parameters.TsTvRatio;
 import yeswecan.cli.CommandArgs;
 import yeswecan.model.CANFunction;
 import yeswecan.model.CANModel;
-import yeswecan.model.FunctionHKY;
-import yeswecan.model.MutationModel;
 import yeswecan.model.SubstitutionModel;
 import yeswecan.optim.Optimise;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.phylo.ReorderFrequencies;
 import yeswecan.phylo.States;
-import yeswecan.utils.ArrayPrinter;
+
 
 /**
  *
@@ -73,7 +71,7 @@ public class Analyse2 {
         
         
         // calculate lnL with fixed params
-        if (Boolean.parseBoolean(this.comArgs.fix())){
+        if (this.comArgs.fix().contains("all")){
             calculateFixed(
                     canParameters(),
                     this.tree,

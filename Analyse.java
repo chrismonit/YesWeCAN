@@ -72,7 +72,7 @@ public class Analyse {
         // fitHKY(data, model)
         
         // calculate lnL with fixed params
-        if (Boolean.parseBoolean(this.comArgs.fix())){
+        if (this.comArgs.fix().contains("all")){
             calculateFixed(
                     makeHKY(),
                     this.tree,
