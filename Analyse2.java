@@ -104,18 +104,12 @@ public class Analyse2 {
     
     
     // need to set whether these are fixed or not at this point
-    public CANModel makeCAN(){
-        //System.out.println(this.comArgs.fix().size());
-        
-        
-                
-        //ArrayList<Parameter> parameters = new ArrayList<Parameter>();
-        
+    public CANModel makeCAN(){        
+
         TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(this.comArgs.kappa());
         if (this.comArgs.fix().contains(Constants.FIX_KAPPA)) {
             kappa.setOptimisable(false);
         }
-        //parameters.add(kappa);
       
         double[] frequencies = new double[States.NT_STATES]; // will be in correct order, whatever that may be
         
@@ -131,19 +125,16 @@ public class Analyse2 {
         if (this.comArgs.fix().contains(Constants.FIX_FREQUENCIES)) {
             pi.setOptimisable(false);
         }
-        //parameters.add(pi);
         
         BranchScaling scaling = new BranchScaling(this.comArgs.scaling());
         if (this.comArgs.fix().contains(Constants.FIX_SCALING)) {
             scaling.setOptimisable(false);
         }
-        //parameters.add(scaling);
         
         List<Omega> omegas = new ArrayList<Omega>();
         
         Omega neutral = new Omega(1.0); // for frames where there is no gene
         neutral.setOptimisable(false); // never want this to change in optimisation
-        //parameters.add(neutral);
         omegas.add(neutral);
         
         // positions of omegas correspond to the genes they represent (i.e. gene 1 omega is first)
@@ -153,7 +144,6 @@ public class Analyse2 {
             if ( this.comArgs.fix().contains(Integer.toString(i+1)) ) { // +1 because 0th omega is neutral
                 w.setOptimisable(false);
             }
-            //parameters.add( w );
             omegas.add(w);
         }
 
@@ -186,13 +176,6 @@ public class Analyse2 {
         
         System.out.println("Codon Aware Nucleotide model. Optimising...\n");
 
-//        List<Parameter> parameters = makeCAN();
-//        for (Parameter p : parameters) {
-//            System.out.println(p.toString());
-//        }
-        //System.exit(1);
-        
-        
         CANModel can = makeCAN(); // only one instance of CANModel is ever created. First populated with initial parameter values and, by end of optimisation, populated with MLEs
         CANFunction optFunction = new CANFunction(this.alignment, this.tree, genStruct, can);
         Optimise opt = new Optimise();
@@ -209,10 +192,7 @@ public class Analyse2 {
             
             System.out.println(fixedOrFree + "\t" + p.toString());
         }
-        
-//        System.out.println("MLEs mapped BACK to opt space");
-//        ArrayPrinter.print(Mapper.getOptimisable(result.getParameters()), ",");
-        
+
         System.out.println("opt lnL: "+result.getLnL());
     }
     

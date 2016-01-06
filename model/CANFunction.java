@@ -38,15 +38,6 @@ public class CANFunction implements MultivariateFunction {
         this.tree = tree;
         this.genStruct = genStruct;
         
-//        ArrayList<Omega> omegas = new ArrayList<Omega>();
-//        Omega neutral = new Omega(1.0);
-//        neutral.setOptimisable(false);
-//        omegas.add(neutral);
-//        
-//        for (int i = 0; i < this.genStruct.getNumberOfGenes(); i++) {
-//            omegas.add(new Omega(-1.0));
-//        }
-        
         this.canModel = can;
 
         // NB 0th omega is fixed to 1.0 for neutral evolution
