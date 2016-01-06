@@ -70,10 +70,17 @@ public class CommandArgs {
     
     
     
-    @Parameter(names = {"-fix"}, required = false, description = "Parameters to be fixed at initial values")
-    private String fix = "false"; // need to change so no argument required, just looks whether the flag is present or not
-    //private List<String> fix = new ArrayList<>();
+//    @Parameter(names = {"-fix"}, required = false, description = "Parameters to be fixed at initial values")
+//    private String fix = "false"; // need to change so no argument required, just looks whether the flag is present or not
+//    //private List<String> fix = new ArrayList<>();
     
+    @Parameter(names = {"-fix"}, required = false, description = "Parameters to be fixed at initial values")
+    //private String fix = "false"; // need to change so no argument required, just looks whether the flag is present or not
+    private List<String> fix = new ArrayList<>();
+    
+    public List<String> fix(){
+        return fix;
+    }
     
     public String alignment(){
         return alignmentPath;
@@ -148,9 +155,7 @@ public class CommandArgs {
     }
     
     
-    public String fix(){
-        return fix;
-    }
+    
     
   public String tcag(){
         return tcag;
