@@ -54,7 +54,7 @@ public class RateMatrix extends Array2DRowRealMatrix {
           
         
         this.populateDiagonals();
-        this.scale();
+        //this.scale();
     }//constructor
     
     

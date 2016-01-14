@@ -80,6 +80,7 @@ public class CANFunction implements MultivariateFunction {
                     this.canModel.getScaling()
             );
             
+            MatrixPrinter.PrintMatrix(Q.getData(), "Q", "");
             //System.out.println("w1: " + this.canModel.getOmegas().get(1).toString());
             
             ProbMatrixGenerator P;
