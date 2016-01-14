@@ -21,7 +21,6 @@ import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
 import swmutsel.model.parameters.Parameter;
-import swmutsel.model.parameters.TsTvRatio;
 import yeswecan.cli.CommandArgs;
 import yeswecan.model.CANFunction;
 import yeswecan.model.CANModel;
@@ -181,19 +180,28 @@ public class Analyse2 {
         Optimise opt = new Optimise();
         SubstitutionModel result = opt.optNMS(optFunction, can);
         
-        System.out.println("Finished. MLEs:");
+        String delim = "\t";
+        StringBuilder header = new StringBuilder("Header"+delim);
+        StringBuilder mles = new StringBuilder("MLEs"+delim);
+        
+        
         for (Parameter p : result.getParameters()) {
+            
             String fixedOrFree = "";
             if (p.isOptimisable()) {
-                fixedOrFree = "Free";
+                fixedOrFree = "[Free]";
             }else{
-                fixedOrFree = "Fixed";
+                fixedOrFree = "[Fixed]";
             }
             
-            System.out.println(fixedOrFree + "\t" + p.toString());
+            header.append(p.getArgument()+fixedOrFree+delim);
+            mles.append(p.toString().replaceAll("[^0-9,.-]", "")+delim);
+            //mles.append(p.toString()+delim);
         }
-
-        System.out.println("opt lnL: "+result.getLnL());
+        
+        System.out.println(header.toString());
+        System.out.println(mles.toString());
+        System.out.println("lnL"+delim+result.getLnL());
     }
     
 }
