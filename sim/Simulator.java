@@ -110,7 +110,7 @@ public class Simulator {
             // make model
             
             RatioScaler ratioScaler = RatioScalerFactory.getRatioScaler();
-            CodonAwareMatrix canQ = new CodonAwareMatrix(this.kappa, this.freqs, ratioScaler, siteType, aOmega, bOmega, cOmega);            
+            CodonAwareMatrix canQ = new CodonAwareMatrix(this.kappa, this.freqs, ratioScaler, siteType, aOmega, bOmega, cOmega, this.scaling);            
             ProbMatrixGenerator Pgen = ProbMatrixFactory.getPGenerator(canQ);
 
             // simulate according to process
@@ -123,7 +123,7 @@ public class Simulator {
             
             SubCount count = new SubCount();
             
-            downTree(tree, Pgen, scaling, root, rootState, count);
+            downTree(tree, Pgen, root, rootState, count);
             
             System.out.println(iSite + "\t" + genStruct.getPartitionIndex(iSite) + "\t" + iSite%3 + "\t" + count.count);
             
@@ -138,7 +138,7 @@ public class Simulator {
     
     
     
-    public void downTree(Tree tree, ProbMatrixGenerator Pgen, BranchScaling scaling, 
+    public void downTree(Tree tree, ProbMatrixGenerator Pgen, 
             Node parentNode, int parentState, SubCount count){
         
         if (parentNode.isLeaf()) {
@@ -147,8 +147,8 @@ public class Simulator {
         else{
             for (int iChild = 0; iChild < parentNode.getChildCount(); iChild++) {
                 Node childNode = parentNode.getChild(iChild);
-                double rawBranchLength = childNode.getBranchLength();
-                RealMatrix P = Pgen.getP( scaling.get() * rawBranchLength);
+                double branchLength = childNode.getBranchLength();
+                RealMatrix P = Pgen.getP( branchLength);
                 double[] transProbDistribution = P.getRow(parentState);
                 
                 int childState = draw(transProbDistribution, rand.nextDouble());
@@ -157,7 +157,7 @@ public class Simulator {
                     count.count += 1;
                 }
                 
-                downTree(tree, Pgen, scaling, childNode, childState, count);
+                downTree(tree, Pgen, childNode, childState, count);
             }// for iChild
         }// else (not leaf)
         

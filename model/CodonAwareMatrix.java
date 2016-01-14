@@ -6,6 +6,7 @@
 
 package yeswecan.model;
 import swmutsel.model.parameters.BaseFrequencies;
+import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Omega;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 
@@ -16,7 +17,7 @@ import yeswecan.model.parameters.TsTvRatioAdvanced;
 public class CodonAwareMatrix extends RateMatrix {
     
     public CodonAwareMatrix(TsTvRatioAdvanced kappa, BaseFrequencies pi, RatioScaler scaler, int siteType,
-            Omega w_A, Omega w_B, Omega w_C){
+            Omega w_A, Omega w_B, Omega w_C, BranchScaling scaling){
         super(kappa, pi);
         
         // matrix is now an HKY
@@ -30,7 +31,8 @@ public class CodonAwareMatrix extends RateMatrix {
                 matrixData[i][j] *= 
                         scaler.get(w_A.get(), siteType, 0) *
                         scaler.get(w_B.get(), siteType, 1) *
-                        scaler.get(w_C.get(), siteType, 2) ;
+                        scaler.get(w_C.get(), siteType, 2) *
+                        (1.0/scaling.get());
        
             }
         }

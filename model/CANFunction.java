@@ -53,7 +53,7 @@ public class CANFunction implements MultivariateFunction {
 
         Mapper.setOptimisable(this.canModel.getParameters(), point);
         
-        double branchScaling = this.canModel.getScaling().get();
+        //double branchScaling = this.canModel.getScaling().get();
         
         double lnL = 0.0;
         
@@ -76,7 +76,8 @@ public class CANFunction implements MultivariateFunction {
                     this.canModel.getPi(),
                     new ProportionScaler(),
                     siteType,
-                    aOmega, bOmega, cOmega
+                    aOmega, bOmega, cOmega,
+                    this.canModel.getScaling()
             );
             
             //System.out.println("w1: " + this.canModel.getOmegas().get(1).toString());
@@ -99,7 +100,7 @@ public class CANFunction implements MultivariateFunction {
             }
             
             
-            double sitelnL = LogLikelihoodCalculator.calculateSiteLogLikelihood(this.alignment, this.tree, iSite, P, branchScaling);
+            double sitelnL = LogLikelihoodCalculator.calculateSiteLogLikelihood(this.alignment, this.tree, iSite, P, 1.0);
             //System.out.println("site_"+iSite + "\t" + sitelnL);
             
             lnL += sitelnL;
