@@ -181,6 +181,7 @@ public class Analyse2 {
         SubstitutionModel result = opt.optNMS(optFunction, can);
         
         String delim = "\t";
+        
         StringBuilder header = new StringBuilder("Header"+delim);
         StringBuilder mles = new StringBuilder("MLEs"+delim);
         
@@ -199,6 +200,8 @@ public class Analyse2 {
             //mles.append(p.toString()+delim);
         }
         
+        System.out.println("Tree"+delim+this.comArgs.tree());
+        System.out.println("Aln"+delim+this.comArgs.alignment());
         System.out.println(header.toString());
         System.out.println(mles.toString());
         System.out.println("lnL"+delim+result.getLnL());
