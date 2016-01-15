@@ -195,7 +195,7 @@ public class Analyse2 {
             }
             
             header.append(p.getArgument()+fixedOrFree+delim);
-            mles.append(p.toString().replaceAll("[^0-9,.-]", "")+delim);
+            mles.append(p.toString().replaceAll("[^0-9E,.-]", "")+delim);
             //mles.append(p.toString()+delim);
         }
         
