@@ -32,7 +32,7 @@ public class CodonAwareMatrix extends RateMatrix {
                         scaler.get(w_A.get(), siteType, 0) *
                         scaler.get(w_B.get(), siteType, 1) *
                         scaler.get(w_C.get(), siteType, 2) *
-                        (1.0/scaling.get());
+                        scaling.get();
        
             }
         }
