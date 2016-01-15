@@ -58,7 +58,7 @@ public class RateMatrix extends Array2DRowRealMatrix {
     }//constructor
     
     
-    public void populateDiagonals(){
+    public final void populateDiagonals(){
          for (int i = 0; i < numStates; i++) {
                 double rowSum = 0.0;
                 for (int j = 0; j < numStates; j++) {
@@ -70,7 +70,7 @@ public class RateMatrix extends Array2DRowRealMatrix {
     }
     
     
-    public void scale(){
+    public final void scale(){
         // scale matrix such that average substitution rate is 1
         // compute nu
         
