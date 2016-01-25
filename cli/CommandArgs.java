@@ -60,13 +60,13 @@ public class CommandArgs {
     @Parameter(names = {"-lengths", "-l"}, required = true, description = "Lengths for each partition, delimted by comma")
     private String lengths = ""; // can't have default since don't know how many genes there are
     
-    
-    
-    
-    
+   
     
     @Parameter(names = {"-tcag"}, required = false, description = "Input frequencies are ordered: T,C,A,G (PAML style)")
     private String tcag = "false";
+    
+    @Parameter(names = {"-phy"}, required = false, description = "Sequence data are in Phylip format (assumes Fasta format by default")
+    private String phy = "false";
     
     
     
@@ -158,6 +158,10 @@ public class CommandArgs {
     
   public String tcag(){
         return tcag;
+    }
+  
+  public String phy(){
+        return phy;
     }
     
 //    public List<String> fix(){

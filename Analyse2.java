@@ -92,6 +92,7 @@ public class Analyse2 {
                                 new SimpleAlignment(
                                         AlignmentReaders.readFastaSequences(new FileReader(alignmentPath), new Nucleotides())));
             this.tree = new ReadTree(treePath);
+            System.out.println(this.alignment.toString());
         }
         catch(Exception e){
             System.out.println(Constants.ERROR_PREFIX + "Unable to load alignment or tree file(s)");
