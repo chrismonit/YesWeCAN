@@ -62,7 +62,7 @@ public class Analyse2 {
             System.out.println(ex.getMessage());
         }
         
-        loadData(this.comArgs.alignment(), this.comArgs.tree());
+        loadData(this.comArgs.alignment(), this.comArgs.tree(), Boolean.parseBoolean(this.comArgs.phy()));
  
         this.genStruct = new GeneticStructure(this.comArgs.aFrame(),
                                                             this.comArgs.bFrame(),
@@ -85,14 +85,17 @@ public class Analyse2 {
     }
     
     //TODO make more sophistcated exceptions to help user find problems. Separate tree and alignment reading in 
-    // TODO make this able to read either fasta or phylip alignments
-    public void loadData(String alignmentPath, String treePath){
+    public void loadData(String alignmentPath, String treePath, Boolean readPhylip){
         try{
-            this.alignment = new AdvancedAlignment(
-                                new SimpleAlignment(
-                                        AlignmentReaders.readFastaSequences(new FileReader(alignmentPath), new Nucleotides())));
+            SimpleAlignment simple;
+            if (readPhylip)
+                simple = new SimpleAlignment(AlignmentReaders.readPhylipClustalAlignment(new FileReader(alignmentPath), new Nucleotides()));
+            else
+                simple = new SimpleAlignment(AlignmentReaders.readFastaSequences(new FileReader(alignmentPath), new Nucleotides()));
+            
+            this.alignment = new AdvancedAlignment(simple);
+                                
             this.tree = new ReadTree(treePath);
-            System.out.println(this.alignment.toString());
         }
         catch(Exception e){
             System.out.println(Constants.ERROR_PREFIX + "Unable to load alignment or tree file(s)");
