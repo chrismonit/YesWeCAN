@@ -15,12 +15,12 @@ import swmutsel.model.parameters.Omega;
 public class OmegaPositive extends Omega {
     
     public OmegaPositive(){
-        setArgument("-omega+");
+        setArgument("-omegaPos");
     }
     
     public OmegaPositive(double omega) {
         super(omega);
-        setArgument("-omega+");
+        setArgument("-omegaPos");
     }
     
     @Override
