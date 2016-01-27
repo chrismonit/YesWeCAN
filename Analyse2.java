@@ -21,10 +21,13 @@ import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
 import swmutsel.model.parameters.Parameter;
+import swmutsel.model.parameters.Probabilities;
 import yeswecan.cli.CommandArgs;
 import yeswecan.model.CANFunction;
-import yeswecan.model.CANModel;
+import yeswecan.model.CANModelOriginal;
 import yeswecan.model.SubstitutionModel;
+import yeswecan.model.parameters.OmegaNegative;
+import yeswecan.model.parameters.OmegaPositive;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.optim.Optimise;
 import yeswecan.phylo.AdvancedAlignment;
@@ -109,7 +112,7 @@ public class Analyse2 {
     
     
     // need to set whether these are fixed or not at this point
-    public CANModel makeCAN(){        
+    public CANModelOriginal makeCAN(){        
 
         TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(this.comArgs.kappa());
         if (this.comArgs.fix().contains(Constants.FIX_KAPPA)) {
@@ -136,27 +139,72 @@ public class Analyse2 {
             scaling.setOptimisable(false);
         }
         
+        // 'omega distribution' refers to the set of parameter objects which define the omegas for a given gene
+        // each gene has its own set of proabitlities and w_0, w_1 and w_2, which are bundled into a list for that gene
+        
+        // first doing this for M2a, then will have to do separately for M1a
+        List<ArrayList<Parameter>> allOmegaDistributions = new ArrayList<ArrayList<Parameter>>();
+        
+        ArrayList<Parameter> neutral = new ArrayList<Parameter>(); // for no-gene frames
+        Probabilities neutralProbs = new Probabilities(new double[]{0.0, 1.0, 0.0}); // all density on w_1 class, because w=1
+        OmegaNegative neutralNeg = new OmegaNegative(0.0); // should never be used
+        Omega neutralOmegaNeutral = new Omega(1.0);
+        OmegaPositive neutralPos = new OmegaPositive(0.0); // should never be used
+        
+        neutralProbs.setOptimisable(false);
+        neutralNeg.setOptimisable(false);
+        neutralOmegaNeutral.setOptimisable(false);
+        neutralPos.setOptimisable(false);
+        
+        neutral.add(neutralPos);
+        neutral.add(neutralNeg);
+        neutral.add(neutralOmegaNeutral);
+        neutral.add(neutralPos);
+        
+        allOmegaDistributions.add(neutral); // 0th element is for neutral evolution, in gene-less frames
+        // iterating over genes
+        for (int i = 0; i < this.comArgs.getGeneNumber(); i++) {
+            ArrayList<Parameter> omegaDistribution = new ArrayList<Parameter>();
+            Probabilities geneProbs = new Probabilities(new double[]{ this.comArgs.prob0()[i], this.comArgs.prob1()[i], this.comArgs.prob2()[i]}); 
+            OmegaNegative geneNeg = new OmegaNegative(this.comArgs.omega0()[i]);
+            Omega geneNeutral = new Omega(1.0);
+            geneNeutral.setOptimisable(false); // fix w_1 = 1 for every gene
+            OmegaPositive genePos = new OmegaPositive(this.comArgs.omega2()[i]);
+            
+            omegaDistribution.add(geneProbs);
+            omegaDistribution.add(geneNeg);
+            omegaDistribution.add(geneNeutral);
+            omegaDistribution.add(genePos);
+            
+            allOmegaDistributions.add(omegaDistribution);
+        }
+        
+        
+        
+        
         List<Omega> omegas = new ArrayList<Omega>();
         
-        Omega neutral = new Omega(1.0); // for frames where there is no gene
-        neutral.setOptimisable(false); // never want this to change in optimisation
-        omegas.add(neutral);
+        Omega neutralOmega = new Omega(1.0); // for frames where there is no gene
+        neutralOmega.setOptimisable(false); // never want this to change in optimisation
+        omegas.add(neutralOmega);
         
-        // positions of omegas correspond to the genes they represent (i.e. gene 1 omega is first)
-        for (int i = 0; i < this.comArgs.omegas().length; i++) {
-            double omegaValue = this.comArgs.omegas()[i];
-            Omega w = new Omega( omegaValue );
-            if ( this.comArgs.fix().contains(Integer.toString(i+1)) ) { // +1 because 0th omega is neutral
-                w.setOptimisable(false);
-            }
-            omegas.add(w);
-        }
+////         positions of omegas correspond to the genes they represent (i.e. gene 1 omega is first)
+//        for (int i = 0; i < this.comArgs.omegas().length; i++) {
+//            double omegaValue = this.comArgs.omegas()[i];
+//            Omega w = new Omega( omegaValue );
+//            if ( this.comArgs.fix().contains(Integer.toString(i+1)) ) { // +1 because 0th omega is neutral
+//                w.setOptimisable(false);
+//            }
+//            omegas.add(w);
+//        }
 
-        return new CANModel(kappa, pi, scaling, omegas);
+        
+        
+        return new CANModelOriginal(kappa, pi, scaling, omegas);
     }
     
     
-    public void calculateFixed(CANModel can, Tree tree, AdvancedAlignment alignment){
+    public void calculateFixed(CANModelOriginal can, Tree tree, AdvancedAlignment alignment){
         
         System.out.println("Calculating with fixed values. Input from CLI:");
         for (Parameter p : can.getParameters()){
@@ -181,7 +229,7 @@ public class Analyse2 {
         
         System.out.println("Codon Aware Nucleotide model. Optimising...\n");
 
-        CANModel can = makeCAN(); // only one instance of CANModel is ever created. First populated with initial parameter values and, by end of optimisation, populated with MLEs
+        CANModelOriginal can = makeCAN(); // only one instance of CANModelOriginal is ever created. First populated with initial parameter values and, by end of optimisation, populated with MLEs
         CANFunction optFunction = new CANFunction(this.alignment, this.tree, genStruct, can);
         Optimise opt = new Optimise();
         SubstitutionModel result = opt.optNMS(optFunction, can);
