@@ -81,6 +81,27 @@ public final class  MatrixPrinter {
         
     }
     
+        public static void PrintMatrix(int[][] matrix2D, String message){
+        StringBuilder[] builders = new StringBuilder[ matrix2D.length ];
+        
+        for (int iRow = 0; iRow < matrix2D.length; iRow++) {
+            builders[iRow] = new StringBuilder("");
+        }
+        
+        for (int iRow = 0; iRow < matrix2D.length; iRow++) {
+            for (int jColumn = 0; jColumn < matrix2D[0].length; jColumn++) {
+                builders[iRow].append( matrix2D[iRow][jColumn] + "\t" );
+            }
+        }
+        
+        System.out.println(message);
+        for (int iRow = 0; iRow < matrix2D.length; iRow++) {
+            System.out.println( builders[iRow].toString() );
+        }
+        System.out.println("------------");
+        
+    }
+    
     public static void PrintMatrix(double[][] matrix2D, String message, String round){
         int sigFigures = 4;
         

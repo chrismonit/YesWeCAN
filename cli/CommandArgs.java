@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import yeswecan.Constants;
 import yeswecan.phylo.States;
+import yeswecan.utils.ArrayPrinter;
+import yeswecan.utils.MatrixPrinter;
 /**
  *
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>
@@ -40,8 +42,8 @@ public class CommandArgs {
     @Parameter(names = {"-frequencies", "-pi"}, required = false, description = "Stationary frequencies for nucleotides, delimited by comma. Default=\"0.25,0.25,0.25,0.25\"")
     private String pi = "0.25,0.25,0.25,0.25";
     
-    @Parameter(names = {"-omegas", "-w"}, required = true, description = "Initial omega values for each gene. Delimited by comma")
-    private String omegas = ""; // can't have default since don't know how many genes there are
+    @Parameter(names = {"-omegas", "-w"}, required = false, description = "Initial omega values for each gene. Delimited by comma")
+    private String omegasArgument = ""; // can't have default since don't know how many genes there are
     
     @Parameter(names = {"-scaling", "-sc"}, required = true, description = "Scaling factor for branch lengths.")
     private double scaling = Constants.DEFAULT_SCALING;
@@ -119,14 +121,7 @@ public class CommandArgs {
         return toReturn;
     }// pi
     
-    public double[] omegas(){
-        String[] omegasStrings = this.omegas.split(Constants.ARGS_DELIMITER);
-        double[] omegas = new double[omegasStrings.length];
-        for (int i = 0; i < omegas.length; i++) {
-            omegas[i] = Double.parseDouble(omegasStrings[i]);
-        }
-        return omegas;
-    }
+
     
     public int[] aFrame(){
         return stringToIntArray(this.aFrame, Constants.ARGS_DELIMITER);
@@ -153,8 +148,43 @@ public class CommandArgs {
         return toReturn;
     }
     
+    // TODO this is very inefficient
+    public int getGeneNumber(){
+        return findGeneNumber();
+    }
+    
+    private int findGeneNumber(){
+        int[][] allGenes = { 
+            stringToIntArray(this.aFrame, Constants.ARGS_DELIMITER),
+            stringToIntArray(this.bFrame, Constants.ARGS_DELIMITER),
+            stringToIntArray(this.cFrame, Constants.ARGS_DELIMITER)
+        };
+          
+        int max = 0;
+        for (int i = 0; i < allGenes.length; i++) {
+            for (int j = 0; j < allGenes[0].length; j++) {
+                max = Math.max(max, allGenes[i][j]);
+            }
+        }
+        return max;
+    }
     
     
+    public double[] omegas(){
+        double[] omegaValues = new double[getGeneNumber()];
+        if ("".equals(this.omegasArgument)){ // no starting omegasArgument have been supplied by user
+            for (int i = 0; i < omegaValues.length; i++) {
+                omegaValues[i] = Constants.DEFAULT_OMEGA;
+            }
+        }
+        else{
+            String[] omegasStrings = this.omegasArgument.split(Constants.ARGS_DELIMITER);
+            for (int i = 0; i < omegaValues.length; i++) {
+                omegaValues[i] = Double.parseDouble(omegasStrings[i]);
+            }
+        }
+        return omegaValues;
+    }
     
   public String tcag(){
         return tcag;

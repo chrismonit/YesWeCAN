@@ -61,7 +61,7 @@ public class Analyse2 {
         catch(ParameterException ex){
             System.out.println(ex.getMessage());
         }
-        
+                
         loadData(this.comArgs.alignment(), this.comArgs.tree(), Boolean.parseBoolean(this.comArgs.phy()));
  
         this.genStruct = new GeneticStructure(this.comArgs.aFrame(),
