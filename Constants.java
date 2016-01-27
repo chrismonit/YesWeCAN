@@ -24,6 +24,12 @@ public class Constants {
     public static double DEFAULT_SCALING = 1.0;
     public static double DEFAULT_OMEGA = 1.0;
     
+    public static int DEFAULT_MODEL = 0;
+    public static int M1_IDENTIFIER = 1;
+    public static int M2_IDENTIFIER = 2;
+
+    public static int NUM_M1_SITE_CLASSES = 2;
+    public static int NUM_M2_SITE_CLASSES = 3;
     
     public static String ERROR_PREFIX = "ERROR: ";
     
