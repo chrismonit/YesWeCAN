@@ -64,10 +64,10 @@ public class CommandArgs {
     @Parameter(names = {"-prob0", "-p0"}, required = false, description = "Initial values for each gene's p_0. Delimited by comma")
     private String probArg0 = "";
     
-    @Parameter(names = {"-prob1", "-p1"}, required = false, description = "Initial values for each gene's p_0. Delimited by comma")
+    @Parameter(names = {"-prob1", "-p1"}, required = false, description = "Initial values for each gene's p_1. Delimited by comma")
     private String probArg1 = "";
     
-    @Parameter(names = {"-prob2", "-p2"}, required = false, description = "Initial values for each gene's p_0 (Ignored if runing M2). Delimited by comma")
+    @Parameter(names = {"-prob2", "-p2"}, required = false, description = "Initial values for each gene's p_2 (Ignored if runing M2). Delimited by comma")
     private String probArg2 = "";
     
     
