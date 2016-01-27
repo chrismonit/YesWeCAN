@@ -42,12 +42,19 @@ public class CommandArgs {
     @Parameter(names = {"-frequencies", "-pi"}, required = false, description = "Stationary frequencies for nucleotides, delimited by comma. Default=\"0.25,0.25,0.25,0.25\"")
     private String pi = "0.25,0.25,0.25,0.25";
     
-    @Parameter(names = {"-omegas", "-w"}, required = false, description = "Initial omega values for each gene. Delimited by comma")
-    private String omegasArgument = ""; // can't have default since don't know how many genes there are
-    
     @Parameter(names = {"-scaling", "-sc"}, required = true, description = "Scaling factor for branch lengths.")
     private double scaling = Constants.DEFAULT_SCALING;
     
+    //@Parameter(names = {"-omegas", "-w"}, required = false, description = "Initial omega values for each gene. Delimited by comma")
+    //private String omegasArgument = "";
+    
+    @Parameter(names = {"-omega0", "-w0"}, required = false, description = "Initial values for each gene's w_0. Delimited by comma")
+    private String omegaArg0 = "";
+    
+    @Parameter(names = {"-omega2", "-w2"}, required = false, description = "Initial omega values for each gene's_2 (ignored if running M1). Delimited by comma")
+    private String omegaArg2 = "";
+    
+    //NB w_1 is fixed to 1.0, so doesn't need an argument
     
     @Parameter(names = {"-frameA", "-a"}, required = true, description = "Gene layout for frame A, delimited by comma")
     private String aFrame = "";
@@ -170,21 +177,47 @@ public class CommandArgs {
     }
     
     
-    public double[] omegas(){
+//    public double[] omegas(){
+//        double[] omegaValues = new double[getGeneNumber()];
+//        if ("".equals(this.omegasArgument)){ // no starting omegasArgument have been supplied by user
+//            for (int i = 0; i < omegaValues.length; i++) {
+//                omegaValues[i] = Constants.DEFAULT_OMEGA;
+//            }
+//        }
+//        else{
+//            String[] omegasStrings = this.omegasArgument.split(Constants.ARGS_DELIMITER);
+//            for (int i = 0; i < omegaValues.length; i++) {
+//                omegaValues[i] = Double.parseDouble(omegasStrings[i]);
+//            }
+//        }
+//        return omegaValues;
+//    }
+    
+    public double[] omega0(){
+        return omegas(this.omegaArg0);
+    }
+    
+    public double[] omega2(){
+        return omegas(this.omegaArg2);
+    }
+    
+    
+    private double[] omegas(String omegasArgument){
         double[] omegaValues = new double[getGeneNumber()];
-        if ("".equals(this.omegasArgument)){ // no starting omegasArgument have been supplied by user
+        if ("".equals(omegasArgument)){ // no starting omegasArgument have been supplied by user
             for (int i = 0; i < omegaValues.length; i++) {
                 omegaValues[i] = Constants.DEFAULT_OMEGA;
             }
         }
         else{
-            String[] omegasStrings = this.omegasArgument.split(Constants.ARGS_DELIMITER);
+            String[] omegasStrings = omegasArgument.split(Constants.ARGS_DELIMITER);
             for (int i = 0; i < omegaValues.length; i++) {
                 omegaValues[i] = Double.parseDouble(omegasStrings[i]);
             }
         }
         return omegaValues;
     }
+    
     
   public String tcag(){
         return tcag;
