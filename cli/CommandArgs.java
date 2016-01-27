@@ -45,7 +45,11 @@ public class CommandArgs {
     @Parameter(names = {"-scaling", "-sc"}, required = true, description = "Scaling factor for branch lengths.")
     private double scaling = Constants.DEFAULT_SCALING;
     
-    //@Parameter(names = {"-omegas", "-w"}, required = false, description = "Initial omega values for each gene. Delimited by comma")
+    // TODO make -m 0 equal to CAN version 1? without mixture?
+    @Parameter(names = {"-model", "-m"}, required = true, description = "Model of selection to use. 1 = M1a (negative/neutral), 2 = M2a (negative, neutral/positive)")
+    private int model = Constants.DEFAULT_MODEL;
+    
+    //@Parameter(names = {"-geneSpecificParameter", "-w"}, required = false, description = "Initial omega values for each gene. Delimited by comma")
     //private String omegasArgument = "";
     
     @Parameter(names = {"-omega0", "-w0"}, required = false, description = "Initial values for each gene's w_0. Delimited by comma")
@@ -55,6 +59,18 @@ public class CommandArgs {
     private String omegaArg2 = "";
     
     //NB w_1 is fixed to 1.0, so doesn't need an argument
+    
+    
+    @Parameter(names = {"-prob0", "-p0"}, required = false, description = "Initial values for each gene's p_0. Delimited by comma")
+    private String probArg0 = "";
+    
+    @Parameter(names = {"-prob1", "-p1"}, required = false, description = "Initial values for each gene's p_0. Delimited by comma")
+    private String probArg1 = "";
+    
+    @Parameter(names = {"-prob2", "-p2"}, required = false, description = "Initial values for each gene's p_0 (Ignored if runing M2). Delimited by comma")
+    private String probArg2 = "";
+    
+    
     
     @Parameter(names = {"-frameA", "-a"}, required = true, description = "Gene layout for frame A, delimited by comma")
     private String aFrame = "";
@@ -176,46 +192,73 @@ public class CommandArgs {
         return max;
     }
     
+    public int getModel(){
+        return model;
+    }
     
-//    public double[] omegas(){
-//        double[] omegaValues = new double[getGeneNumber()];
+//    public double[] geneSpecificParameter(){
+//        double[] values = new double[getGeneNumber()];
 //        if ("".equals(this.omegasArgument)){ // no starting omegasArgument have been supplied by user
-//            for (int i = 0; i < omegaValues.length; i++) {
-//                omegaValues[i] = Constants.DEFAULT_OMEGA;
+//            for (int i = 0; i < values.length; i++) {
+//                values[i] = Constants.DEFAULT_OMEGA;
 //            }
 //        }
 //        else{
 //            String[] omegasStrings = this.omegasArgument.split(Constants.ARGS_DELIMITER);
-//            for (int i = 0; i < omegaValues.length; i++) {
-//                omegaValues[i] = Double.parseDouble(omegasStrings[i]);
+//            for (int i = 0; i < values.length; i++) {
+//                values[i] = Double.parseDouble(omegasStrings[i]);
 //            }
 //        }
-//        return omegaValues;
+//        return values;
 //    }
     
     public double[] omega0(){
-        return omegas(this.omegaArg0);
+        return geneSpecificParameter(this.omegaArg0, Constants.DEFAULT_OMEGA);
     }
     
     public double[] omega2(){
-        return omegas(this.omegaArg2);
+        return geneSpecificParameter(this.omegaArg2, Constants.DEFAULT_OMEGA);
     }
     
+    private double[] prob(String argument){
+        if (this.model == Constants.M1_IDENTIFIER){
+            return geneSpecificParameter(argument, 1.0/(double)Constants.NUM_M1_SITE_CLASSES);
+        }
+        else if (this.model == Constants.M2_IDENTIFIER){
+            return geneSpecificParameter(argument, 1.0/(double)Constants.NUM_M2_SITE_CLASSES);
+        }
+        else{
+            return null;
+        }
+    }
     
-    private double[] omegas(String omegasArgument){
-        double[] omegaValues = new double[getGeneNumber()];
-        if ("".equals(omegasArgument)){ // no starting omegasArgument have been supplied by user
-            for (int i = 0; i < omegaValues.length; i++) {
-                omegaValues[i] = Constants.DEFAULT_OMEGA;
+    public double[] prob0(){
+        return prob(this.probArg0);
+    }
+    
+    public double[] prob1(){
+        return prob(this.probArg1);
+    }
+    
+    public double[] prob2(){
+        return prob(this.probArg2);
+    }
+    
+    // for omegas or prob values
+    private double[] geneSpecificParameter(String argument, double defaultValue){
+        double[] values = new double[getGeneNumber()];
+        if ("".equals(argument)){ // no starting argument have been supplied by user
+            for (int i = 0; i < values.length; i++) {
+                values[i] = defaultValue;
             }
         }
         else{
-            String[] omegasStrings = omegasArgument.split(Constants.ARGS_DELIMITER);
-            for (int i = 0; i < omegaValues.length; i++) {
-                omegaValues[i] = Double.parseDouble(omegasStrings[i]);
+            String[] omegasStrings = argument.split(Constants.ARGS_DELIMITER);
+            for (int i = 0; i < values.length; i++) {
+                values[i] = Double.parseDouble(omegasStrings[i]);
             }
         }
-        return omegaValues;
+        return values;
     }
     
     
