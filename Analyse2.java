@@ -85,6 +85,8 @@ public class Analyse2 {
     }
     
     //TODO make more sophistcated exceptions to help user find problems. Separate tree and alignment reading in 
+    // could do with a clever catch for when the wrong format is presented (ie incongruous with the -phy value
+    // the exception thrown is an index out of range in the lnL calculator
     public void loadData(String alignmentPath, String treePath, Boolean readPhylip){
         try{
             SimpleAlignment simple;
