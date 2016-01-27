@@ -30,10 +30,10 @@ public class CANFunction implements MultivariateFunction {
     private AdvancedAlignment alignment;
     private Tree tree;
     private GeneticStructure genStruct;
-    private CANModel canModel;
+    private CANModelOriginal canModel;
     
   
-    public CANFunction(AdvancedAlignment alignment, Tree tree, GeneticStructure genStruct, CANModel can){
+    public CANFunction(AdvancedAlignment alignment, Tree tree, GeneticStructure genStruct, CANModelOriginal can){
         this.alignment = alignment;
         this.tree = tree;
         this.genStruct = genStruct;

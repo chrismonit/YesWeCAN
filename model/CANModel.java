@@ -22,7 +22,8 @@ public class CANModel extends SubstitutionModel {
     
     private TsTvRatioAdvanced kappa;
     private BaseFrequencies pi;
-    private List<Omega> omegas;
+    //private List<Omega> omegas;
+    private List<List<Parameter>> omegaDistributions;
     private BranchScaling scaling;
     
 //    public CANModel(List<Parameter> parameters){
@@ -30,18 +31,21 @@ public class CANModel extends SubstitutionModel {
 //        super.setParameters(parameters);
 //    }
     
-    public CANModel(TsTvRatioAdvanced kappa, BaseFrequencies pi, BranchScaling scaling, List<Omega> omegas){
+    public CANModel(TsTvRatioAdvanced kappa, BaseFrequencies pi, BranchScaling scaling, List<List<Parameter>> omegasDistributions){
         // NB the 0th omega has to be an unoptimisible 1.0 value
         
         this.kappa = kappa;
         this.pi = pi;
-        this.omegas = omegas;
+        //this.omegas = omegas;
+        this.omegaDistributions = omegaDistributions;
         this.scaling = scaling;
         super.clearParameters();
         super.addParameters(this.kappa, this.pi, this.scaling);
         
-        for (Omega w : this.omegas){
-            super.addParameters(w);
+        for (List<Parameter> distribution : this.omegaDistributions){
+            for (Parameter param : distribution){
+                super.addParameters(param);
+            }
         }
 
     }
@@ -60,28 +64,32 @@ public class CANModel extends SubstitutionModel {
         return scaling;
     }
     
-    public List<Omega> getOmegas() {
-        return omegas;
+    public List<List<Parameter>> getOmegaDistributions(){
+        return omegaDistributions;
     }
+    
+//    public List<Omega> getOmegas() {
+//        return omegas;
+//    }
     
     
     
     
     
     public static void main(String[] args){
-        List<Omega> omegas = new ArrayList<Omega>();
-        omegas.add(new Omega(1.0));
-        omegas.add(new Omega(2.0));
-        omegas.add(new Omega(3.0));
-
-        
-        CANModel can = new CANModel(
-            new TsTvRatioAdvanced(2.0), new BaseFrequencies(new double[]{.1,.2,.3,.4}), new BranchScaling(1.0), omegas 
-        );
-        
-        for (Parameter p : can.getParameters()){
-            System.out.println(p.toString());
-        }
+//        List<Omega> omegas = new ArrayList<Omega>();
+//        omegas.add(new Omega(1.0));
+//        omegas.add(new Omega(2.0));
+//        omegas.add(new Omega(3.0));
+//
+//        
+//        CANModel can = new CANModel(
+//            new TsTvRatioAdvanced(2.0), new BaseFrequencies(new double[]{.1,.2,.3,.4}), new BranchScaling(1.0), omegas 
+//        );
+//        
+//        for (Parameter p : can.getParameters()){
+//            System.out.println(p.toString());
+//        }
     
     }
     

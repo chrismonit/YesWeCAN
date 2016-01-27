@@ -18,19 +18,19 @@ import yeswecan.model.parameters.TsTvRatioAdvanced;
  *
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>
  */
-public class CANModel extends SubstitutionModel {
+public class CANModelOriginal extends SubstitutionModel {
     
     private TsTvRatioAdvanced kappa;
     private BaseFrequencies pi;
     private List<Omega> omegas;
     private BranchScaling scaling;
     
-//    public CANModel(List<Parameter> parameters){
+//    public CANModelOriginal(List<Parameter> parameters){
 //        super.clearParameters();
 //        super.setParameters(parameters);
 //    }
     
-    public CANModel(TsTvRatioAdvanced kappa, BaseFrequencies pi, BranchScaling scaling, List<Omega> omegas){
+    public CANModelOriginal(TsTvRatioAdvanced kappa, BaseFrequencies pi, BranchScaling scaling, List<Omega> omegas){
         // NB the 0th omega has to be an unoptimisible 1.0 value
         
         this.kappa = kappa;
@@ -75,7 +75,7 @@ public class CANModel extends SubstitutionModel {
         omegas.add(new Omega(3.0));
 
         
-        CANModel can = new CANModel(
+        CANModelOriginal can = new CANModelOriginal(
             new TsTvRatioAdvanced(2.0), new BaseFrequencies(new double[]{.1,.2,.3,.4}), new BranchScaling(1.0), omegas 
         );
         
