@@ -31,7 +31,7 @@ public class CANModel extends SubstitutionModel {
 //        super.setParameters(parameters);
 //    }
     
-    public CANModel(TsTvRatioAdvanced kappa, BaseFrequencies pi, BranchScaling scaling, List<List<Parameter>> omegasDistributions){
+    public CANModel(TsTvRatioAdvanced kappa, BaseFrequencies pi, BranchScaling scaling, ArrayList<ArrayList<Parameter>> omegasDistributions){
         // NB the 0th omega has to be an unoptimisible 1.0 value
         
         this.kappa = kappa;
