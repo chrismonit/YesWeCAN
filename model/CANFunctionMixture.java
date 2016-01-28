@@ -25,7 +25,7 @@ import yeswecan.utils.MatrixPrinter;
  *
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>
  */
-public class CANFunctionOriginal implements MultivariateFunction {
+public class CANFunctionMixture implements MultivariateFunction {
 
     private AdvancedAlignment alignment;
     private Tree tree;
@@ -33,7 +33,7 @@ public class CANFunctionOriginal implements MultivariateFunction {
     private CANModel canModel;
     
   
-    public CANFunctionOriginal(AdvancedAlignment alignment, Tree tree, GeneticStructure genStruct, CANModel can){
+    public CANFunctionMixture(AdvancedAlignment alignment, Tree tree, GeneticStructure genStruct, CANModel can){
         this.alignment = alignment;
         this.tree = tree;
         this.genStruct = genStruct;
