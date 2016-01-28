@@ -244,7 +244,7 @@ public class CommandArgs {
         return prob(this.probArg2);
     }
     
-    // for omegas or prob values
+    // for omegas or prob values. argument is string supplied at CLI after the relevant flag
     private double[] geneSpecificParameter(String argument, double defaultValue){
         double[] values = new double[getGeneNumber()];
         if ("".equals(argument)){ // no starting argument have been supplied by user

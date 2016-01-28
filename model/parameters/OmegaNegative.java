@@ -19,7 +19,7 @@ public class OmegaNegative extends Omega {
     }
     
     public OmegaNegative(double omega) {
-        super(omega);
+        super(omega);  
         setArgument("-omegaNeg");
     }
     
