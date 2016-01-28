@@ -25,7 +25,7 @@ import swmutsel.model.parameters.Probabilities;
 import yeswecan.cli.CommandArgs;
 import yeswecan.model.CANFunction;
 import yeswecan.model.CANModelMixture;
-import yeswecan.model.CANModelOriginal;
+import yeswecan.model.CANModel;
 import yeswecan.model.SubstitutionModel;
 import yeswecan.model.parameters.OmegaNegative;
 import yeswecan.model.parameters.OmegaPositive;
@@ -230,7 +230,7 @@ public class Analyse2 {
         
         System.out.println("Codon Aware Nucleotide model. Optimising...\n");
 
-        CANModelMixture can = makeCAN(); // only one instance of CANModelOriginal is ever created. First populated with initial parameter values and, by end of optimisation, populated with MLEs
+        CANModelMixture can = makeCAN(); // only one instance of CANModel is ever created. First populated with initial parameter values and, by end of optimisation, populated with MLEs
         CANFunction optFunction = new CANFunction(this.alignment, this.tree, genStruct, can);
         Optimise opt = new Optimise();
         SubstitutionModel result = opt.optNMS(optFunction, can);
