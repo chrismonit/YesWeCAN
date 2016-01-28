@@ -12,6 +12,7 @@ import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Omega;
 import swmutsel.model.parameters.Parameter;
+import swmutsel.model.parameters.Probabilities;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 
 /**
@@ -23,7 +24,9 @@ public class CANModel extends SubstitutionModel {
     private TsTvRatioAdvanced kappa;
     private BaseFrequencies pi;
     //private List<Omega> omegas;
-    private List<List<Parameter>> omegaDistributions;
+    //private List<List<Parameter>> omegaDistributions;
+    private ArrayList<ArrayList<Omega>> omegaDistributions;
+    private ArrayList<Probabilities> probabilities;
     private BranchScaling scaling;
     
 //    public CANModel(List<Parameter> parameters){
@@ -31,20 +34,29 @@ public class CANModel extends SubstitutionModel {
 //        super.setParameters(parameters);
 //    }
     
-    public CANModel(TsTvRatioAdvanced kappa, BaseFrequencies pi, BranchScaling scaling, ArrayList<ArrayList<Parameter>> omegasDistributions){
+    public CANModel(TsTvRatioAdvanced kappa, BaseFrequencies pi, BranchScaling scaling, 
+            ArrayList<ArrayList<Omega>> omegaDistributions, ArrayList<Probabilities> probabilities){
         // NB the 0th omega has to be an unoptimisible 1.0 value
         
         this.kappa = kappa;
-        this.pi = pi;
-        //this.omegas = omegas;
-        this.omegaDistributions = omegaDistributions;
+        this.pi = pi;        
         this.scaling = scaling;
+        
+        
+        this.omegaDistributions = omegaDistributions;
+        this.probabilities = probabilities;
+        
         super.clearParameters();
+        
         super.addParameters(this.kappa, this.pi, this.scaling);
         
-        for (List<Parameter> distribution : this.omegaDistributions){
-            for (Parameter param : distribution){
-                super.addParameters(param);
+        for (Probabilities p : this.probabilities){
+            super.addParameters(p);
+        }
+        
+        for (ArrayList<Omega> omegaList : this.omegaDistributions){
+            for (Omega w : omegaList){
+                super.addParameters(w);
             }
         }
 
@@ -64,8 +76,12 @@ public class CANModel extends SubstitutionModel {
         return scaling;
     }
     
-    public List<List<Parameter>> getOmegaDistributions(){
-        return omegaDistributions;
+    public Omega getOmega(int gene, int siteClass){
+        return this.omegaDistributions.get(gene).get(siteClass);
+    }
+    
+    public double getProbability(int gene, int siteClass){
+        return this.probabilities.get(gene).get()[siteClass];
     }
     
 //    public List<Omega> getOmegas() {
