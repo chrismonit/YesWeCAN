@@ -101,10 +101,10 @@ public class CANFunction implements MultivariateFunction {
             }
             
             
-            double sitelnL = LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, iSite, P, 1.0);
+            double siteL = LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, iSite, P, 1.0);
             //System.out.println("site_"+iSite + "\t" + sitelnL);
             
-            lnL += Math.log(sitelnL);
+            lnL += Math.log(siteL);
             
         }// for iSite
         
