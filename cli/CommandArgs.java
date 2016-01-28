@@ -49,8 +49,9 @@ public class CommandArgs {
     @Parameter(names = {"-model", "-m"}, required = true, description = "Model of selection to use. 1 = M1a (negative/neutral), 2 = M2a (negative, neutral/positive)")
     private int model = Constants.DEFAULT_MODEL;
     
-    //@Parameter(names = {"-geneSpecificParameter", "-w"}, required = false, description = "Initial omega values for each gene. Delimited by comma")
-    //private String omegasArgument = "";
+    
+    @Parameter(names = {"-geneSpecificParameter", "-w"}, required = false, description = "Initial omega values for each gene. Delimited by comma")
+    private String omegasArgument = "";
     
     @Parameter(names = {"-omega0", "-w0"}, required = false, description = "Initial values for each gene's w_0. Delimited by comma")
     private String omegaArg0 = "";
@@ -211,6 +212,11 @@ public class CommandArgs {
 //        }
 //        return values;
 //    }
+    
+    
+    public double[] omegas(){
+        return geneSpecificParameter(this.omegasArgument, Constants.DEFAULT_OMEGA);
+    }
     
     public double[] omega0(){
         return geneSpecificParameter(this.omegaArg0, Constants.DEFAULT_OMEGA);
