@@ -28,19 +28,19 @@ import yeswecan.model.SubstitutionModel;
  * package require that such a class exists.
  * 
  */
-public class MutationModel extends SubstitutionModel {
+public class HKYModel extends SubstitutionModel {
     
     
     private TsTvRatioAdvanced kappa;
     private BaseFrequencies pi;
     
     
-    public MutationModel(){
+    public HKYModel(){
         this(new TsTvRatioAdvanced(Constants.DEFAULT_KAPPA), 
                 new BaseFrequencies(Constants.DEFAULT_PI));
     }
     
-    public MutationModel(TsTvRatioAdvanced kappa, BaseFrequencies pi){
+    public HKYModel(TsTvRatioAdvanced kappa, BaseFrequencies pi){
         this.kappa = kappa;
         this.pi = pi;
         super.clearParameters();
@@ -48,12 +48,12 @@ public class MutationModel extends SubstitutionModel {
     }
     
     //TODO this is incorrent - using other methods you set kappa and pi, but using this constructor, you don't
-    public MutationModel(List<Parameter> p){
+    public HKYModel(List<Parameter> p){
         super.clearParameters();
         super.setParameters(p);
     }
     
-//    public MutationModel(MutationModel model){
+//    public HKYModel(HKYModel model){
 //        this.kappa = model.kappa;
 //        this.pi = model.pi;
 //        super.clearParameters();

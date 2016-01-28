@@ -19,7 +19,7 @@ import swmutsel.model.parameters.Parameter;
 import swmutsel.model.parameters.TsTvRatio;
 import yeswecan.cli.CommandArgs;
 import yeswecan.model.hky.FunctionHKY;
-import yeswecan.model.hky.MutationModel;
+import yeswecan.model.hky.HKYModel;
 import yeswecan.model.SubstitutionModel;
 import yeswecan.optim.Optimise;
 import yeswecan.phylo.AdvancedAlignment;
@@ -135,7 +135,7 @@ public class Analyse {
     public void fitHKY(){
         FunctionHKY optFunction = new FunctionHKY(this.alignment, this.tree);
         Optimise opt = new Optimise();
-        SubstitutionModel result = opt.optNMS(optFunction, new MutationModel(makeHKY()));
+        SubstitutionModel result = opt.optNMS(optFunction, new HKYModel(makeHKY()));
         
         System.out.println("opt lnL: "+result.getLnL());
         System.out.println( result.getParameters().get(0).toString());

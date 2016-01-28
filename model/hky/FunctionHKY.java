@@ -10,7 +10,7 @@ Can pass alignment and tree to constructor
 
 package yeswecan.model.hky;
 
-import yeswecan.model.hky.MutationModel;
+import yeswecan.model.hky.HKYModel;
 import java.util.List;
 import org.apache.commons.math3.analysis.MultivariateFunction;
 import pal.tree.Tree;
@@ -38,18 +38,18 @@ public class FunctionHKY implements MultivariateFunction {
     
     private AdvancedAlignment alignment;
     private Tree tree;
-    private MutationModel mutModel;
+    private HKYModel mutModel;
     
     public FunctionHKY(AdvancedAlignment alignment, Tree tree){
         this.alignment = alignment;
         this.tree = tree;
         
-        /* NB while this instance of MutationModel is defined here with parameter
+        /* NB while this instance of HKYModel is defined here with parameter
         (the default) values, they are never used. The only way to get anything
         out from this class is through the value() method, which always populates
-        the MutationModel instance anew 
+        the HKYModel instance anew 
         */
-        this.mutModel = new MutationModel(new TsTvRatioAdvanced(Constants.DEFAULT_KAPPA), 
+        this.mutModel = new HKYModel(new TsTvRatioAdvanced(Constants.DEFAULT_KAPPA), 
                 new BaseFrequencies(Constants.DEFAULT_PI));
         
         
