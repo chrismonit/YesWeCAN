@@ -19,7 +19,7 @@ public class LikelihoodCalculator {
 
     public LikelihoodCalculator(){}
     
-    public static double calculateSiteLogLikelihood(AdvancedAlignment alignment, Tree tree, int site, ProbMatrixGenerator pGenerator, double branchScaling){ 
+    public static double calculateSiteLikelihood(AdvancedAlignment alignment, Tree tree, int site, ProbMatrixGenerator pGenerator, double branchScaling){ 
         
         
         double sum = 0.0;
