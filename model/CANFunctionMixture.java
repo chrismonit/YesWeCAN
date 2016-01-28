@@ -30,10 +30,10 @@ public class CANFunctionMixture implements MultivariateFunction {
     private AdvancedAlignment alignment;
     private Tree tree;
     private GeneticStructure genStruct;
-    private CANModel canModel;
+    private CANModelMixture canModel;
     
   
-    public CANFunctionMixture(AdvancedAlignment alignment, Tree tree, GeneticStructure genStruct, CANModel can){
+    public CANFunctionMixture(AdvancedAlignment alignment, Tree tree, GeneticStructure genStruct, CANModelMixture can){
         this.alignment = alignment;
         this.tree = tree;
         this.genStruct = genStruct;
