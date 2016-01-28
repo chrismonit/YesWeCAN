@@ -32,18 +32,18 @@ public class CANFunctionMixture implements MultivariateFunction {
     private GeneticStructure genStruct;
     private CANModelMixture canModel;
     
+    private int numSiteClasses;
   
-    public CANFunctionMixture(AdvancedAlignment alignment, Tree tree, GeneticStructure genStruct, CANModelMixture can){
+    public CANFunctionMixture(AdvancedAlignment alignment, Tree tree, GeneticStructure genStruct, CANModelMixture can, int numSiteClasses){
         this.alignment = alignment;
         this.tree = tree;
         this.genStruct = genStruct;
         
         this.canModel = can;
-
+        this.numSiteClasses = numSiteClasses;
         // NB 0th omega is fixed to 1.0 for neutral evolution
         
     }
-    
     
  
     @Override
@@ -52,68 +52,69 @@ public class CANFunctionMixture implements MultivariateFunction {
         // NB 0th omega is fixed to 1.0 for neutral evolution
 
         Mapper.setOptimisable(this.canModel.getParameters(), point);
-        
-        //double branchScaling = this.canModel.getScaling().get();
-        
-        double lnL = 0.0;
+                
+        double totalLogL = 0.0; // lnL for all sites
         
         for (int iSite = 0; iSite < this.alignment.getLength(); iSite++) {
-            // determine which process is active 
-            int siteType = iSite % 3;
             
+            // determine which process is active at this site
+            int siteType = iSite % 3;
             int[] genes = genStruct.getGenes(iSite); // the genes present in the three frames in this partition
             
-            //get the right omegas from the list of parameters
-
-            Omega aOmega = this.canModel.getOmegas().get(genes[0]);
-            Omega bOmega = this.canModel.getOmegas().get(genes[1]);
-            Omega cOmega = this.canModel.getOmegas().get(genes[2]);
+            // compute likelihood for this site
             
-            // make rate matrix, make p matrix, compute lnL for site
-            
-            CodonAwareMatrix Q = new CodonAwareMatrix(
-                    this.canModel.getKappa(),
-                    this.canModel.getPi(),
-                    new ProportionScaler(),
-                    siteType,
-                    aOmega, bOmega, cOmega,
-                    this.canModel.getScaling()
-            );
-            
-            //MatrixPrinter.PrintMatrix(Q.getData(), "Q", "");
-            //System.out.println("w1: " + this.canModel.getOmegas().get(1).toString());
-            
-            ProbMatrixGenerator P;
-            try{
-                P = ProbMatrixFactory.getPGenerator(Q);
-            }
-            catch(MaxCountExceededException e){
-                System.out.println("Eigendecomposition failure: " + iSite);
+            double siteL = 0.0;
+            // iterate over site classes, for each gene
+            for (int iSiteClassA = 0; iSiteClassA < this.numSiteClasses; iSiteClassA++) {
                 
-                for (Parameter p : this.canModel.getParameters()){
-                    System.out.println(p.toString());
-                }
-                //MatrixPrinter.PrintMatrix(Q.getData(), "Q");
-                //P = null;
-                //e.printStackTrace();
-                //System.exit(1);
-                return Double.NEGATIVE_INFINITY;
-            }
+                for (int iSiteClassB = 0; iSiteClassB < this.numSiteClasses; iSiteClassB++) {
+                    
+                    for (int iSiteClassC = 0; iSiteClassC < this.numSiteClasses; iSiteClassC++) {
+                        
+                        //get the right omegas from the list of parameters
+                        Omega aOmega = this.canModel.getOmega(genes[0], iSiteClassA);
+                        Omega bOmega = this.canModel.getOmega(genes[1], iSiteClassB);
+                        Omega cOmega = this.canModel.getOmega(genes[2], iSiteClassC);
+
+                        CodonAwareMatrix Q = new CodonAwareMatrix(
+                            this.canModel.getKappa(),
+                            this.canModel.getPi(),
+                            new ProportionScaler(),
+                            siteType,
+                            aOmega, bOmega, cOmega,
+                            this.canModel.getScaling()
+                        );
+
+                        ProbMatrixGenerator P;
+                        try{
+                            P = ProbMatrixFactory.getPGenerator(Q);
+                        }
+                        catch(MaxCountExceededException e){
+                            System.out.println("Eigendecomposition failure: " + iSite);
+                            for (Parameter p : this.canModel.getParameters()){
+                                System.out.println(p.toString());
+                            }
+                            return Double.NEGATIVE_INFINITY;
+                        }
+                
+                        // pF = p^{F}_{i} (prob for frame F's omega being that of site class i)
+                        double pA = this.canModel.getProbability(genes[0], iSiteClassA); 
+                        double pB = this.canModel.getProbability(genes[1], iSiteClassB);
+                        double pC = this.canModel.getProbability(genes[2], iSiteClassC);
+                        
+                        siteL += pA * pB* pC * LikelihoodCalculator.calculateSiteLikelihood(alignment, tree, iSite, P, 1.0);
+ 
+                    } //iSiteClassC
+                } // iSiteClassB
+            }// iSiteClassA
             
-            
-            double sitelnL = LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, iSite, P, 1.0);
-            //System.out.println("site_"+iSite + "\t" + sitelnL);
-            
-            lnL += sitelnL;
+            totalLogL += Math.log(siteL);
             
         }// for iSite
         
-        return lnL;
+        return totalLogL;
         
-    }
+    } // value
     
-    
-    
-    
-    
-}
+
+}// class
