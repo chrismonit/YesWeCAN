@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package yeswecan.model;
+package yeswecan.model.hky;
 
 import com.google.common.collect.Lists; // this is within the swmutsel jar
 import java.util.Collections;
@@ -15,6 +15,7 @@ import swmutsel.model.parameters.TsTvRatio;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 
 import yeswecan.Constants;
+import yeswecan.model.SubstitutionModel;
 
 /**
  *

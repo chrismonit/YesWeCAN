@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package yeswecan.model;
+package yeswecan.model.hky;
 
 import java.io.FileReader;
 import java.util.Arrays;

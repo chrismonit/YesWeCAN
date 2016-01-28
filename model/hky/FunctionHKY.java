@@ -8,8 +8,9 @@ Can pass alignment and tree to constructor
 
 */
 
-package yeswecan.model;
+package yeswecan.model.hky;
 
+import yeswecan.model.hky.MutationModel;
 import java.util.List;
 import org.apache.commons.math3.analysis.MultivariateFunction;
 import pal.tree.Tree;
@@ -20,6 +21,10 @@ import swmutsel.model.parameters.TsTvRatio;
 import yeswecan.Constants;
 
 import yeswecan.model.LikelihoodCalculator;
+import yeswecan.model.LikelihoodCalculator;
+import yeswecan.model.ProbMatrixFactory;
+import yeswecan.model.ProbMatrixGenerator;
+import yeswecan.model.RateMatrix;
 import yeswecan.model.RateMatrix;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.AdvancedAlignment;
