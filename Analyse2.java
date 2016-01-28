@@ -24,7 +24,7 @@ import swmutsel.model.parameters.Parameter;
 import swmutsel.model.parameters.Probabilities;
 import yeswecan.cli.CommandArgs;
 import yeswecan.model.CANFunction;
-import yeswecan.model.CANModel;
+import yeswecan.model.CANModelMixture;
 import yeswecan.model.CANModelOriginal;
 import yeswecan.model.SubstitutionModel;
 import yeswecan.model.parameters.OmegaNegative;
@@ -113,7 +113,7 @@ public class Analyse2 {
     
     
     // need to set whether these are fixed or not at this point
-    public CANModel makeCAN(){        
+    public CANModelMixture makeCAN(){        
 
         TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(this.comArgs.kappa());
         if (this.comArgs.fix().contains(Constants.FIX_KAPPA)) {
@@ -201,11 +201,11 @@ public class Analyse2 {
 
         
         
-        return new CANModel(kappa, pi, scaling, allOmegaDistributions);
+        return new CANModelMixture(kappa, pi, scaling, allOmegaDistributions);
     }
     
     
-    public void calculateFixed(CANModel can, Tree tree, AdvancedAlignment alignment){
+    public void calculateFixed(CANModelMixture can, Tree tree, AdvancedAlignment alignment){
         
         System.out.println("Calculating with fixed values. Input from CLI:");
         for (Parameter p : can.getParameters()){
@@ -230,7 +230,7 @@ public class Analyse2 {
         
         System.out.println("Codon Aware Nucleotide model. Optimising...\n");
 
-        CANModel can = makeCAN(); // only one instance of CANModelOriginal is ever created. First populated with initial parameter values and, by end of optimisation, populated with MLEs
+        CANModelMixture can = makeCAN(); // only one instance of CANModelOriginal is ever created. First populated with initial parameter values and, by end of optimisation, populated with MLEs
         CANFunction optFunction = new CANFunction(this.alignment, this.tree, genStruct, can);
         Optimise opt = new Optimise();
         SubstitutionModel result = opt.optNMS(optFunction, can);
