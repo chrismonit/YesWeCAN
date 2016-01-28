@@ -19,7 +19,7 @@ import swmutsel.model.parameters.Parameter;
 import swmutsel.model.parameters.TsTvRatio;
 import yeswecan.Constants;
 
-import yeswecan.model.LogLikelihoodCalculator;
+import yeswecan.model.LikelihoodCalculator;
 import yeswecan.model.RateMatrix;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.AdvancedAlignment;
@@ -69,7 +69,7 @@ public class FunctionHKY implements MultivariateFunction {
 
         double lnL = 0.0;
         for (int iSite=0; iSite < this.alignment.getLength(); iSite++){
-            double sitelnL = LogLikelihoodCalculator.calculateSiteLogLikelihood(this.alignment, this.tree, iSite, P, 1.0);
+            double sitelnL = LikelihoodCalculator.calculateSiteLogLikelihood(this.alignment, this.tree, iSite, P, 1.0);
             //System.out.println("site_"+iSite + "\t" + sitelnL);
             
             lnL += sitelnL;

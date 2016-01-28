@@ -14,10 +14,10 @@ import yeswecan.utils.MatrixPrinter;
  * @author Christopher Monit (c.monit.12@ucl.ac.uk)
  * 
  */
-public class LogLikelihoodCalculator {
+public class LikelihoodCalculator {
 
 
-    public LogLikelihoodCalculator(){}
+    public LikelihoodCalculator(){}
     
     public static double calculateSiteLogLikelihood(AdvancedAlignment alignment, Tree tree, int site, ProbMatrixGenerator pGenerator, double branchScaling){ 
         
@@ -28,7 +28,7 @@ public class LogLikelihoodCalculator {
         for (int iRootState = 0; iRootState < States.NT_STATES; iRootState++) {
             sum +=  pGenerator.getQ().getBaseFrequencies().get()[iRootState] * rootConditionals[iRootState]; //TODO surely we can make this more efficient
         }
-        return Math.log(sum);
+        return sum;
     }
     
     private static double[] downTree(Node parent, AdvancedAlignment alignment, Tree tree, int site, ProbMatrixGenerator pGenerator, double branchScaling){
