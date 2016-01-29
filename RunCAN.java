@@ -17,7 +17,6 @@ import swmutsel.model.parameters.Parameter;
 import yeswecan.cli.CommandArgs;
 import yeswecan.model.CANFunction;
 import yeswecan.model.CANModel;
-import yeswecan.model.CANModelMixture;
 import yeswecan.model.SubstitutionModel;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.optim.Optimise;
