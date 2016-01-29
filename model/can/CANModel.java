@@ -32,6 +32,10 @@ public class CANModel extends HKYModel {
 //        super.setParameters(parameters);
 //    }
     
+    public CANModel(HKYModel hky, BranchScaling scaling, List<Omega> omegas){
+        this(hky.getKappa(), hky.getPi(), scaling, omegas);
+    }
+    
     public CANModel(TsTvRatioAdvanced kappa, BaseFrequencies pi, BranchScaling scaling, List<Omega> omegas){
         // NB the 0th omega has to be an unoptimisible 1.0 value
         
