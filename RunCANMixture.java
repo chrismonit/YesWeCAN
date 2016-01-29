@@ -10,16 +10,20 @@ import java.util.ArrayList;
 import java.util.List;
 import pal.tree.Tree;
 import swmutsel.model.parameters.BranchScaling;
+import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
 import swmutsel.model.parameters.Parameter;
 import swmutsel.model.parameters.Probabilities;
 import yeswecan.cli.CommandArgs;
 import yeswecan.model.can.CANModel;
+import yeswecan.model.canmix.CANFunctionMixture;
 import yeswecan.model.canmix.CANModelMixture;
+import yeswecan.model.hky.FunctionHKY;
 import yeswecan.model.hky.HKYModel;
 import yeswecan.model.parameters.OmegaNegative;
 import yeswecan.model.parameters.OmegaPositive;
 import yeswecan.phylo.AdvancedAlignment;
+import yeswecan.phylo.GeneticStructure;
 
 
 /**
@@ -125,6 +129,25 @@ public class RunCANMixture extends RunCAN {
             numSiteClasses = Constants.NUM_M1_SITE_CLASSES;
         
         return new CANModelMixture(hky, scaling, omegas, probs, numSiteClasses);
+    }// make mixture
+    
+    
+    public void calculateFixed(int mixtureModel){
+        
+        int numSiteClasses = -1;
+
+        if (mixtureModel == Constants.M2_IDENTIFIER)
+            numSiteClasses = Constants.NUM_M2_SITE_CLASSES;
+        else
+            numSiteClasses = Constants.NUM_M1_SITE_CLASSES;
+        
+        CANModelMixture canMix = makeMixture(mixtureModel);
+        double[] optimisableParams = Mapper.getOptimisable(canMix.getParameters()); // map parameters to optimisation space, so FunctionHKY.value can use them
+        CANFunctionMixture calculator = new CANFunctionMixture(super.alignment, super.tree, super.genStruct, canMix, numSiteClasses );
+        double lnL = calculator.value(optimisableParams);
+        System.out.println("lnL: " + lnL + " "); // better to have it print the input parameters too, so you can see input and output together
     }
+    
+    
         
 }
