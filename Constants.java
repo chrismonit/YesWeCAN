@@ -31,6 +31,9 @@ public class Constants {
     public static int NUM_M1_SITE_CLASSES = 2;
     public static int NUM_M2_SITE_CLASSES = 3;
     
+    public static String FIX_OMEGA_STRING = "w";
+    public static String FIX_PROB_STRING = "p";
+    
     public static String ERROR_PREFIX = "ERROR: ";
     
     public static String ARGS_DELIMITER = ",";

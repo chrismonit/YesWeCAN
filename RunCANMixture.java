@@ -91,10 +91,10 @@ public class RunCANMixture extends RunCAN {
         for (int iGene = 0; iGene < super.comArgs.getGeneNumber(); iGene++) {
        
             OmegaNegative geneW_0 = new OmegaNegative(super.comArgs.omega0()[iGene]);
-            // fix if needs fixing. pseudocode:
-            /* if fix.contains("w0_"+iGene)
-                   geneW_0.setOptimisible(false);
-            */
+            // fix if needs fixing
+            if (super.comArgs.fix().contains("0"+Constants.FIX_OMEGA_STRING+Integer.toString(iGene)))
+               geneW_0.setOptimisable(false);
+        
             omegas.add(geneW_0);
 
             Omega geneW_1 = new Omega(1.0);
@@ -105,7 +105,8 @@ public class RunCANMixture extends RunCAN {
 
             if (mixtureModel == Constants.M2_IDENTIFIER){
                 OmegaPositive geneW_2 = new OmegaPositive(super.comArgs.omega2()[iGene]); 
-                // fix if needs fixing
+                if (super.comArgs.fix().contains("2"+Constants.FIX_OMEGA_STRING+Integer.toString(iGene)))
+                   geneW_2.setOptimisable(false);
                 omegas.add(geneW_2);
 
                 geneProbs = new Probabilities(new double[]{ super.comArgs.prob0()[iGene], super.comArgs.prob1()[iGene], super.comArgs.prob2()[iGene]});
@@ -114,7 +115,8 @@ public class RunCANMixture extends RunCAN {
             }
             
             // fix probs if needs fixing
-            probs.add(geneProbs);
+            if (super.comArgs.fix().contains(Constants.FIX_PROB_STRING+Integer.toString(iGene)))
+                probs.add(geneProbs);
            
         } // for iGene
         
