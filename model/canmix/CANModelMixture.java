@@ -6,13 +6,13 @@
 
 package yeswecan.model.canmix;
 
-import java.util.ArrayList;
-//import java.util.List;
+//import java.util.ArrayList;
+import java.util.List;
 import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Omega;
-//import swmutsel.model.parameters.Parameter;
 import swmutsel.model.parameters.Probabilities;
+import yeswecan.model.can.CANModel;
 //import yeswecan.model.SubstitutionModel;
 import yeswecan.model.hky.HKYModel;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
@@ -21,15 +21,17 @@ import yeswecan.model.parameters.TsTvRatioAdvanced;
  *
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>
  */
-public class CANModelMixture extends HKYModel {
+public class CANModelMixture extends CANModel {
     
 //    private TsTvRatioAdvanced kappa;
 //    private BaseFrequencies pi;
     //private List<Omega> omegas;
     //private List<List<Parameter>> omegaDistributions;
-    private ArrayList<ArrayList<Omega>> omegaDistributions;
-    private ArrayList<Probabilities> probabilities;
-    private BranchScaling scaling;
+    //private ArrayList<ArrayList<Omega>> omegaDistributions;
+    //private ArrayList<Omega> omegas
+    private List<Probabilities> probabilities;
+    int numSiteClasses; // used for accessing omegas
+    //private BranchScaling scaling;
     
 //    public CANModelMixture(List<Parameter> parameters){
 //        super.clearParameters();
@@ -37,28 +39,23 @@ public class CANModelMixture extends HKYModel {
 //    }
     
     public CANModelMixture(TsTvRatioAdvanced kappa, BaseFrequencies pi, BranchScaling scaling, 
-            ArrayList<ArrayList<Omega>> omegaDistributions, ArrayList<Probabilities> probabilities){
+            List<Omega> omegas, List<Probabilities> probabilities, int numSiteClasses){
         // NB the 0th omega has to be an unoptimisible 1.0 value
         
-        super(kappa, pi);       
-        this.scaling = scaling;
+        super(kappa, pi, scaling, omegas);       
+        //this.scaling = scaling;
         
         
-        this.omegaDistributions = omegaDistributions;
+        //this.omegaDistributions = omegaDistributions;
         this.probabilities = probabilities;
+        this.numSiteClasses = numSiteClasses;
         
         super.clearParameters();
         
-        super.addParameters(super.getKappa(), super.getPi(), this.scaling);
+        super.addParameters(super.getKappa(), super.getPi(), super.getScaling());
         
         for (Probabilities p : this.probabilities){
             super.addParameters(p);
-        }
-        
-        for (ArrayList<Omega> omegaList : this.omegaDistributions){
-            for (Omega w : omegaList){
-                super.addParameters(w);
-            }
         }
 
     }
@@ -72,13 +69,16 @@ public class CANModelMixture extends HKYModel {
 //        return pi;
 //    }
     
+//    
+//    public BranchScaling getScaling() {
+//        return scaling;
+//    }
     
-    public BranchScaling getScaling() {
-        return scaling;
-    }
-    
+    // need to implement linear index finder
     public Omega getOmega(int gene, int siteClass){
-        return this.omegaDistributions.get(gene).get(siteClass);
+        //return this.omegaDistributions.get(gene).get(siteClass);
+        int index = gene * this.numSiteClasses + siteClass;
+        return super.getOmegas().get(index);
     }
     
     public double getProbability(int gene, int siteClass){
