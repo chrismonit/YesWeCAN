@@ -24,9 +24,12 @@ import yeswecan.phylo.States;
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>
  */
 public class RunHKY {
-    private CommandArgs comArgs;
-    private AdvancedAlignment alignment;
-    private Tree tree;
+    //using protected fields allows subclasses to access these fields
+    protected CommandArgs comArgs;
+    protected AdvancedAlignment alignment;
+    protected Tree tree;
+    
+    
     
     public RunHKY(AdvancedAlignment alignment, Tree tree, CommandArgs input){
         this.alignment = alignment;
@@ -58,10 +61,7 @@ public class RunHKY {
         double lnL = calculator.value(optimisableParams);
         System.out.println("lnL: " + lnL + " "); // better to have it print the input parameters too, so you can see input and output together
     }
-    
-
-    
-    
+        
     // start the optimisation
     public void fit(){
         FunctionHKY optFunction = new FunctionHKY(this.alignment, this.tree);

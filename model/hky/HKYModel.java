@@ -29,8 +29,8 @@ import yeswecan.model.SubstitutionModel;
 public class HKYModel extends SubstitutionModel {
     
     
-    private TsTvRatioAdvanced kappa;
-    private BaseFrequencies pi;
+    protected TsTvRatioAdvanced kappa;
+    protected BaseFrequencies pi;
     
     
 //    public HKYModel(){

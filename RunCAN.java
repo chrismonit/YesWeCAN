@@ -15,9 +15,10 @@ import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
 import swmutsel.model.parameters.Parameter;
 import yeswecan.cli.CommandArgs;
+import yeswecan.model.SubstitutionModel;
 import yeswecan.model.can.CANFunction;
 import yeswecan.model.can.CANModel;
-import yeswecan.model.SubstitutionModel;
+import yeswecan.model.hky.HKYModel;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.optim.Optimise;
 import yeswecan.phylo.AdvancedAlignment;
@@ -29,54 +30,35 @@ import yeswecan.phylo.States;
  *
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>
  */
-public class RunCAN {
+public class RunCAN extends RunHKY {
     
-    private CommandArgs comArgs;
-    private AdvancedAlignment alignment;
-    private Tree tree;
-    
+//    private CommandArgs comArgs;
+//    private AdvancedAlignment alignment;
+//    private Tree tree;
+//    
     private GeneticStructure genStruct;
     
     public RunCAN(AdvancedAlignment alignment, Tree tree, CommandArgs input){
-        this.alignment = alignment;
-        this.tree = tree;
-        this. comArgs = input;
+        super(alignment, tree, input);
         
-        this.genStruct = new GeneticStructure(this.comArgs.aFrame(),
-                                                            this.comArgs.bFrame(),
-                                                            this.comArgs.cFrame(),
-                                                            this.comArgs.lengths());
+
+        
+        this.genStruct = new GeneticStructure(super.comArgs.aFrame(),
+                                                            super.comArgs.bFrame(),
+                                                            super.comArgs.cFrame(),
+                                                            super.comArgs.lengths());
     }
     
         // need to set whether these are fixed or not at this point
     public CANModel makeCAN(){        
 
-        TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(this.comArgs.kappa());
-        if (this.comArgs.fix().contains(Constants.FIX_KAPPA)) {
-            kappa.setOptimisable(false);
-        }
-      
-        double[] frequencies = new double[States.NT_STATES]; // will be in correct order, whatever that may be
-        
-        if (Boolean.parseBoolean(this.comArgs.tcag())){
-            frequencies = ReorderFrequencies.pamlToAlpha(this.comArgs.pi());
-        }
-        else{
-            frequencies = this.comArgs.pi();
-        }
+        HKYModel hky = super.makeHKY(super.comArgs);
 
-        BaseFrequencies pi = new BaseFrequencies(frequencies);
-        
-        if (this.comArgs.fix().contains(Constants.FIX_FREQUENCIES)) {
-            pi.setOptimisable(false);
-        }
-        
         BranchScaling scaling = new BranchScaling(this.comArgs.scaling());
         if (this.comArgs.fix().contains(Constants.FIX_SCALING)) {
             scaling.setOptimisable(false);
         }
         
-                
         List<Omega> omegas = new ArrayList<Omega>();
         
         Omega neutralOmega = new Omega(1.0); // for frames where there is no gene
@@ -93,8 +75,7 @@ public class RunCAN {
             omegas.add(w);
         }
 
-        return new CANModel(kappa, pi, scaling, omegas);
-        
+        return new CANModel(hky, scaling, omegas);
         
     }
     
@@ -112,8 +93,9 @@ public class RunCAN {
         Optimise opt = new Optimise();
         SubstitutionModel result = opt.optNMS(optFunction, can);
         
-        String delim = "\t";
+        // the rest is output to stdout. Need to standardise way of returning MLEs
         
+        String delim = "\t";
         StringBuilder header = new StringBuilder("Header"+delim);
         StringBuilder mles = new StringBuilder("MLEs"+delim);
         
