@@ -46,6 +46,16 @@ public class RunCANMixture extends RunCAN {
         super(alignment, tree, input);
     }// constructor
     
+    public static int numberSiteClasses(int mixtureModel){
+        int numSiteClasses = -1;
+
+        if (mixtureModel == Constants.M2_IDENTIFIER)
+            numSiteClasses = Constants.NUM_M2_SITE_CLASSES;
+        else
+            numSiteClasses = Constants.NUM_M1_SITE_CLASSES;
+        return numSiteClasses;
+    }
+    
     
     public CANModelMixture makeMixture(int mixtureModel){
         
@@ -117,29 +127,17 @@ public class RunCANMixture extends RunCAN {
            
         } // for iGene
         
-        int numSiteClasses = -1;
-
-        if (mixtureModel == Constants.M2_IDENTIFIER)
-            numSiteClasses = Constants.NUM_M2_SITE_CLASSES;
-        else
-            numSiteClasses = Constants.NUM_M1_SITE_CLASSES;
         
-        return new CANModelMixture(hky, scaling, omegas, probs, numSiteClasses);
+        
+        return new CANModelMixture(hky, scaling, omegas, probs, numberSiteClasses(mixtureModel));
     }// make mixture
     
     
     public void calculateFixed(int mixtureModel){
-        
-        int numSiteClasses = -1;
-
-        if (mixtureModel == Constants.M2_IDENTIFIER)
-            numSiteClasses = Constants.NUM_M2_SITE_CLASSES;
-        else
-            numSiteClasses = Constants.NUM_M1_SITE_CLASSES;
-        
+                
         CANModelMixture canMix = makeMixture(mixtureModel);
         double[] optimisableParams = Mapper.getOptimisable(canMix.getParameters()); // map parameters to optimisation space, so FunctionHKY.value can use them
-        CANFunctionMixture calculator = new CANFunctionMixture(super.alignment, super.tree, super.genStruct, canMix, numSiteClasses );
+        CANFunctionMixture calculator = new CANFunctionMixture(super.alignment, super.tree, super.genStruct, canMix, numberSiteClasses(mixtureModel) );
         double lnL = calculator.value(optimisableParams);
         System.out.println("lnL: " + lnL + " "); // better to have it print the input parameters too, so you can see input and output together
     }
