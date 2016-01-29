@@ -12,18 +12,14 @@ import pal.tree.Tree;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
-import swmutsel.model.parameters.Parameter;
 import swmutsel.model.parameters.Probabilities;
 import yeswecan.cli.CommandArgs;
-import yeswecan.model.can.CANModel;
 import yeswecan.model.canmix.CANFunctionMixture;
 import yeswecan.model.canmix.CANModelMixture;
-import yeswecan.model.hky.FunctionHKY;
 import yeswecan.model.hky.HKYModel;
 import yeswecan.model.parameters.OmegaNegative;
 import yeswecan.model.parameters.OmegaPositive;
 import yeswecan.phylo.AdvancedAlignment;
-import yeswecan.phylo.GeneticStructure;
 
 
 /**
