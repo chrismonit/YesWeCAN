@@ -6,12 +6,10 @@
 
 package yeswecan.model.hky;
 
-import com.google.common.collect.Lists; // this is within the swmutsel jar
-import java.util.Collections;
+
 import java.util.List;
 import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.Parameter;
-import swmutsel.model.parameters.TsTvRatio;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 
 import yeswecan.Constants;
@@ -35,10 +33,10 @@ public class HKYModel extends SubstitutionModel {
     private BaseFrequencies pi;
     
     
-    public HKYModel(){
-        this(new TsTvRatioAdvanced(Constants.DEFAULT_KAPPA), 
-                new BaseFrequencies(Constants.DEFAULT_PI));
-    }
+//    public HKYModel(){
+//        this(new TsTvRatioAdvanced(Constants.DEFAULT_KAPPA), 
+//                new BaseFrequencies(Constants.DEFAULT_PI));
+//    }
     
     public HKYModel(TsTvRatioAdvanced kappa, BaseFrequencies pi){
         this.kappa = kappa;
@@ -48,10 +46,10 @@ public class HKYModel extends SubstitutionModel {
     }
     
     //TODO this is incorrent - using other methods you set kappa and pi, but using this constructor, you don't
-    public HKYModel(List<Parameter> p){
-        super.clearParameters();
-        super.setParameters(p);
-    }
+//    public HKYModel(List<Parameter> p){
+//        super.clearParameters();
+//        super.setParameters(p);
+//    }
     
 //    public HKYModel(HKYModel model){
 //        this.kappa = model.kappa;

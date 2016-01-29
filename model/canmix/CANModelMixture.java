@@ -7,23 +7,24 @@
 package yeswecan.model.canmix;
 
 import java.util.ArrayList;
-import java.util.List;
+//import java.util.List;
 import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Omega;
-import swmutsel.model.parameters.Parameter;
+//import swmutsel.model.parameters.Parameter;
 import swmutsel.model.parameters.Probabilities;
-import yeswecan.model.SubstitutionModel;
+//import yeswecan.model.SubstitutionModel;
+import yeswecan.model.hky.HKYModel;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 
 /**
  *
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>
  */
-public class CANModelMixture extends SubstitutionModel {
+public class CANModelMixture extends HKYModel {
     
-    private TsTvRatioAdvanced kappa;
-    private BaseFrequencies pi;
+//    private TsTvRatioAdvanced kappa;
+//    private BaseFrequencies pi;
     //private List<Omega> omegas;
     //private List<List<Parameter>> omegaDistributions;
     private ArrayList<ArrayList<Omega>> omegaDistributions;
@@ -39,8 +40,7 @@ public class CANModelMixture extends SubstitutionModel {
             ArrayList<ArrayList<Omega>> omegaDistributions, ArrayList<Probabilities> probabilities){
         // NB the 0th omega has to be an unoptimisible 1.0 value
         
-        this.kappa = kappa;
-        this.pi = pi;        
+        super(kappa, pi);       
         this.scaling = scaling;
         
         
@@ -49,7 +49,7 @@ public class CANModelMixture extends SubstitutionModel {
         
         super.clearParameters();
         
-        super.addParameters(this.kappa, this.pi, this.scaling);
+        super.addParameters(super.getKappa(), super.getPi(), this.scaling);
         
         for (Probabilities p : this.probabilities){
             super.addParameters(p);
@@ -64,13 +64,13 @@ public class CANModelMixture extends SubstitutionModel {
     }
     
     
-    public TsTvRatioAdvanced getKappa() {
-        return kappa;
-    }
-
-    public BaseFrequencies getPi() {
-        return pi;
-    }
+//    public TsTvRatioAdvanced getKappa() {
+//        return kappa;
+//    }
+//
+//    public BaseFrequencies getPi() {
+//        return pi;
+//    }
     
     
     public BranchScaling getScaling() {
@@ -93,7 +93,7 @@ public class CANModelMixture extends SubstitutionModel {
     
     
     
-    public static void main(String[] args){
+//    public static void main(String[] args){
 //        List<Omega> omegas = new ArrayList<Omega>();
 //        omegas.add(new Omega(1.0));
 //        omegas.add(new Omega(2.0));
@@ -107,10 +107,6 @@ public class CANModelMixture extends SubstitutionModel {
 //        for (Parameter p : can.getParameters()){
 //            System.out.println(p.toString());
 //        }
-    
-        
-        
-        
-    }
+//    }
     
 }
