@@ -45,8 +45,7 @@ public class CommandArgs {
     @Parameter(names = {"-scaling", "-sc"}, required = true, description = "Scaling factor for branch lengths.")
     private double scaling = Constants.DEFAULT_SCALING;
     
-    // TODO make -m 0 equal to CAN version 1? without mixture?
-    @Parameter(names = {"-model", "-m"}, required = true, description = "Model of selection to use. 1 = M1a (negative/neutral), 2 = M2a (negative, neutral/positive)")
+    @Parameter(names = {"-model", "-m"}, required = true, description = "Model of selection to use. -1 = HKY, 0 = CAN original, 1 = M1a (negative/neutral), 2 = M2a (negative, neutral/positive)")
     private int model = Constants.DEFAULT_MODEL;
     
     
