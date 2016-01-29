@@ -6,11 +6,9 @@
 
 package yeswecan;
 
-import java.util.List;
 import pal.tree.Tree;
 import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.Mapper;
-import swmutsel.model.parameters.Parameter;
 import yeswecan.cli.CommandArgs;
 import yeswecan.model.SubstitutionModel;
 import yeswecan.model.hky.FunctionHKY;
