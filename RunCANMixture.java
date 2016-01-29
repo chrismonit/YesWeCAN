@@ -85,9 +85,7 @@ public class RunCANMixture extends RunCAN {
         probs.add(neutralProbs);
         
         // for coding frames
-        
-        // NB need to be able to fix these!!!!
-        
+                
         for (int iGene = 0; iGene < super.comArgs.getGeneNumber(); iGene++) {
        
             OmegaNegative geneW_0 = new OmegaNegative(super.comArgs.omega0()[iGene]);
@@ -114,7 +112,6 @@ public class RunCANMixture extends RunCAN {
                 geneProbs = new Probabilities(new double[]{ super.comArgs.prob0()[iGene], super.comArgs.prob1()[iGene] });
             }
             
-            // fix probs if needs fixing
             if (super.comArgs.fix().contains(Constants.FIX_PROB_STRING+Integer.toString(iGene)))
                 probs.add(geneProbs);
            
