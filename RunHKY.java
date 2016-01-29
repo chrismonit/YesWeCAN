@@ -6,17 +6,16 @@
 
 package yeswecan;
 
-import java.util.Arrays;
 import java.util.List;
 import pal.tree.Tree;
 import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Parameter;
-import swmutsel.model.parameters.TsTvRatio;
 import yeswecan.cli.CommandArgs;
+import yeswecan.model.SubstitutionModel;
 import yeswecan.model.hky.FunctionHKY;
 import yeswecan.model.hky.HKYModel;
-import yeswecan.model.SubstitutionModel;
+import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.optim.Optimise;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.ReorderFrequencies;
@@ -34,29 +33,29 @@ public class RunHKY {
     public RunHKY(AdvancedAlignment alignment, Tree tree, CommandArgs input){
         this.alignment = alignment;
         this.tree = tree;
-        this. comArgs = input;
+        this.comArgs = input;
     }
     
-        // only HKY at the moment
-    public List<Parameter> makeHKY(){
-        TsTvRatio kappa = new TsTvRatio(this.comArgs.kappa());
+    public static HKYModel makeHKY(CommandArgs comArgs){
+        TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(comArgs.kappa());
         
         double[] frequencies = new double[States.NT_STATES]; // will be in correct order, whatever that may be
         
-        if (Boolean.parseBoolean(this.comArgs.tcag())){
-            frequencies = ReorderFrequencies.pamlToAlpha(this.comArgs.pi());
+        if (Boolean.parseBoolean(comArgs.tcag())){
+            frequencies = ReorderFrequencies.pamlToAlpha(comArgs.pi());
         }
         else{
-            frequencies = this.comArgs.pi();
+            frequencies = comArgs.pi();
         }
 
         BaseFrequencies pi = new BaseFrequencies(frequencies);
-        return Arrays.asList(kappa, pi);        
+        return new HKYModel(kappa, pi);
+        //return Arrays.asList(kappa, pi);        
     }
     
     
-    public static void calculateFixed(List<Parameter> model, Tree tree, AdvancedAlignment alignment){
-        double[] optimisableParams = Mapper.getOptimisable(model); // map parameters to optimisation space, so FunctionHKY.value can use them
+    public static void calculateFixed(HKYModel hky, Tree tree, AdvancedAlignment alignment){
+        double[] optimisableParams = Mapper.getOptimisable(hky.getParameters()); // map parameters to optimisation space, so FunctionHKY.value can use them
         FunctionHKY calculator = new FunctionHKY(alignment, tree);
         double lnL = calculator.value(optimisableParams);
         System.out.println("lnL: " + lnL + " "); // better to have it print the input parameters too, so you can see input and output together
@@ -66,10 +65,10 @@ public class RunHKY {
     
     
     // start the optimisation
-    public void fitHKY(){
+    public void fit(){
         FunctionHKY optFunction = new FunctionHKY(this.alignment, this.tree);
         Optimise opt = new Optimise();
-        SubstitutionModel result = opt.optNMS(optFunction, new HKYModel(makeHKY()));
+        SubstitutionModel result = opt.optNMS(optFunction, makeHKY(this.comArgs));
         
         System.out.println("opt lnL: "+result.getLnL());
         System.out.println( result.getParameters().get(0).toString());
