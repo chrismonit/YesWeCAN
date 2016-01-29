@@ -47,9 +47,9 @@ public class RunCANMixture extends RunCAN {
     }// constructor
     
     
-    public CANModelMixture makeMixture(){
+    public CANModelMixture makeMixture(int mixtureModel){
         
-        HKYModel hky = RunHKY.makeHKY(comArgs);
+        HKYModel hky = RunHKY.makeHKY(super.comArgs);
         
         BranchScaling scaling = new BranchScaling(super.comArgs.scaling());
         if (super.comArgs.fix().contains(Constants.FIX_SCALING)) {
@@ -58,45 +58,74 @@ public class RunCANMixture extends RunCAN {
         
         List<Probabilities> probs = new ArrayList<Probabilities>();
         List<Omega> omegas = new ArrayList<Omega>();
-        
-        
-        
+                
         // neutral (for noncoding frames)
         
+        Probabilities neutralProbs;
+       
+        OmegaNegative neutralW_0 = new OmegaNegative(1.0); // should never be used
+        neutralW_0.setOptimisable(false);
+        omegas.add(neutralW_0);
         
-        Probabilities neutralProbs = new Probabilities(new double[]{0.0, 1.0, 0.0}); // all density on w_1 class, because w=1
-        OmegaNegative neutralNeg = new OmegaNegative(0.0); // should never be used
-        Omega neutralNeutral = new Omega(1.0);
-        OmegaPositive neutralPos = new OmegaPositive(0.0); // should never be used
-        probs.add(neutralProbs);
-        omegas.add(neutralNeg);
-        omegas.add(neutralNeutral);
-        omegas.add(neutralPos);
+        Omega neutralW_1 = new Omega(1.0);
+        neutralW_1.setOptimisable(false);
+        omegas.add(neutralW_1);
         
-        
-        for (int i = 0; i < super.comArgs.getGeneNumber(); i++) {
-            Probabilities geneProbs = new Probabilities(new double[]{ super.comArgs.prob0()[i], super.comArgs.prob1()[i], super.comArgs.prob2()[i]}); 
-            OmegaNegative w_0 = new OmegaNegative(super.comArgs.omega0()[i]);
+        if (mixtureModel == Constants.M2_IDENTIFIER){
+            OmegaPositive neutralW_2 = new OmegaPositive(1.0); 
+            neutralW_2.setOptimisable(false);
+            omegas.add(neutralW_2);
             
-            Omega w_1 = new Omega(1.0);
-            w_1.setOptimisable(false); // fix w_1 = 1 for every gene
-            
-            OmegaPositive w_2 = new OmegaPositive(super.comArgs.omega2()[i]);
-            
-            probs.add(geneProbs);
-            omegas.add(w_0);
-            omegas.add(w_1);
-            omegas.add(w_2);
+            neutralProbs = new Probabilities(new double[]{ 0.0, 1.0, 0.0 }); // all density on w_1
+        }else{
+            neutralProbs = new Probabilities(new double[]{ 0.0, 1.0 });
         }
         
+        neutralProbs.setOptimisable(false);
+        probs.add(neutralProbs);
         
-        int siteClasses = 0; // CHANGE THIS!
-        return new CANModelMixture(hky, scaling, omegas, probs, siteClasses);
+        // for coding frames
+        
+        // NB need to be able to fix these!!!!
+        
+        for (int iGene = 0; iGene < super.comArgs.getGeneNumber(); iGene++) {
+       
+            OmegaNegative geneW_0 = new OmegaNegative(super.comArgs.omega0()[iGene]);
+            // fix if needs fixing. pseudocode:
+            /* if fix.contains("w0_"+iGene)
+                   geneW_0.setOptimisible(false);
+            */
+            omegas.add(geneW_0);
+
+            Omega geneW_1 = new Omega(1.0);
+            geneW_1.setOptimisable(false); // w_1 always fixed to 1
+            omegas.add(geneW_1);
+            
+            Probabilities geneProbs;
+
+            if (mixtureModel == Constants.M2_IDENTIFIER){
+                OmegaPositive geneW_2 = new OmegaPositive(super.comArgs.omega2()[iGene]); 
+                // fix if needs fixing
+                omegas.add(geneW_2);
+
+                geneProbs = new Probabilities(new double[]{ super.comArgs.prob0()[iGene], super.comArgs.prob1()[iGene], super.comArgs.prob2()[iGene]});
+            }else{
+                geneProbs = new Probabilities(new double[]{ super.comArgs.prob0()[iGene], super.comArgs.prob1()[iGene] });
+            }
+            
+            // fix probs if needs fixing
+            probs.add(geneProbs);
+           
+        } // for iGene
+        
+        int numSiteClasses = -1;
+
+        if (mixtureModel == Constants.M2_IDENTIFIER)
+            numSiteClasses = Constants.NUM_M2_SITE_CLASSES;
+        else
+            numSiteClasses = Constants.NUM_M1_SITE_CLASSES;
+        
+        return new CANModelMixture(hky, scaling, omegas, probs, numSiteClasses);
     }
-    
-        
-        
-        
-        
         
 }
