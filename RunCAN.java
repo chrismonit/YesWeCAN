@@ -36,7 +36,7 @@ public class RunCAN extends RunHKY {
 //    private AdvancedAlignment alignment;
 //    private Tree tree;
 //    
-    private GeneticStructure genStruct;
+    protected GeneticStructure genStruct;
     
     public RunCAN(AdvancedAlignment alignment, Tree tree, CommandArgs input){
         super(alignment, tree, input);
@@ -52,7 +52,7 @@ public class RunCAN extends RunHKY {
         // need to set whether these are fixed or not at this point
     public CANModel makeCAN(){        
 
-        HKYModel hky = super.makeHKY(super.comArgs);
+        HKYModel hky = RunHKY.makeHKY(super.comArgs);
 
         BranchScaling scaling = new BranchScaling(this.comArgs.scaling());
         if (this.comArgs.fix().contains(Constants.FIX_SCALING)) {

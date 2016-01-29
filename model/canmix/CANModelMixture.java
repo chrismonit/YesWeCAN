@@ -42,7 +42,7 @@ public class CANModelMixture extends CANModel {
             List<Probabilities> probabilities, int numSiteClasses){
         this(hky.getKappa(), hky.getPi(), scaling, omegas, probabilities, numSiteClasses);
     }
-    
+     
     public CANModelMixture(TsTvRatioAdvanced kappa, BaseFrequencies pi, BranchScaling scaling, 
             List<Omega> omegas, List<Probabilities> probabilities, int numSiteClasses){
         // NB the 0th omega has to be an unoptimisible 1.0 value
