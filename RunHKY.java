@@ -37,15 +37,6 @@ public class RunHKY {
         this. comArgs = input;
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
         // only HKY at the moment
     public List<Parameter> makeHKY(){
         TsTvRatio kappa = new TsTvRatio(this.comArgs.kappa());

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package yeswecan.model;
+package yeswecan.model.canmix;
 
 import java.util.ArrayList;
 import org.apache.commons.math3.analysis.MultivariateFunction;
@@ -15,6 +15,11 @@ import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
 import swmutsel.model.parameters.Parameter;
+import yeswecan.model.CodonAwareMatrix;
+import yeswecan.model.LikelihoodCalculator;
+import yeswecan.model.ProbMatrixFactory;
+import yeswecan.model.ProbMatrixGenerator;
+import yeswecan.model.ProportionScaler;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.GeneticStructure;

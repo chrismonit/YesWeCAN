@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package yeswecan.model;
+package yeswecan.model.canmix;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,7 @@ import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Omega;
 import swmutsel.model.parameters.Parameter;
 import swmutsel.model.parameters.Probabilities;
+import yeswecan.model.SubstitutionModel;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 
 /**

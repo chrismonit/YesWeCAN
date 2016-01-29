@@ -10,7 +10,7 @@ import pal.tree.Tree;
 import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.BranchScaling;
 import yeswecan.cli.CommandArgs;
-import yeswecan.model.CANModelMixture;
+import yeswecan.model.canmix.CANModelMixture;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.GeneticStructure;
