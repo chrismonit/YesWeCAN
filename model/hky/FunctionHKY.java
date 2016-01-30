@@ -49,8 +49,8 @@ public class FunctionHKY implements MultivariateFunction {
         out from this class is through the value() method, which always populates
         the HKYModel instance anew 
         */
-        this.mutModel = new HKYModel(new TsTvRatioAdvanced(Constants.DEFAULT_KAPPA), 
-                new BaseFrequencies(Constants.DEFAULT_PI));
+        this.mutModel = new HKYModel(new TsTvRatioAdvanced(TsTvRatioAdvanced.getDefault()), 
+                new BaseFrequencies(BaseFrequencies.getDefault()));
         
         
     }
