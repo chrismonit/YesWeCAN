@@ -28,15 +28,9 @@ import yeswecan.model.SubstitutionModel;
  */
 public class HKYModel extends SubstitutionModel {
     
-    
     protected TsTvRatioAdvanced kappa;
     protected BaseFrequencies pi;
     
-    
-//    public HKYModel(){
-//        this(new TsTvRatioAdvanced(Constants.DEFAULT_KAPPA), 
-//                new BaseFrequencies(Constants.DEFAULT_PI));
-//    }
     
     public HKYModel(TsTvRatioAdvanced kappa, BaseFrequencies pi){
         this.kappa = kappa;
@@ -44,20 +38,6 @@ public class HKYModel extends SubstitutionModel {
         super.clearParameters();
         super.addParameters(kappa, pi);
     }
-    
-    //TODO this is incorrent - using other methods you set kappa and pi, but using this constructor, you don't
-//    public HKYModel(List<Parameter> p){
-//        super.clearParameters();
-//        super.setParameters(p);
-//    }
-    
-//    public HKYModel(HKYModel model){
-//        this.kappa = model.kappa;
-//        this.pi = model.pi;
-//        super.clearParameters();
-//        super.addParameters(kappa, pi);
-//    }
-    
     
     public TsTvRatioAdvanced getKappa() {
         return kappa;
