@@ -43,10 +43,10 @@ public class RunCANMixture extends RunCAN {
 //                                                            super.comArgs.cFrame(),
 //                                                            super.comArgs.lengths());
         
-        super(alignment, tree, input);
+        super(alignment, tree, input); 
     }// constructor
     
-    public static int numberSiteClasses(int mixtureModel){
+    private static int numberSiteClasses(int mixtureModel){
         int numSiteClasses = -1;
 
         if (mixtureModel == Constants.M2_IDENTIFIER)
@@ -127,8 +127,6 @@ public class RunCANMixture extends RunCAN {
            
         } // for iGene
         
-        
-        
         return new CANModelMixture(hky, scaling, omegas, probs, numberSiteClasses(mixtureModel));
     }// make mixture
     
@@ -141,7 +139,5 @@ public class RunCANMixture extends RunCAN {
         double lnL = calculator.value(optimisableParams);
         System.out.println("lnL: " + lnL + " "); // better to have it print the input parameters too, so you can see input and output together
     }
-    
-    
-        
+            
 }
