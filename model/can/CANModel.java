@@ -46,12 +46,15 @@ public class CANModel extends HKYModel {
     
     
     public BranchScaling getScaling() {
-        return scaling;
+        return this.scaling;
     }
     
-    public List<Omega> getOmegas() {
-        return omegas;
+    public Omega getOmega(int gene) {
+        return this.omegas.get(gene);
     }
     
-
+    public List<Omega> getOmegas(){
+        return this.omegas;
+    }
+    
 }
