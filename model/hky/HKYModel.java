@@ -6,14 +6,9 @@
 
 package yeswecan.model.hky;
 
-
-import java.util.List;
-import swmutsel.model.parameters.BaseFrequencies;
-import swmutsel.model.parameters.Parameter;
-import yeswecan.model.parameters.TsTvRatioAdvanced;
-
-import yeswecan.Constants;
 import yeswecan.model.SubstitutionModel;
+import swmutsel.model.parameters.BaseFrequencies;
+import yeswecan.model.parameters.TsTvRatioAdvanced;
 
 /**
  *
