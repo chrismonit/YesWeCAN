@@ -23,5 +23,18 @@ public class ArrayPrinter {
     public static void print(double[] array, String delim){
         System.out.println(toString(array,delim));
     }
+ 
+      public static String toString(int[] array, String delim){
+        String str = "";
+        for (int i = 0; i < array.length; i++) {
+            str +=  Integer.toString(array[i]) + delim;
+        }
+        return str;
+    }
+    
+    public static void print(int[] array, String delim){
+        System.out.println(toString(array,delim));
+    }
+    
     
 }

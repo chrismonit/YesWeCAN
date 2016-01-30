@@ -42,7 +42,7 @@ public class CommandArgs {
     private int model = Constants.DEFAULT_MODEL;
     
     
-    @Parameter(names = {"-geneSpecificParameter", "-w"}, required = false, description = "Initial omega values for each gene. Delimited by comma")
+    @Parameter(names = {"-omega", "-w"}, required = false, description = "Initial omega values for each gene. Delimited by comma")
     private String omegasArgument = "";
     
     @Parameter(names = {"-omega0", "-w0"}, required = false, description = "Initial values for each gene's w_0. Delimited by comma")
