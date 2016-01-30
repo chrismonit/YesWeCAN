@@ -10,22 +10,15 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import yeswecan.Constants;
 import yeswecan.phylo.States;
-import yeswecan.utils.ArrayPrinter;
-import yeswecan.utils.MatrixPrinter;
 /**
  *
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>
  */
 public class CommandArgs {
     
-//    @Parameter
-//    private List<String> parameters = new ArrayList<>();
-    
-    //data
     
    @Parameter(names = {"-sequences", "-s"}, required = true, description = "Phylip format nucleotide sequence alignment")
     private String alignmentPath = "NO ALIGNMENT PATH";
@@ -93,17 +86,25 @@ public class CommandArgs {
     @Parameter(names = {"-phy"}, required = false, description = "Sequence data are in Phylip format (assumes Fasta format by default")
     private String phy = "false";
     
-    private int geneNumber = -1;
     
-//    @Parameter(names = {"-fix"}, required = false, description = "Parameters to be fixed at initial values")
-//    private String fix = "false"; // need to change so no argument required, just looks whether the flag is present or not
-//    //private List<String> fix = new ArrayList<>();
-    
+
     @Parameter(names = {"-fix"}, variableArity = true, required = false, description = "Parameters to be fixed at initial values")
     private List<String> fix = new ArrayList<>();
     
+    public int getModel(){
+        return model;
+    }
+    
     public List<String> fix(){
         return fix;
+    }
+    
+    public String tcag(){
+        return tcag;
+    }
+  
+    public String phy(){
+        return phy;
     }
     
     public String alignment(){
@@ -113,7 +114,7 @@ public class CommandArgs {
     public String tree(){
         return treePath;
     }
-    
+
     public double scaling(){
         return scaling;
     }
@@ -121,6 +122,8 @@ public class CommandArgs {
     public double kappa(){
         return kappa.doubleValue(); // does doubleValue() here actually do anything??
     }
+    
+    
     
     public double[] pi(){ 
         double[] toReturn = new double[States.NT_STATES];
@@ -171,6 +174,7 @@ public class CommandArgs {
         return toReturn;
     }
     
+    private int geneNumber = -1;
     // initially set to -1 above. Don't want to call findGeneNumber each time, 
     // so we set geneNumber value the first (and only) time findGeneNumber is called
     public int getGeneNumber(){
@@ -196,9 +200,7 @@ public class CommandArgs {
         return max;
     }
     
-    public int getModel(){
-        return model;
-    }
+
     
 //    public double[] geneSpecificParameter(){
 //        double[] values = new double[getGeneNumber()];
@@ -216,11 +218,12 @@ public class CommandArgs {
 //        return values;
 //    }
     
-    
+    // for CANM
     public double[] omegas(){
         return geneSpecificParameter(this.omegasArgument, Constants.DEFAULT_OMEGA);
     }
     
+    // for CAN mixture
     public double[] omega0(){
         return geneSpecificParameter(this.omegaArg0, Constants.DEFAULT_OMEGA);
     }
@@ -271,17 +274,7 @@ public class CommandArgs {
     }
     
     
-  public String tcag(){
-        return tcag;
-    }
-  
-  public String phy(){
-        return phy;
-    }
-    
-//    public List<String> fix(){
-//        return fix;
-//    }
+
     
     
 }//class
