@@ -93,7 +93,7 @@ public class CommandArgs {
     @Parameter(names = {"-phy"}, required = false, description = "Sequence data are in Phylip format (assumes Fasta format by default")
     private String phy = "false";
     
-    
+    private int geneNumber = -1;
     
 //    @Parameter(names = {"-fix"}, required = false, description = "Parameters to be fixed at initial values")
 //    private String fix = "false"; // need to change so no argument required, just looks whether the flag is present or not
@@ -171,9 +171,13 @@ public class CommandArgs {
         return toReturn;
     }
     
-    // TODO this is very inefficient
+    // initially set to -1 above. Don't want to call findGeneNumber each time, 
+    // so we set geneNumber value the first (and only) time findGeneNumber is called
     public int getGeneNumber(){
-        return findGeneNumber();
+        if (this.geneNumber == -1){
+            this.geneNumber = findGeneNumber();
+        }
+        return this.geneNumber;
     }
     
     private int findGeneNumber(){
