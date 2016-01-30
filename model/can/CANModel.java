@@ -6,13 +6,10 @@
 
 package yeswecan.model.can;
 
-//import java.util.ArrayList;
 import java.util.List;
 import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Omega;
-//import swmutsel.model.parameters.Parameter;
-//import yeswecan.model.SubstitutionModel;
 import yeswecan.model.hky.HKYModel;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 

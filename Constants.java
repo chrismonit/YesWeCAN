@@ -20,7 +20,7 @@ public class Constants {
     public static int MAXIMUM_ITERATIONS = 10000;
     
     public static double DEFAULT_KAPPA = 1.0;
-    public static double[] DEFAULT_PI = new double[]{ 0.25, 0.25, 0.25, 0.25 };
+    public static String DEFAULT_PI = "0.25,0.25,0.25,0.25";
     public static double DEFAULT_SCALING = 1.0;
     public static double DEFAULT_OMEGA = 1.0;
     

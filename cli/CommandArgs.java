@@ -33,7 +33,7 @@ public class CommandArgs {
     private Double kappa = Constants.DEFAULT_KAPPA;
     
     @Parameter(names = {"-frequencies", "-pi"}, required = false, description = "Stationary frequencies for nucleotides, delimited by comma. Default=\"0.25,0.25,0.25,0.25\"")
-    private String pi = "0.25,0.25,0.25,0.25";
+    private String piString = Constants.DEFAULT_PI;
     
     @Parameter(names = {"-scaling", "-sc"}, required = true, description = "Scaling factor for branch lengths.")
     private double scaling = Constants.DEFAULT_SCALING;
@@ -123,32 +123,35 @@ public class CommandArgs {
         return kappa.doubleValue(); // does doubleValue() here actually do anything??
     }
     
+    private double[] piValues;
     
     
     public double[] pi(){ 
-        double[] toReturn = new double[States.NT_STATES];
-        String[] piValueStrings;
-        
-        try{
-            piValueStrings = pi.split(Constants.ARGS_DELIMITER);
-            if (piValueStrings.length != States.NT_STATES){
-                String errorMsg = MessageFormat.format( "-frequences: Must have {0} floating point values, delimited by \"{1}\"", States.NT_STATES, Constants.ARGS_DELIMITER );
-                throw new ParameterException(errorMsg);
-            }
-            
-            for (int i = 0; i < States.NT_STATES; i++) {
-                toReturn[i] = Double.parseDouble(piValueStrings[i]);
-            }
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            System.exit(1);
-        }
-        return toReturn;
-    }// pi
-    
+        if (this.piValues == null){
+            piValues = new double[States.NT_STATES];
+            String[] piValueStrings;
 
+            try{
+                piValueStrings = this.piString.split(Constants.ARGS_DELIMITER);
+                if (piValueStrings.length != States.NT_STATES){
+                    String errorMsg = MessageFormat.format( "-frequences: Must have {0} floating point values, delimited by \"{1}\"", States.NT_STATES, Constants.ARGS_DELIMITER );
+                    throw new ParameterException(errorMsg);
+                }
+
+                for (int i = 0; i < States.NT_STATES; i++) {
+                    piValues[i] = Double.parseDouble(piValueStrings[i]);
+                }
+            }
+            catch(Exception e){
+                e.printStackTrace();
+                System.exit(1);
+            }
+        }// if
+        return this.piValues; 
+
+    }// piString
     
+     
     public int[] aFrame(){
         return stringToIntArray(this.aFrame, Constants.ARGS_DELIMITER);
     }
