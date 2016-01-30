@@ -45,7 +45,7 @@ public class CANModel extends HKYModel {
         this.omegas = omegas;
         this.scaling = scaling;
         super.clearParameters();
-        super.addParameters(super.getKappa(), super.getKappa(), this.scaling);
+        super.addParameters(super.getKappa(), super.getPi(), this.scaling);
         
         for (Omega w : this.omegas){
             super.addParameters(w);
