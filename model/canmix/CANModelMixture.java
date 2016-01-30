@@ -55,9 +55,9 @@ public class CANModelMixture extends CANModel {
         this.probabilities = probabilities;
         this.numSiteClasses = numSiteClasses;
         
-        super.clearParameters();
+        //super.clearParameters();
         
-        super.addParameters(super.getKappa(), super.getPi(), super.getScaling());
+        //super.addParameters(super.getKappa(), super.getPi(), super.getScaling());
         
         for (Probabilities p : this.probabilities){
             super.addParameters(p);
