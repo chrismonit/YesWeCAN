@@ -7,24 +7,19 @@
 package yeswecan;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import pal.tree.Tree;
-import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
-import swmutsel.model.parameters.Parameter;
 import yeswecan.cli.CommandArgs;
-import yeswecan.model.SubstitutionModel;
 import yeswecan.model.can.CANFunction;
 import yeswecan.model.can.CANModel;
 import yeswecan.model.hky.HKYModel;
-import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.optim.Optimise;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.GeneticStructure;
-import yeswecan.phylo.ReorderFrequencies;
-import yeswecan.phylo.States;
 
 /**
  *
@@ -50,13 +45,25 @@ public class RunCAN extends RunModel {
                                                             this.comArgs.lengths());
     }
     
+    @Override
+    public String[] getHeader(){
+        
+        ArrayList<String> columns = new ArrayList<String>();
+        Collections.addAll(columns, "lnL", "kappa", "A", "C", "G", "T");
+        for (int i = 0; i < this.comArgs.getGeneNumber(); i++) {
+            columns.add(Constants.FIX_OMEGA_STRING + Integer.toString(i));
+        }
+        return columns.toArray(new String[columns.size()]);
+    }
+    
+    
     // need to set whether these are fixed or not at this point
-    public CANModel makeCAN(){        
+    public static CANModel makeCAN(CommandArgs comArgs){        
 
-        HKYModel hky = RunHKY.makeHKY(this.comArgs);
+        HKYModel hky = RunHKY.makeHKY(comArgs);
 
-        BranchScaling scaling = new BranchScaling(this.comArgs.scaling());
-        if (this.comArgs.fix().contains(Constants.FIX_SCALING)) {
+        BranchScaling scaling = new BranchScaling(comArgs.scaling());
+        if (comArgs.fix().contains(Constants.FIX_SCALING)) {
             scaling.setOptimisable(false);
         }
         
@@ -67,76 +74,52 @@ public class RunCAN extends RunModel {
         omegas.add(neutralOmega);
         
 //         positions of omegas correspond to the genes they represent (i.e. gene 1 omega is first)
-        for (int i = 0; i < this.comArgs.omegas().length; i++) {
-            double omegaValue = this.comArgs.omegas()[i];
+        for (int i = 0; i < comArgs.omegas().length; i++) {
+            double omegaValue = comArgs.omegas()[i];
             Omega w = new Omega( omegaValue );
-            if ( this.comArgs.fix().contains(Integer.toString(i+1)) ) { // +1 because 0th omega is neutral
+            if ( comArgs.fix().contains(Integer.toString(i+1)) ) { // +1 because 0th omega is neutral
                 w.setOptimisable(false);
             }
             omegas.add(w);
         }
-
         return new CANModel(hky, scaling, omegas);
         
     }
     
     
-    
-        // start the optimisation
-    public void fitCAN(){
-        // need code which produces report about this analysis
-        // i.e. the initial params, which are being fixed, the genetic structure, name of input aln and tree
-        
-        System.out.println("Codon Aware Nucleotide model. Optimising...\n");
-
-        CANModel can = makeCAN(); // only one instance of CANModel is ever created. First populated with initial parameter values and, by end of optimisation, populated with MLEs
+    @Override
+    public double[] fit(){
+  
+        CANModel can = makeCAN(this.comArgs);
         CANFunction optFunction = new CANFunction(this.alignment, this.tree, genStruct, can);
         Optimise opt = new Optimise();
-        SubstitutionModel result = opt.optNMS(optFunction, can);
+        CANModel result = (CANModel)opt.optNMS(optFunction, can);
         
-        // the rest is output to stdout. Need to standardise way of returning MLEs
-        
-        String delim = "\t";
-        StringBuilder header = new StringBuilder("Header"+delim);
-        StringBuilder mles = new StringBuilder("MLEs"+delim);
-        
-        
-        for (Parameter p : result.getParameters()) {
-            
-            String fixedOrFree = "";
-            if (p.isOptimisable()) {
-                fixedOrFree = "[Free]";
-            }else{
-                fixedOrFree = "[Fixed]";
-            }
-            
-            header.append(p.getArgument()+fixedOrFree+delim);
-            mles.append(p.toString().replaceAll("[^0-9E,.-]", "")+delim);
-            //mles.append(p.toString()+delim);
+        ArrayList<Double> values = RunModel.getParameterValues(result.getParameters());
+        values.add(0, result.getLnL()); // prepend
+        double[] resultArray = new double[values.size()];
+        for (int i = 0; i < values.size(); i++) {
+            resultArray[i] = values.get(i);
         }
-        
-        System.out.println("Tree"+delim+this.comArgs.tree());
-        System.out.println("Aln"+delim+this.comArgs.alignment());
-        System.out.println(header.toString());
-        System.out.println(mles.toString());
-        System.out.println("lnL"+delim+result.getLnL());
+        return resultArray;
+ 
     }
     
-    
-    
-    public void calculateFixed(CANModel can, Tree tree, AdvancedAlignment alignment){
-        
-        System.out.println("Calculating with fixed values. Input from CLI:");
-        for (Parameter p : can.getParameters()){
-            System.out.println(p.toString());
-        }
-        System.out.println("");
-
+ 
+    @Override
+    public double[] calculate(){
+        CANModel can = makeCAN(this.comArgs);
         double[] optimisableParams = Mapper.getOptimisable(can.getParameters()); // map parameters to optimisation space, so FunctionHKY.value can use them
+        CANFunction calculator = new CANFunction(this.alignment, this.tree, this.genStruct, can);
         
-        CANFunction calculator = new CANFunction(alignment, tree, this.genStruct, can);
+        ArrayList<Double> values = RunModel.getParameterValues(can.getParameters());
         double lnL = calculator.value(optimisableParams);
-        System.out.println("lnL: " + lnL + " "); // better to have it print the input parameters too, so you can see input and output together
+        values.add(0, lnL);
+        double[] resultArray = new double[values.size()];
+        for (int i = 0; i < values.size(); i++) {
+            resultArray[i] = values.get(i);
+        }
+        return resultArray;
     }
     
     

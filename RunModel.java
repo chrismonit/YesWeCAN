@@ -23,9 +23,12 @@ public abstract class RunModel {
     
     abstract String[] getHeader();
     
+    //abstract double[] initialValues();
+
     abstract double[] fit();
     
     abstract double[] calculate();
+    
     
     public static ArrayList<Double> getParameterValues(List<Parameter> params){
         Class<?>[] types = new Class<?>[4];
@@ -59,4 +62,14 @@ public abstract class RunModel {
         return values;
     }
 
+    // may not include this in output. may just not include this information in output
+//    public static String optimiseStringMarker(Parameter param){
+//        if (param.isOptimisable()) {
+//            return "_O"; // optimise
+//        }
+//        else{
+//            return "_F"; // fix
+//        }
+//    }
+//    
 }
