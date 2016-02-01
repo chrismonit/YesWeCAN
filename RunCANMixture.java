@@ -7,6 +7,7 @@
 package yeswecan;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import pal.tree.Tree;
 import swmutsel.model.parameters.BranchScaling;
@@ -19,31 +20,32 @@ import yeswecan.model.canmix.CANModelMixture;
 import yeswecan.model.hky.HKYModel;
 import yeswecan.model.parameters.OmegaNegative;
 import yeswecan.model.parameters.OmegaPositive;
+import yeswecan.optim.Optimise;
 import yeswecan.phylo.AdvancedAlignment;
+import yeswecan.phylo.GeneticStructure;
 
 
 /**
  *
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>
  */
-public class RunCANMixture extends RunCAN {
-//    private CommandArgs comArgs;
-//    private AdvancedAlignment alignment;
-//    private Tree tree;
+public class RunCANMixture extends RunModel {
+    private CommandArgs comArgs;
+    private AdvancedAlignment alignment;
+    private Tree tree;
     
-//    private GeneticStructure genStruct;
+    private GeneticStructure genStruct;
     
     public RunCANMixture(AdvancedAlignment alignment, Tree tree, CommandArgs input){
-//        super.alignment = alignment;
-//        super.tree = tree;
-//        super. comArgs = input;
+        this.alignment = alignment;
+        this.tree = tree;
+        this. comArgs = input;
         
-//        super.genStruct = new GeneticStructure(super.comArgs.aFrame(),
-//                                                            super.comArgs.bFrame(),
-//                                                            super.comArgs.cFrame(),
-//                                                            super.comArgs.lengths());
+        this.genStruct = new GeneticStructure(this.comArgs.aFrame(),
+                                                            this.comArgs.bFrame(),
+                                                             this.comArgs.cFrame(),
+                                                            this.comArgs.lengths());
         
-        super(alignment, tree, input); 
     }// constructor
     
     private static int numberSiteClasses(int mixtureModel){
@@ -56,13 +58,40 @@ public class RunCANMixture extends RunCAN {
         return numSiteClasses;
     }
     
+    @Override
+    public String[] getHeader(){
+        ArrayList<String> columns = new ArrayList<String>();
+        Collections.addAll(columns, "lnL", "kappa", "A", "C", "G", "T");
+        for (int iGene = 0; iGene < this.comArgs.getGeneNumber(); iGene++) {
+            for (int jClass = 0; jClass < 10; jClass++) {
+                columns.add(Integer.toString(iGene) + "_" + Constants.FIX_OMEGA_STRING + Integer.toString(jClass));
+            }
+            
+            for (int jClass = 0; jClass < 10; jClass++) {
+                columns.add(Integer.toString(iGene) + "_" + Constants.FIX_PROB_STRING + Integer.toString(jClass));
+            }
+        }
+        return columns.toArray(new String[columns.size()]);
+    }
     
-    public CANModelMixture makeMixture(int mixtureModel){
+    
+    @Override
+    public double[] getInitialValues(){ // NB first element does not contain lnL
+        ArrayList<Double> values = RunModel.getParameterValues(makeMixture(this.comArgs, this.comArgs.getModel()).getParameters());
+        double[] resultArray = new double[values.size()];
+        for (int i = 0; i < values.size(); i++) {
+            resultArray[i] = values.get(i);
+        }
+        return resultArray;
+    }
+    
+    
+    public CANModelMixture makeMixture(CommandArgs comArgs, int mixtureModel){
         
-        HKYModel hky = RunHKY.makeHKY(super.comArgs);
+        HKYModel hky = RunHKY.makeHKY(comArgs);
         
-        BranchScaling scaling = new BranchScaling(super.comArgs.scaling());
-        if (super.comArgs.fix().contains(Constants.FIX_SCALING)) {
+        BranchScaling scaling = new BranchScaling(comArgs.scaling());
+        if (comArgs.fix().contains(Constants.FIX_SCALING)) {
             scaling.setOptimisable(false);
         }
         
@@ -96,11 +125,11 @@ public class RunCANMixture extends RunCAN {
         
         // for coding frames
                 
-        for (int iGene = 0; iGene < super.comArgs.getGeneNumber(); iGene++) {
+        for (int iGene = 0; iGene < comArgs.getGeneNumber(); iGene++) {
        
-            OmegaNegative geneW_0 = new OmegaNegative(super.comArgs.omega0()[iGene]);
+            OmegaNegative geneW_0 = new OmegaNegative(comArgs.omega0()[iGene]);
             // fix if needs fixing
-            if (super.comArgs.fix().contains("0"+Constants.FIX_OMEGA_STRING+Integer.toString(iGene)))
+            if (comArgs.fix().contains("0"+Constants.FIX_OMEGA_STRING+Integer.toString(iGene)))
                geneW_0.setOptimisable(false);
         
             omegas.add(geneW_0);
@@ -112,17 +141,17 @@ public class RunCANMixture extends RunCAN {
             Probabilities geneProbs;
 
             if (mixtureModel == Constants.M2_IDENTIFIER){
-                OmegaPositive geneW_2 = new OmegaPositive(super.comArgs.omega2()[iGene]); 
-                if (super.comArgs.fix().contains("2"+Constants.FIX_OMEGA_STRING+Integer.toString(iGene)))
+                OmegaPositive geneW_2 = new OmegaPositive(comArgs.omega2()[iGene]); 
+                if (comArgs.fix().contains("2"+Constants.FIX_OMEGA_STRING+Integer.toString(iGene)))
                    geneW_2.setOptimisable(false);
                 omegas.add(geneW_2);
 
-                geneProbs = new Probabilities(new double[]{ super.comArgs.prob0()[iGene], super.comArgs.prob1()[iGene], super.comArgs.prob2()[iGene]});
+                geneProbs = new Probabilities(new double[]{ comArgs.prob0()[iGene], comArgs.prob1()[iGene], comArgs.prob2()[iGene]});
             }else{
-                geneProbs = new Probabilities(new double[]{ super.comArgs.prob0()[iGene], super.comArgs.prob1()[iGene] });
+                geneProbs = new Probabilities(new double[]{ comArgs.prob0()[iGene], comArgs.prob1()[iGene] });
             }
             
-            if (super.comArgs.fix().contains(Constants.FIX_PROB_STRING+Integer.toString(iGene)))
+            if (comArgs.fix().contains(Constants.FIX_PROB_STRING+Integer.toString(iGene)))
                 probs.add(geneProbs);
            
         } // for iGene
@@ -131,13 +160,49 @@ public class RunCANMixture extends RunCAN {
     }// make mixture
     
     
-    public void calculateFixed(int mixtureModel){
-                
-        CANModelMixture canMix = makeMixture(mixtureModel);
-        double[] optimisableParams = Mapper.getOptimisable(canMix.getParameters()); // map parameters to optimisation space, so FunctionHKY.value can use them
-        CANFunctionMixture calculator = new CANFunctionMixture(super.alignment, super.tree, super.genStruct, canMix, numberSiteClasses(mixtureModel) );
-        double lnL = calculator.value(optimisableParams);
-        System.out.println("lnL: " + lnL + " "); // better to have it print the input parameters too, so you can see input and output together
+        @Override
+    public double[] fit(){
+  
+        CANModelMixture canMix = makeMixture(this.comArgs, this.comArgs.getModel());
+        CANFunctionMixture optFunction = 
+                new CANFunctionMixture(this.alignment, this.tree, genStruct, canMix, 
+                        numberSiteClasses(this.comArgs.getModel())
+                );
+        Optimise opt = new Optimise();
+        CANModelMixture result = (CANModelMixture)opt.optNMS(optFunction, canMix);
+        
+        ArrayList<Double> values = RunModel.getParameterValues(result.getParameters());
+        values.add(0, result.getLnL()); // prepend
+        double[] resultArray = new double[values.size()];
+        for (int i = 0; i < values.size(); i++) {
+            resultArray[i] = values.get(i);
+        }
+        return resultArray;
+ 
     }
-            
+    
+    @Override
+    public double[] calculate(){
+                
+        CANModelMixture canMix = makeMixture(this.comArgs, this.comArgs.getModel());
+        double[] optimisableParams = Mapper.getOptimisable(canMix.getParameters()); // map parameters to optimisation space, so FunctionHKY.value canMix use them
+        CANFunctionMixture calculator = 
+                new CANFunctionMixture(this.alignment, this.tree, this.genStruct, 
+                        canMix, numberSiteClasses(this.comArgs.getModel()) 
+                );
+        
+        
+        ArrayList<Double> values = RunModel.getParameterValues(canMix.getParameters());
+        double lnL = calculator.value(optimisableParams);
+        values.add(0, lnL);
+        double[] resultArray = new double[values.size()];
+        for (int i = 0; i < values.size(); i++) {
+            resultArray[i] = values.get(i);
+        }
+        return resultArray;
+    }
+         
+    
+    
+    
 }

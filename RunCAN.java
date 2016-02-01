@@ -47,11 +47,10 @@ public class RunCAN extends RunModel {
     
     @Override
     public String[] getHeader(){
-        
         ArrayList<String> columns = new ArrayList<String>();
         Collections.addAll(columns, "lnL", "kappa", "A", "C", "G", "T");
         for (int i = 0; i < this.comArgs.getGeneNumber(); i++) {
-            columns.add(Constants.FIX_OMEGA_STRING + Integer.toString(i));
+            columns.add(Integer.toString(i) + "_" +Constants.FIX_OMEGA_STRING);
         }
         return columns.toArray(new String[columns.size()]);
     }
