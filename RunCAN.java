@@ -30,29 +30,30 @@ import yeswecan.phylo.States;
  *
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>
  */
-public class RunCAN extends RunHKY {
+public class RunCAN extends RunModel {
     
-//    private CommandArgs comArgs;
-//    private AdvancedAlignment alignment;
-//    private Tree tree;
-//    
+    private CommandArgs comArgs;
+    private AdvancedAlignment alignment;
+    private Tree tree;
+    
     protected GeneticStructure genStruct;
     
     public RunCAN(AdvancedAlignment alignment, Tree tree, CommandArgs input){
-        super(alignment, tree, input);
         
-
+        this.comArgs = input;
+        this.alignment = alignment;
+        this.tree = tree;
         
-        this.genStruct = new GeneticStructure(super.comArgs.aFrame(),
-                                                            super.comArgs.bFrame(),
-                                                            super.comArgs.cFrame(),
-                                                            super.comArgs.lengths());
+        this.genStruct = new GeneticStructure(this.comArgs.aFrame(),
+                                                            this.comArgs.bFrame(),
+                                                            this.comArgs.cFrame(),
+                                                            this.comArgs.lengths());
     }
     
-        // need to set whether these are fixed or not at this point
+    // need to set whether these are fixed or not at this point
     public CANModel makeCAN(){        
 
-        HKYModel hky = RunHKY.makeHKY(super.comArgs);
+        HKYModel hky = RunHKY.makeHKY(this.comArgs);
 
         BranchScaling scaling = new BranchScaling(this.comArgs.scaling());
         if (this.comArgs.fix().contains(Constants.FIX_SCALING)) {
@@ -133,7 +134,7 @@ public class RunCAN extends RunHKY {
 
         double[] optimisableParams = Mapper.getOptimisable(can.getParameters()); // map parameters to optimisation space, so FunctionHKY.value can use them
         
-        CANFunction calculator = new CANFunction(alignment, tree, genStruct, can);
+        CANFunction calculator = new CANFunction(alignment, tree, this.genStruct, can);
         double lnL = calculator.value(optimisableParams);
         System.out.println("lnL: " + lnL + " "); // better to have it print the input parameters too, so you can see input and output together
     }

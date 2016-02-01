@@ -41,6 +41,10 @@ public class RunHKY extends RunModel {
     public static HKYModel makeHKY(CommandArgs comArgs){
         TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(comArgs.kappa());
         
+        if (comArgs.fix().contains(Constants.FIX_KAPPA)) {
+            kappa.setOptimisable(false);
+        }
+        
         double[] frequencies = new double[States.NT_STATES]; // will be in correct order, whatever that may be
         
         if (Boolean.parseBoolean(comArgs.tcag())){
@@ -51,6 +55,9 @@ public class RunHKY extends RunModel {
         }
 
         BaseFrequencies pi = new BaseFrequencies(frequencies);
+        if (comArgs.fix().contains(Constants.FIX_FREQUENCIES)) {
+            kappa.setOptimisable(false);
+        }
         return new HKYModel(kappa, pi);
     }
     
