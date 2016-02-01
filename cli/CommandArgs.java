@@ -111,7 +111,7 @@ public class CommandArgs {
         return alignmentPath;
     }
     
-    public String tree(){
+    public String tree(){ 
         return treePath;
     }
 

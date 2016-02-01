@@ -6,6 +6,7 @@
 
 package yeswecan;
 
+import java.util.ArrayList;
 import pal.tree.Tree;
 import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.Mapper;
@@ -23,7 +24,7 @@ import yeswecan.phylo.States;
  *
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>
  */
-public class RunHKY {
+public class RunHKY extends RunModel {
     //using protected fields allows subclasses to access these fields
     protected CommandArgs comArgs;
     protected AdvancedAlignment alignment;
@@ -51,26 +52,43 @@ public class RunHKY {
 
         BaseFrequencies pi = new BaseFrequencies(frequencies);
         return new HKYModel(kappa, pi);
-        //return Arrays.asList(kappa, pi);        
     }
     
+    @Override
+    public String[] getHeader(){
+        return new String[]{ "kappa", "A", "C", "G", "T" };
+    }
     
-    public static void calculateFixed(HKYModel hky, Tree tree, AdvancedAlignment alignment){
+    @Override
+    public double[] calculate(){
+        HKYModel hky = makeHKY(this.comArgs);
         double[] optimisableParams = Mapper.getOptimisable(hky.getParameters()); // map parameters to optimisation space, so FunctionHKY.value can use them
-        FunctionHKY calculator = new FunctionHKY(alignment, tree);
+        FunctionHKY calculator = new FunctionHKY(this.alignment, this.tree);
+        ArrayList<Double> values = RunModel.getParameterValues(hky.getParameters());
         double lnL = calculator.value(optimisableParams);
-        System.out.println("lnL: " + lnL + " "); // better to have it print the input parameters too, so you can see input and output together
+        values.add(lnL);
+        double[] resultArray = new double[values.size()];
+        for (int i = 0; i < values.size(); i++) {
+            resultArray[i] = values.get(i);
+        }
+        return resultArray;
     }
+    
         
     // start the optimisation
-    public void fit(){
+    @Override
+    public double[] fit(){
         FunctionHKY optFunction = new FunctionHKY(this.alignment, this.tree);
         Optimise opt = new Optimise();
-        SubstitutionModel result = opt.optNMS(optFunction, makeHKY(this.comArgs));
-        
-        System.out.println("opt lnL: "+result.getLnL());
-        System.out.println( result.getParameters().get(0).toString());
-        System.out.println(result.getParameters().get(1).toString());
+        HKYModel result = (HKYModel)opt.optNMS(optFunction, makeHKY(this.comArgs));
+        double lnL = result.getLnL();
+        ArrayList<Double> values = RunModel.getParameterValues(result.getParameters());
+        values.add(lnL);
+        double[] resultArray = new double[values.size()];
+        for (int i = 0; i < values.size(); i++) {
+            resultArray[i] = values.get(i);
+        }
+        return resultArray;
     }
     
     
