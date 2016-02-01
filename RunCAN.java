@@ -56,6 +56,16 @@ public class RunCAN extends RunModel {
         return columns.toArray(new String[columns.size()]);
     }
     
+    @Override
+    public double[] getInitialValues(){ // NB first element does not contain lnL
+        ArrayList<Double> values = RunModel.getParameterValues(makeCAN(this.comArgs).getParameters());
+        double[] resultArray = new double[values.size()];
+        for (int i = 0; i < values.size(); i++) {
+            resultArray[i] = values.get(i);
+        }
+        return resultArray;
+    }
+    
     
     // need to set whether these are fixed or not at this point
     public static CANModel makeCAN(CommandArgs comArgs){        

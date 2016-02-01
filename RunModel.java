@@ -23,7 +23,7 @@ public abstract class RunModel {
     
     abstract String[] getHeader();
     
-    //abstract double[] initialValues();
+    abstract double[] getInitialValues();
 
     abstract double[] fit();
     
@@ -31,8 +31,6 @@ public abstract class RunModel {
     
     
     public static ArrayList<Double> getParameterValues(List<Parameter> params){
-        Class<?>[] types = new Class<?>[4];
-        types[0] = String.class;
         
         ArrayList<Double> values = new ArrayList<Double>();
         for (Parameter p : params){
