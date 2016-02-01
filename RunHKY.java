@@ -56,7 +56,7 @@ public class RunHKY extends RunModel {
     
     @Override
     public String[] getHeader(){
-        return new String[]{ "kappa", "A", "C", "G", "T" };
+        return new String[]{ "lnL", "kappa", "A", "C", "G", "T" };
     }
     
     @Override
@@ -75,7 +75,6 @@ public class RunHKY extends RunModel {
     }
     
         
-    // start the optimisation
     @Override
     public double[] fit(){
         FunctionHKY optFunction = new FunctionHKY(this.alignment, this.tree);
@@ -83,7 +82,7 @@ public class RunHKY extends RunModel {
         HKYModel result = (HKYModel)opt.optNMS(optFunction, makeHKY(this.comArgs));
         double lnL = result.getLnL();
         ArrayList<Double> values = RunModel.getParameterValues(result.getParameters());
-        values.add(lnL);
+        values.add(0, lnL); // prepend
         double[] resultArray = new double[values.size()];
         for (int i = 0; i < values.size(); i++) {
             resultArray[i] = values.get(i);
