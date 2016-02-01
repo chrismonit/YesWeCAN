@@ -243,7 +243,7 @@ public class CommandArgs {
             return geneSpecificParameter(argument, 1.0/(double)Constants.NUM_M2_SITE_CLASSES);
         }
         else{
-            return null;
+            throw new RuntimeException("Model probability values requested from CommandArgs, when model specified does not include probabilities");
         }
     }
     
@@ -261,17 +261,24 @@ public class CommandArgs {
     
     // for omegas or prob values. argument is string supplied at CLI after the relevant flag
     private double[] geneSpecificParameter(String argument, double defaultValue){
+        
         double[] values = new double[getGeneNumber()];
-        if ("".equals(argument)){ // no starting argument have been supplied by user
-            for (int i = 0; i < values.length; i++) {
-                values[i] = defaultValue;
+        try{
+            if ("".equals(argument)){ // no starting argument have been supplied by user
+                for (int i = 0; i < values.length; i++) {
+                    values[i] = defaultValue;
+                }
             }
-        }
-        else{
-            String[] omegasStrings = argument.split(Constants.ARGS_DELIMITER);
-            for (int i = 0; i < values.length; i++) {
-                values[i] = Double.parseDouble(omegasStrings[i]);
+            else{
+                String[] omegasStrings = argument.split(Constants.ARGS_DELIMITER);
+                for (int i = 0; i < values.length; i++) {
+                    values[i] = Double.parseDouble(omegasStrings[i]);
+                }
             }
+        }catch(ArrayIndexOutOfBoundsException e){
+            System.out.println("Could be a mismatch between number of -w or -p arguments specified and the number of genes?");
+            e.printStackTrace();
+            System.exit(1);
         }
         return values;
     }
