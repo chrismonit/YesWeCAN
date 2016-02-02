@@ -24,7 +24,7 @@ public class CodonAwareMatrix extends RateMatrix {
         // need to extend to CAN properly
         
         double[][] matrixData = this.getData();
-        
+                
         for (int i = 0; i < pi.get().length; i++) {
             for (int j = 0; j < pi.get().length; j++) {
                 
