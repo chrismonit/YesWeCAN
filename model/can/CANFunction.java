@@ -6,12 +6,9 @@
 
 package yeswecan.model.can;
 
-import java.util.ArrayList;
 import org.apache.commons.math3.analysis.MultivariateFunction;
 import org.apache.commons.math3.exception.MaxCountExceededException;
 import pal.tree.Tree;
-import swmutsel.model.parameters.BaseFrequencies;
-import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
 import swmutsel.model.parameters.Parameter;
@@ -20,11 +17,8 @@ import yeswecan.model.LikelihoodCalculator;
 import yeswecan.model.ProbMatrixFactory;
 import yeswecan.model.ProbMatrixGenerator;
 import yeswecan.model.ProportionScaler;
-import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.GeneticStructure;
-import yeswecan.utils.ArrayPrinter;
-import yeswecan.utils.MatrixPrinter;
 
 /**
  *
