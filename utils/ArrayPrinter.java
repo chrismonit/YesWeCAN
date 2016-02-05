@@ -13,23 +13,23 @@ package yeswecan.utils;
 public class ArrayPrinter {
     
     public static String toString(double[] array, String delim){
-        String str = "";
+        String[] strings = new String[array.length];
         for (int i = 0; i < array.length; i++) {
-            str +=  Double.toString(array[i]) + delim;
+            strings[i] = Double.toString(array[i]);
         }
-        return str;
+        return String.join(delim, strings);
     }
     
     public static void print(double[] array, String delim){
         System.out.println(toString(array,delim));
     }
  
-      public static String toString(int[] array, String delim){
-        String str = "";
+    public static String toString(int[] array, String delim){
+       String[] strings = new String[array.length];
         for (int i = 0; i < array.length; i++) {
-            str +=  Integer.toString(array[i]) + delim;
+            strings[i] = Integer.toString(array[i]);
         }
-        return str;
+        return String.join(delim, strings);
     }
     
     public static void print(int[] array, String delim){
