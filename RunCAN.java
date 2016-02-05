@@ -48,9 +48,9 @@ public class RunCAN extends RunModel {
     @Override
     public String[] getHeader(){
         ArrayList<String> columns = new ArrayList<String>();
-        Collections.addAll(columns, "lnL", "kappa", "A", "C", "G", "T");
+        Collections.addAll(columns, "model", "lnL", "kappa", "A", "C", "G", "T", "sc", "0_w");
         for (int i = 0; i < this.comArgs.getGeneNumber(); i++) {
-            columns.add(Integer.toString(i) + "_" +Constants.FIX_OMEGA_STRING);
+            columns.add(Integer.toString(i+1) + "_" +Constants.OMEGA_STRING); // +1 for zero based correction
         }
         return columns.toArray(new String[columns.size()]);
     }
@@ -58,9 +58,12 @@ public class RunCAN extends RunModel {
     @Override
     public double[] getInitialValues(){ // NB first element does not contain lnL
         ArrayList<Double> values = RunModel.getParameterValues(makeCAN(this.comArgs).getParameters());
-        double[] resultArray = new double[values.size()];
+        double[] resultArray = new double[values.size()+2];
+        resultArray[0] = Constants.CAN0;
+        resultArray[1] = Double.NaN;
+        
         for (int i = 0; i < values.size(); i++) {
-            resultArray[i] = values.get(i);
+            resultArray[i+2] = values.get(i);
         }
         return resultArray;
     }
@@ -106,9 +109,10 @@ public class RunCAN extends RunModel {
         
         ArrayList<Double> values = RunModel.getParameterValues(result.getParameters());
         values.add(0, result.getLnL()); // prepend
-        double[] resultArray = new double[values.size()];
+        double[] resultArray = new double[values.size()+1];
+        resultArray[0] = Constants.CAN0;
         for (int i = 0; i < values.size(); i++) {
-            resultArray[i] = values.get(i);
+            resultArray[i+1] = values.get(i);
         }
         return resultArray;
  
@@ -124,9 +128,11 @@ public class RunCAN extends RunModel {
         ArrayList<Double> values = RunModel.getParameterValues(can.getParameters());
         double lnL = calculator.value(optimisableParams);
         values.add(0, lnL);
-        double[] resultArray = new double[values.size()];
+        double[] resultArray = new double[values.size()+1];
+        resultArray[0] = Constants.CAN0;
+        
         for (int i = 0; i < values.size(); i++) {
-            resultArray[i] = values.get(i);
+            resultArray[i+1] = values.get(i);
         }
         return resultArray;
     }

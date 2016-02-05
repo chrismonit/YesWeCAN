@@ -64,11 +64,11 @@ public class RunCANMixture extends RunModel {
         Collections.addAll(columns, "lnL", "kappa", "A", "C", "G", "T");
         for (int iGene = 0; iGene < this.comArgs.getGeneNumber(); iGene++) {
             for (int jClass = 0; jClass < 10; jClass++) {
-                columns.add(Integer.toString(iGene) + "_" + Constants.FIX_OMEGA_STRING + Integer.toString(jClass));
+                columns.add(Integer.toString(iGene) + "_" + Constants.OMEGA_STRING + Integer.toString(jClass));
             }
             
             for (int jClass = 0; jClass < 10; jClass++) {
-                columns.add(Integer.toString(iGene) + "_" + Constants.FIX_PROB_STRING + Integer.toString(jClass));
+                columns.add(Integer.toString(iGene) + "_" + Constants.PROB_STRING + Integer.toString(jClass));
             }
         }
         return columns.toArray(new String[columns.size()]);
@@ -129,7 +129,7 @@ public class RunCANMixture extends RunModel {
        
             OmegaNegative geneW_0 = new OmegaNegative(comArgs.omega0()[iGene]);
             // fix if needs fixing
-            if (comArgs.fix().contains("0"+Constants.FIX_OMEGA_STRING+Integer.toString(iGene)))
+            if (comArgs.fix().contains("0"+Constants.OMEGA_STRING+Integer.toString(iGene)))
                geneW_0.setOptimisable(false);
         
             omegas.add(geneW_0);
@@ -142,7 +142,7 @@ public class RunCANMixture extends RunModel {
 
             if (mixtureModel == Constants.M2_IDENTIFIER){
                 OmegaPositive geneW_2 = new OmegaPositive(comArgs.omega2()[iGene]); 
-                if (comArgs.fix().contains("2"+Constants.FIX_OMEGA_STRING+Integer.toString(iGene)))
+                if (comArgs.fix().contains("2"+Constants.OMEGA_STRING+Integer.toString(iGene)))
                    geneW_2.setOptimisable(false);
                 omegas.add(geneW_2);
 
@@ -151,7 +151,7 @@ public class RunCANMixture extends RunModel {
                 geneProbs = new Probabilities(new double[]{ comArgs.prob0()[iGene], comArgs.prob1()[iGene] });
             }
             
-            if (comArgs.fix().contains(Constants.FIX_PROB_STRING+Integer.toString(iGene)))
+            if (comArgs.fix().contains(Constants.PROB_STRING+Integer.toString(iGene)))
                 probs.add(geneProbs);
            
         } // for iGene

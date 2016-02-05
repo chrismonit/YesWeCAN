@@ -40,7 +40,6 @@ public class CANFunction implements MultivariateFunction {
         this.canModel = can;
 
         // NB 0th omega is fixed to 1.0 for neutral evolution
-        
     }
     
     
@@ -82,6 +81,8 @@ public class CANFunction implements MultivariateFunction {
             //MatrixPrinter.PrintMatrix(Q.getData(), "Q", "");
             //System.out.println("w1: " + this.canModel.getOmegas().get(1).toString());
             
+            
+            
             ProbMatrixGenerator P;
             try{
                 P = ProbMatrixFactory.getPGenerator(Q);
@@ -106,7 +107,6 @@ public class CANFunction implements MultivariateFunction {
             lnL += Math.log(siteL);
             
         }// for iSite
-        
         return lnL;
         
     }
