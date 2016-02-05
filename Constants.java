@@ -41,6 +41,8 @@ public class Constants {
     public static char[] FRAMES = {'A', 'B', 'C'};
     
     public static String LAYOUT = "LAYOUT"; // prefix for genetic structure diagram
+    public static String HEADER = "HEADER"; // prefix for header in output
+    public static String OUTPU_DELIMITER = "\t";
     
     // arguments for -fix option
     // e.g. "-fix kappa pi" will fix kappa and pi parameters, but omegas and scaling will be optimised

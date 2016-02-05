@@ -62,7 +62,7 @@ public class RunHKY extends RunModel {
     
     @Override
     public String[] getHeader(){
-        return new String[]{ "lnL", "kappa", "A", "C", "G", "T" };
+        return new String[]{ "model", "lnL", "kappa", "A", "C", "G", "T" };
     }
     
     @Override

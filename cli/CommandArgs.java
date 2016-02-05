@@ -35,7 +35,7 @@ public class CommandArgs {
     @Parameter(names = {"-frequencies", "-pi"}, required = false, description = "Stationary frequencies for nucleotides, delimited by comma. Default=\"0.25,0.25,0.25,0.25\"")
     private String piString = Constants.DEFAULT_PI;
     
-    @Parameter(names = {"-scaling", "-sc"}, required = true, description = "Scaling factor for branch lengths.")
+    @Parameter(names = {"-scaling", "-sc"}, required = false, description = "Scaling factor for branch lengths.")
     private double scaling = Constants.DEFAULT_SCALING;
     
     @Parameter(names = {"-model", "-m"}, required = true, description = "Model of selection to use. -1 = HKY, 0 = CAN original, 1 = M1a (negative/neutral), 2 = M2a (negative, neutral/positive)")
