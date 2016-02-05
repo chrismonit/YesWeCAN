@@ -42,7 +42,9 @@ public class Constants {
     
     public static String LAYOUT = "LAYOUT"; // prefix for genetic structure diagram
     public static String HEADER = "HEADER"; // prefix for header in output
-    public static String OUTPU_DELIMITER = "\t";
+    public static String OUTPUT_DELIMITER = "\t";
+    public static String INITIAL = "INITIAL";
+    public static String CALC = "CALCULATE";
     
     // arguments for -fix option
     // e.g. "-fix kappa pi" will fix kappa and pi parameters, but omegas and scaling will be optimised

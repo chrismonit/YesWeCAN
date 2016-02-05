@@ -66,7 +66,7 @@ public class RunHKY extends RunModel {
     }
     
     @Override
-    public double[] getInitialValues(){ // NB first element does not contain lnL
+    public double[] getInitialValues(){ // NB first elements do not contain lnL
         ArrayList<Double> values = RunModel.getParameterValues(makeHKY(this.comArgs).getParameters());
         double[] resultArray = new double[values.size()];
         for (int i = 0; i < values.size(); i++) {
@@ -80,11 +80,14 @@ public class RunHKY extends RunModel {
     public double[] calculate(){
         HKYModel hky = makeHKY(this.comArgs);
         double[] optimisableParams = Mapper.getOptimisable(hky.getParameters()); // map parameters to optimisation space, so FunctionHKY.value can use them
+        
         FunctionHKY calculator = new FunctionHKY(this.alignment, this.tree);
         ArrayList<Double> values = RunModel.getParameterValues(hky.getParameters());
         double lnL = calculator.value(optimisableParams);
+        System.out.println("lnL "+lnL);
         values.add(0, lnL); //prepend
         double[] resultArray = new double[values.size()];
+        
         for (int i = 0; i < values.size(); i++) {
             resultArray[i] = values.get(i);
         }

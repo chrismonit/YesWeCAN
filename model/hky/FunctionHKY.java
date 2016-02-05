@@ -74,10 +74,10 @@ public class FunctionHKY implements MultivariateFunction {
 
         double lnL = 0.0;
         for (int iSite=0; iSite < this.alignment.getLength(); iSite++){
-            double sitelnL = LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, iSite, P, 1.0);
+            double siteL = LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, iSite, P, 1.0);
             //System.out.println("site_"+iSite + "\t" + sitelnL);
             
-            lnL += sitelnL;
+            lnL += Math.log(siteL);
         }
 
         return lnL;
