@@ -41,7 +41,6 @@ public class CANModelMixture extends CANModel {
         for (Probabilities p : this.probabilities){
             super.addParameters(p);
         }
-
     }
     
     public Omega getOmega(int gene, int siteClass){

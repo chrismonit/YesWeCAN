@@ -6,12 +6,9 @@
 
 package yeswecan.model.canmix;
 
-import java.util.ArrayList;
 import org.apache.commons.math3.analysis.MultivariateFunction;
 import org.apache.commons.math3.exception.MaxCountExceededException;
 import pal.tree.Tree;
-import swmutsel.model.parameters.BaseFrequencies;
-import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
 import swmutsel.model.parameters.Parameter;
@@ -20,11 +17,8 @@ import yeswecan.model.LikelihoodCalculator;
 import yeswecan.model.ProbMatrixFactory;
 import yeswecan.model.ProbMatrixGenerator;
 import yeswecan.model.ProportionScaler;
-import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.GeneticStructure;
-import yeswecan.utils.ArrayPrinter;
-import yeswecan.utils.MatrixPrinter;
 
 /**
  *
@@ -57,10 +51,13 @@ public class CANFunctionMixture implements MultivariateFunction {
         // NB 0th omega is fixed to 1.0 for neutral evolution
 
         Mapper.setOptimisable(this.canModel.getParameters(), point);
-                
+        
+
+        
         double totalLogL = 0.0; // lnL for all sites
         
         for (int iSite = 0; iSite < this.alignment.getLength(); iSite++) {
+            System.out.println("\nsite "+iSite);
             
             // determine which process is active at this site
             int siteType = iSite % 3;
@@ -101,18 +98,21 @@ public class CANFunctionMixture implements MultivariateFunction {
                             }
                             return Double.NEGATIVE_INFINITY;
                         }
-                
+                        
+                        
                         // pF = p^{F}_{i} (prob for frame F's omega being that of site class i)
                         double pA = this.canModel.getProbability(genes[0], iSiteClassA); 
                         double pB = this.canModel.getProbability(genes[1], iSiteClassB);
                         double pC = this.canModel.getProbability(genes[2], iSiteClassC);
+
+                        double contrib = pA * pB* pC * LikelihoodCalculator.calculateSiteLikelihood(alignment, tree, iSite, P, 1.0);
                         
-                        siteL += pA * pB* pC * LikelihoodCalculator.calculateSiteLikelihood(alignment, tree, iSite, P, 1.0);
- 
+                        System.out.println(contrib);
+                        siteL += contrib;
                     } //iSiteClassC
                 } // iSiteClassB
             }// iSiteClassA
-            
+            System.out.println("siteL: " + siteL);
             totalLogL += Math.log(siteL);
             
         }// for iSite
