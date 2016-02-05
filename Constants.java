@@ -24,7 +24,8 @@ public class Constants {
     public static double DEFAULT_SCALING = 1.0;
     public static double DEFAULT_OMEGA = 1.0;
     
-    public static int DEFAULT_MODEL = 0;
+    public static int HKY_IDENTIFIER = -1;
+    public static int CAN0 = 0;
     public static int M1_IDENTIFIER = 1;
     public static int M2_IDENTIFIER = 2;
 
@@ -40,11 +41,12 @@ public class Constants {
     
     public static char[] FRAMES = {'A', 'B', 'C'};
     
+    public static String OUTPUT_DELIMITER = "\t";
     public static String LAYOUT = "LAYOUT"; // prefix for genetic structure diagram
     public static String HEADER = "HEADER"; // prefix for header in output
-    public static String OUTPUT_DELIMITER = "\t";
     public static String INITIAL = "INITIAL";
-    public static String CALC = "CALCULATE";
+    public static String CALC = "CALC";
+    public static String MLE = "MLE";
     
     // arguments for -fix option
     // e.g. "-fix kappa pi" will fix kappa and pi parameters, but omegas and scaling will be optimised

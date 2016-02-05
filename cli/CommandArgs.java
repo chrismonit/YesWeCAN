@@ -39,7 +39,7 @@ public class CommandArgs {
     private double scaling = Constants.DEFAULT_SCALING;
     
     @Parameter(names = {"-model", "-m"}, required = true, description = "Model of selection to use. -1 = HKY, 0 = CAN original, 1 = M1a (negative/neutral), 2 = M2a (negative, neutral/positive)")
-    private int model = Constants.DEFAULT_MODEL;
+    private int model = Constants.CAN0;
     
     
     @Parameter(names = {"-omega", "-w"}, required = false, description = "Initial omega values for each gene. Delimited by comma")

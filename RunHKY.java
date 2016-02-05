@@ -68,9 +68,12 @@ public class RunHKY extends RunModel {
     @Override
     public double[] getInitialValues(){ // NB first elements do not contain lnL
         ArrayList<Double> values = RunModel.getParameterValues(makeHKY(this.comArgs).getParameters());
-        double[] resultArray = new double[values.size()];
+        double[] resultArray = new double[values.size()+2]; // want to add space for model and lnL fields
+        resultArray[0] = Constants.HKY_IDENTIFIER;
+        resultArray[1] = Double.NaN;
+        
         for (int i = 0; i < values.size(); i++) {
-            resultArray[i] = values.get(i);
+            resultArray[i+2] = values.get(i);
         }
         return resultArray;
     }
@@ -84,12 +87,12 @@ public class RunHKY extends RunModel {
         FunctionHKY calculator = new FunctionHKY(this.alignment, this.tree);
         ArrayList<Double> values = RunModel.getParameterValues(hky.getParameters());
         double lnL = calculator.value(optimisableParams);
-        System.out.println("lnL "+lnL);
         values.add(0, lnL); //prepend
-        double[] resultArray = new double[values.size()];
+        double[] resultArray = new double[values.size()+1];
+        resultArray[0] = Constants.HKY_IDENTIFIER;
         
         for (int i = 0; i < values.size(); i++) {
-            resultArray[i] = values.get(i);
+            resultArray[i+1] = values.get(i);
         }
         return resultArray;
     }
@@ -101,11 +104,13 @@ public class RunHKY extends RunModel {
         Optimise opt = new Optimise();
         HKYModel result = (HKYModel)opt.optNMS(optFunction, makeHKY(this.comArgs));
         double lnL = result.getLnL();
+        
         ArrayList<Double> values = RunModel.getParameterValues(result.getParameters());
         values.add(0, lnL); // prepend
-        double[] resultArray = new double[values.size()];
+        double[] resultArray = new double[values.size()+1];
+        resultArray[0] = Constants.HKY_IDENTIFIER;
         for (int i = 0; i < values.size(); i++) {
-            resultArray[i] = values.get(i);
+            resultArray[i+1] = values.get(i);
         }
         return resultArray;
     }
