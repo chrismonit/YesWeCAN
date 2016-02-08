@@ -228,11 +228,11 @@ public class CommandArgs {
     
     // for CAN mixture
     public double[] omega0(){
-        return geneSpecificParameter(this.omegaArg0, Constants.DEFAULT_OMEGA);
+        return geneSpecificParameter(this.omegaArg0, Constants.DEFAULT_OMEGA_0);
     }
     
     public double[] omega2(){
-        return geneSpecificParameter(this.omegaArg2, Constants.DEFAULT_OMEGA);
+        return geneSpecificParameter(this.omegaArg2, Constants.DEFAULT_OMEGA_2);
     }
     
     private double[] prob(String argument){

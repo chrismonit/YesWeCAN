@@ -23,6 +23,8 @@ public class Constants {
     public static String DEFAULT_PI = "0.25,0.25,0.25,0.25";
     public static double DEFAULT_SCALING = 1.0;
     public static double DEFAULT_OMEGA = 1.0;
+    public static double DEFAULT_OMEGA_0 = 0.99;
+    public static double DEFAULT_OMEGA_2 = 1.01;
     
     public static int HKY_IDENTIFIER = -1;
     public static int CAN0 = 0;
