@@ -31,7 +31,7 @@ import yeswecan.utils.ArrayPrinter;
  *
  * @author Christopher Monit (c.monit.12@ucl.ac.uk)
  */
-public class Analyse {
+public class AnalyseHKY {
 
     /**
      * Read in arguments
@@ -47,7 +47,7 @@ public class Analyse {
      */
     public static void main(String[] args) {
         
-        new Analyse(args);
+        new AnalyseHKY(args);
 
     }// main
     
@@ -55,7 +55,7 @@ public class Analyse {
     private Tree tree;
     private CommandArgs comArgs;
     
-    public Analyse(String[] args){
+    public AnalyseHKY(String[] args){
         this.comArgs = new CommandArgs();
         JCommander jcom = new JCommander(this.comArgs);
         
