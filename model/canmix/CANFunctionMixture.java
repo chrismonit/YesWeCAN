@@ -72,8 +72,8 @@ public class CANFunctionMixture implements MultivariateFunction {
 //                Omega aOmega = this.canModel.getOmega(genes[0], iSiteClassA);
 //                double pA = this.canModel.getProbability(genes[0], iSiteClassA); 
                 for (int iSiteClassB = 0; iSiteClassB < this.numSiteClasses; iSiteClassB++) {
-//                    Omega bOmega = this.canModel.getOmega(genes[1], iSiteClassB);
-//                    double pB = this.canModel.getProbability(genes[1], iSiteClassB);
+ //                   Omega bOmega = this.canModel.getOmega(genes[1], iSiteClassB);
+ //                   double pB = this.canModel.getProbability(genes[1], iSiteClassB);
                     
                     for (int iSiteClassC = 0; iSiteClassC < this.numSiteClasses; iSiteClassC++) {
                         
@@ -81,7 +81,7 @@ public class CANFunctionMixture implements MultivariateFunction {
                         Omega aOmega = this.canModel.getOmega(genes[0], iSiteClassA);
                         Omega bOmega = this.canModel.getOmega(genes[1], iSiteClassB);
                         Omega cOmega = this.canModel.getOmega(genes[2], iSiteClassC);
-
+                        
                         CodonAwareMatrix Q = new CodonAwareMatrix(
                             this.canModel.getKappa(),
                             this.canModel.getPi(),
@@ -90,7 +90,7 @@ public class CANFunctionMixture implements MultivariateFunction {
                             aOmega, bOmega, cOmega,
                             this.canModel.getScaling()
                         );
-
+                        
                         ProbMatrixGenerator P;
                         try{
                             P = ProbMatrixFactory.getPGenerator(Q);
@@ -110,7 +110,7 @@ public class CANFunctionMixture implements MultivariateFunction {
                         double pC = this.canModel.getProbability(genes[2], iSiteClassC);
 
                         double contrib = pA * pB* pC * LikelihoodCalculator.calculateSiteLikelihood(alignment, tree, iSite, P, 1.0);
-                        
+
                         //System.out.println(contrib);
                         siteL += contrib;
                     } //iSiteClassC

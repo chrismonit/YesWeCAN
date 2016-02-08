@@ -209,14 +209,17 @@ public class RunCANMixture extends RunModel {
     
     @Override
     public double[] fit(){
-  
+        
         CANModelMixture canMix = makeMixture(this.comArgs, this.comArgs.getModel());
         CANFunctionMixture optFunction = 
                 new CANFunctionMixture(this.alignment, this.tree, genStruct, canMix, 
                         this.numSiteClasses
                 );
         Optimise opt = new Optimise();
+        long start = System.currentTimeMillis();
         CANModelMixture result = (CANModelMixture)opt.optNMS(optFunction, canMix);
+        long time = System.currentTimeMillis() - start;
+        System.out.println("opt time (s): "+time/1000.0);
         
         double[] mles = getValueArray(result);        
         return mles;
@@ -237,7 +240,7 @@ public class RunCANMixture extends RunModel {
         long start = System.currentTimeMillis();
         resultArray[1] = calculator.value(optimisableParams);
         long time = System.currentTimeMillis() - start;
-        System.out.println("time (s): "+ time/1000.0);
+        System.out.println("overall time (s): "+ time/1000.0);
 
         return resultArray;
     }

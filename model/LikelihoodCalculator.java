@@ -21,7 +21,6 @@ public class LikelihoodCalculator {
     
     public static double calculateSiteLikelihood(AdvancedAlignment alignment, Tree tree, int site, ProbMatrixGenerator pGenerator, double branchScaling){ 
         
-        
         double sum = 0.0;
         double[] rootConditionals = downTree( tree.getRoot(), alignment, tree, site, pGenerator, branchScaling);
 
@@ -36,10 +35,10 @@ public class LikelihoodCalculator {
         double[] parentConditionals = new double[States.NT_STATES]; //number of nucleotide states
         
         if (parent.isLeaf()){ // 'parent' is terminal node, i.e. has no children.
-        
+            
             String taxonName = parent.getIdentifier().getName();
             int state = alignment.getStateBySequenceName(taxonName, site);
-        
+            
             if (state >= 0 && state < States.NT_STATES){ //the observed state is recognised as a nucleotide
                 parentConditionals[state] = 1.0;
             }
