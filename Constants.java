@@ -43,6 +43,7 @@ public class Constants {
     
     public static char[] FRAMES = {'A', 'B', 'C'};
     
+    // for output text
     public static String OUTPUT_DELIMITER = "\t";
     public static String LAYOUT = "LAYOUT"; // prefix for genetic structure diagram
     public static String HEADER = "HEADER"; // prefix for header in output

@@ -57,7 +57,7 @@ public class CANFunctionMixture implements MultivariateFunction {
         double totalLogL = 0.0; // lnL for all sites
         
         for (int iSite = 0; iSite < this.alignment.getLength(); iSite++) {
-            System.out.println("\nsite "+iSite);
+            //System.out.println("\nsite "+iSite);
             
             // determine which process is active at this site
             int siteType = iSite % 3;
@@ -107,12 +107,12 @@ public class CANFunctionMixture implements MultivariateFunction {
 
                         double contrib = pA * pB* pC * LikelihoodCalculator.calculateSiteLikelihood(alignment, tree, iSite, P, 1.0);
                         
-                        System.out.println(contrib);
+                        //System.out.println(contrib);
                         siteL += contrib;
                     } //iSiteClassC
                 } // iSiteClassB
             }// iSiteClassA
-            System.out.println("siteL: " + siteL);
+            //System.out.println("siteL: " + siteL);
             totalLogL += Math.log(siteL);
             
         }// for iSite
