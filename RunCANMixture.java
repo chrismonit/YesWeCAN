@@ -13,6 +13,7 @@ import pal.tree.Tree;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
+import swmutsel.model.parameters.Parameter;
 import swmutsel.model.parameters.Probabilities;
 import yeswecan.cli.CommandArgs;
 import yeswecan.model.canmix.CANFunctionMixture;
@@ -61,6 +62,18 @@ public class RunCANMixture extends RunModel {
         return numSiteClasses;
     }
     
+    public void fixed(){
+        CANModelMixture canMixInitial = makeMixture(this.comArgs, this.comArgs.getModel());
+        for (Parameter p : canMixInitial.getParameters()){
+            System.out.print(p.toString());
+            System.out.print(" ");
+            System.out.println(p.isOptimisable());
+        }
+    
+    }
+    
+    
+    
     @Override
     public String[] getHeader(){
         ArrayList<String> columns = new ArrayList<String>();
@@ -80,7 +93,6 @@ public class RunCANMixture extends RunModel {
     // a lot of code here is shared with getting mles I think
     // could have a private method which fullfills the share functinoality
     
-    // this still doesn't work
     @Override
     public double[] getInitialValues(){ // NB first element does not contain lnL
         CANModelMixture canMixInitial = makeMixture(this.comArgs, this.comArgs.getModel());
@@ -160,7 +172,8 @@ public class RunCANMixture extends RunModel {
        
             OmegaNegative geneW_0 = new OmegaNegative(comArgs.omega0()[iGene]);
             // fix if needs fixing
-            if (comArgs.fix().contains(Constants.SITE_CLASS_0+Constants.OMEGA_STRING+Integer.toString(iGene+1))) //+1 for zero based
+            
+            if (comArgs.fix().contains(Integer.toString(iGene+1) + Constants.WITIHIN_FIELD_SEPARATOR + Constants.OMEGA_STRING + Constants.SITE_CLASS_0)) //+1 for zero based
                geneW_0.setOptimisable(false);
         
             omegas.add(geneW_0);
@@ -173,7 +186,7 @@ public class RunCANMixture extends RunModel {
 
             if (mixtureModel == Constants.M2_IDENTIFIER){
                 OmegaPositive geneW_2 = new OmegaPositive(comArgs.omega2()[iGene]); 
-                if (comArgs.fix().contains(Constants.SITE_CLASS_2+Constants.OMEGA_STRING+Integer.toString(iGene+1))) //+1 for zero based
+                if (comArgs.fix().contains(Integer.toString(iGene+1) + Constants.WITIHIN_FIELD_SEPARATOR + Constants.OMEGA_STRING + Constants.SITE_CLASS_2)) //+1 for zero based
                    geneW_2.setOptimisable(false);
                 omegas.add(geneW_2);
 
@@ -182,7 +195,7 @@ public class RunCANMixture extends RunModel {
                 geneProbs = new Probabilities(new double[]{ comArgs.prob0()[iGene], comArgs.prob1()[iGene] });
             }
             
-            if (comArgs.fix().contains(Constants.PROB_STRING+Integer.toString(iGene+1))) // zero based
+            if (comArgs.fix().contains(Integer.toString(iGene+1)+Constants.WITIHIN_FIELD_SEPARATOR+Constants.PROB_STRING)) // zero based
                 geneProbs.setOptimisable(false);
                 
             probs.add(geneProbs);
