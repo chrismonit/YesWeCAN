@@ -62,15 +62,14 @@ public class RunCANMixture extends RunModel {
         return numSiteClasses;
     }
     
-    public void fixed(){
-        CANModelMixture canMixInitial = makeMixture(this.comArgs, this.comArgs.getModel());
-        for (Parameter p : canMixInitial.getParameters()){
-            System.out.print(p.toString());
-            System.out.print(" ");
-            System.out.println(p.isOptimisable());
-        }
-    
-    }
+//    public void fixed(){
+//        CANModelMixture canMixInitial = makeMixture(this.comArgs, this.comArgs.getModel());
+//        for (Parameter p : canMixInitial.getParameters()){
+//            System.out.print(p.toString());
+//            System.out.print(" ");
+//            System.out.println(p.isOptimisable());
+//        }
+//    }
     
     
     
@@ -90,34 +89,27 @@ public class RunCANMixture extends RunModel {
         return columns.toArray(new String[columns.size()]);
     }
     
-    // a lot of code here is shared with getting mles I think
-    // could have a private method which fullfills the share functinoality
     
-    @Override
-    public double[] getInitialValues(){ // NB first element does not contain lnL
-        CANModelMixture canMixInitial = makeMixture(this.comArgs, this.comArgs.getModel());
-       
-        
-        // values includes the fixed values for neutral frames
-        // 5 == len(k) + len(pi) + len(sc)
+    
+    private double[] getValueArray(CANModelMixture canMix){
         List<Double> resultList = new ArrayList<Double>();
         resultList.add((double)this.comArgs.getModel());
-        resultList.add(Double.NaN);
+        resultList.add(canMix.getLnL()); 
 
 
-        resultList.add(canMixInitial.getKappa().get());
-        for (int i = 0; i < canMixInitial.getPi().get().length; i++) {
-            resultList.add(canMixInitial.getPi().get()[i]);
+        resultList.add(canMix.getKappa().get());
+        for (int i = 0; i < canMix.getPi().get().length; i++) {
+            resultList.add(canMix.getPi().get()[i]);
         }
-        resultList.add(canMixInitial.getScaling().get());
+        resultList.add(canMix.getScaling().get());
         
         for (int iGene = 1; iGene < this.comArgs.getGeneNumber()+1; iGene++) {
             for (int jClass = 0; jClass < this.numSiteClasses; jClass++) {
-                resultList.add( canMixInitial.getOmega(iGene, jClass).get() );
+                resultList.add( canMix.getOmega(iGene, jClass).get() );
             }
             
             for (int jClass = 0; jClass < this.numSiteClasses; jClass++) {
-                resultList.add( canMixInitial.getProbability(iGene, jClass) );
+                resultList.add( canMix.getProbability(iGene, jClass) );
             }
         }
         
@@ -126,6 +118,15 @@ public class RunCANMixture extends RunModel {
             resultArray[i] = resultList.get(i).doubleValue();
         }
         return resultArray;
+
+    }
+    
+    
+ 
+    
+    @Override
+    public double[] getInitialValues(){ // NB first element does not contain lnL
+        return getValueArray( makeMixture(this.comArgs, this.comArgs.getModel()) );
     }
     
     
@@ -206,7 +207,7 @@ public class RunCANMixture extends RunModel {
     }// make mixture
     
     
-        @Override
+    @Override
     public double[] fit(){
   
         CANModelMixture canMix = makeMixture(this.comArgs, this.comArgs.getModel());
@@ -217,14 +218,8 @@ public class RunCANMixture extends RunModel {
         Optimise opt = new Optimise();
         CANModelMixture result = (CANModelMixture)opt.optNMS(optFunction, canMix);
         
-        ArrayList<Double> values = RunModel.getParameterValues(result.getParameters());
-        values.add(0, result.getLnL()); // prepend
-        double[] resultArray = new double[values.size()];
-        for (int i = 0; i < values.size(); i++) {
-            resultArray[i] = values.get(i);
-        }
-        return resultArray;
- 
+        double[] mles = getValueArray(result);        
+        return mles;
     }
     
     @Override
@@ -238,13 +233,9 @@ public class RunCANMixture extends RunModel {
                 );
         
         
-        ArrayList<Double> values = RunModel.getParameterValues(canMix.getParameters());
-        double lnL = calculator.value(optimisableParams);
-        values.add(0, lnL);
-        double[] resultArray = new double[values.size()];
-        for (int i = 0; i < values.size(); i++) {
-            resultArray[i] = values.get(i);
-        }
+        double[] resultArray = getInitialValues();
+        resultArray[1] = calculator.value(optimisableParams);
+
         return resultArray;
     }
          

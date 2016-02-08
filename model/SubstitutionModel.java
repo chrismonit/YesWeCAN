@@ -19,7 +19,7 @@ public abstract class SubstitutionModel {  // smaller version of equivalent clas
     
     private List<Parameter> parameters = Lists.newArrayList();
     
-    private double lnL = Double.NEGATIVE_INFINITY; // default lnL
+    private double lnL = Double.NaN; // keeping this blank so it must be overwritten
 
     public double getLnL(){
         return this.lnL;
