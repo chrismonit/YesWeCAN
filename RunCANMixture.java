@@ -234,7 +234,10 @@ public class RunCANMixture extends RunModel {
         
         
         double[] resultArray = getInitialValues();
+        long start = System.currentTimeMillis();
         resultArray[1] = calculator.value(optimisableParams);
+        long time = System.currentTimeMillis() - start;
+        System.out.println("time (s): "+ time/1000.0);
 
         return resultArray;
     }

@@ -69,7 +69,11 @@ public class CANFunctionMixture implements MultivariateFunction {
             // iterate over site classes, for each gene
             for (int iSiteClassA = 0; iSiteClassA < this.numSiteClasses; iSiteClassA++) {
                 
+//                Omega aOmega = this.canModel.getOmega(genes[0], iSiteClassA);
+//                double pA = this.canModel.getProbability(genes[0], iSiteClassA); 
                 for (int iSiteClassB = 0; iSiteClassB < this.numSiteClasses; iSiteClassB++) {
+//                    Omega bOmega = this.canModel.getOmega(genes[1], iSiteClassB);
+//                    double pB = this.canModel.getProbability(genes[1], iSiteClassB);
                     
                     for (int iSiteClassC = 0; iSiteClassC < this.numSiteClasses; iSiteClassC++) {
                         
