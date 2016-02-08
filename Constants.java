@@ -34,6 +34,8 @@ public class Constants {
     
     public static String OMEGA_STRING = "w";
     public static String PROB_STRING = "p";
+    public static String SITE_CLASS_0 = "0";
+    public static String SITE_CLASS_2 = "2";
     
     public static String ERROR_PREFIX = "ERROR: ";
     
@@ -47,6 +49,7 @@ public class Constants {
     public static String INITIAL = "INITIAL";
     public static String CALC = "CALC";
     public static String MLE = "MLE";
+    public static String WITIHIN_FIELD_SEPARATOR = "_";
     
     // arguments for -fix option
     // e.g. "-fix kappa pi" will fix kappa and pi parameters, but omegas and scaling will be optimised
