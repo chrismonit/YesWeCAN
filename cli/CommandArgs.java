@@ -65,17 +65,16 @@ public class CommandArgs {
     
     
     
-    @Parameter(names = {"-frameA", "-a"}, required = true, description = "Gene layout for frame A, delimited by comma")
+    @Parameter(names = {"-frameA", "-a"}, required = false, description = "Gene layout for frame A, delimited by comma")
     private String aFrame = "";
     
-    @Parameter(names = {"-frameB", "-b"}, required = true, description = "Gene layout for frame B, delimited by comma")
+    @Parameter(names = {"-frameB", "-b"}, required = false, description = "Gene layout for frame B, delimited by comma")
     private String bFrame = "";
     
-    @Parameter(names = {"-frameC", "-c"}, required = true, description = "Gene layout for frame C, delimited by comma")
+    @Parameter(names = {"-frameC", "-c"}, required = false, description = "Gene layout for frame C, delimited by comma")
     private String cFrame = "";
     
-    
-    @Parameter(names = {"-lengths", "-l"}, required = true, description = "Lengths for each partition, delimted by comma")
+    @Parameter(names = {"-lengths", "-l"}, required = false, description = "Lengths for each partition, delimted by comma")
     private String lengths = ""; // can't have default since don't know how many genes there are
     
    
