@@ -78,6 +78,8 @@ public class Analyse {
             System.out.println( Constants.MLE + Constants.OUTPUT_DELIMITER +
                     ArrayPrinter.toString(result, Constants.OUTPUT_DELIMITER) ); 
             
+            System.out.println("");
+            
             double seconds = (double)runTime/1000.0; // could do hours only
             double minutes = seconds/60.0;
             double hours = minutes/60.0;
