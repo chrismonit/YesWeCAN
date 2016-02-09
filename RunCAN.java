@@ -59,7 +59,7 @@ public class RunCAN extends RunModel {
     public double[] getInitialValues(){ // NB first element does not contain lnL
         ArrayList<Double> values = RunModel.getParameterValues(makeCAN(this.comArgs).getParameters());
         double[] resultArray = new double[values.size()+2];
-        resultArray[0] = Constants.CAN0;
+        resultArray[0] = Constants.CAN0_IDENTIFIER;
         resultArray[1] = Double.NaN;
         
         for (int i = 0; i < values.size(); i++) {
@@ -110,7 +110,7 @@ public class RunCAN extends RunModel {
         ArrayList<Double> values = RunModel.getParameterValues(result.getParameters());
         values.add(0, result.getLnL()); // prepend
         double[] resultArray = new double[values.size()+1];
-        resultArray[0] = Constants.CAN0;
+        resultArray[0] = Constants.CAN0_IDENTIFIER;
         for (int i = 0; i < values.size(); i++) {
             resultArray[i+1] = values.get(i);
         }
@@ -129,7 +129,7 @@ public class RunCAN extends RunModel {
         double lnL = calculator.value(optimisableParams);
         values.add(0, lnL);
         double[] resultArray = new double[values.size()+1];
-        resultArray[0] = Constants.CAN0;
+        resultArray[0] = Constants.CAN0_IDENTIFIER;
         
         for (int i = 0; i < values.size(); i++) {
             resultArray[i+1] = values.get(i);

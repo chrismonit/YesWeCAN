@@ -53,6 +53,8 @@ public class Analyse {
         
         switch (this.comArgs.getModel()){
             case Constants.HKY_IDENTIFIER: run = new RunHKY(alignment, tree, this.comArgs);
+                break;
+            case Constants.HKY_IDENTIFIER: run = new RunHKY(alignment, tree, this.comArgs);
         
         
         }

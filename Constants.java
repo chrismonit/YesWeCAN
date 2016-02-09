@@ -27,7 +27,7 @@ public class Constants {
     public static final double DEFAULT_OMEGA_2 = 1.01;
     
     public static final int HKY_IDENTIFIER = -1;
-    public static final int CAN0 = 0;
+    public static final int CAN0_IDENTIFIER = 0;
     public static final int M1_IDENTIFIER = 1;
     public static final int M2_IDENTIFIER = 2;
 
