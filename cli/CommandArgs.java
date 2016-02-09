@@ -84,7 +84,7 @@ public class CommandArgs {
     private String tcag = "false";
     
     @Parameter(names = {"-phy"}, required = false, description = "Sequence data are in Phylip format (assumes Fasta format by default")
-    private String phy = "false";
+    private boolean phy = false;
     
     
 
@@ -103,7 +103,7 @@ public class CommandArgs {
         return tcag;
     }
   
-    public String phy(){
+    public boolean phy(){
         return phy;
     }
     

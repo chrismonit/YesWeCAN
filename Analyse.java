@@ -43,7 +43,7 @@ public class Analyse {
             System.out.println(ex.getMessage());
         }
                 
-        loadData(this.comArgs.alignment(), this.comArgs.tree(), Boolean.parseBoolean(this.comArgs.phy()));
+        loadData(this.comArgs.alignment(), this.comArgs.tree(), this.comArgs.phy());
  
         RunModel run;
         
