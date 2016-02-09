@@ -78,13 +78,13 @@ public class Analyse {
             System.out.println( Constants.MLE + Constants.OUTPUT_DELIMITER +
                     ArrayPrinter.toString(result, Constants.OUTPUT_DELIMITER) ); 
             
-            long seconds = runTime/(long)1000.0; // could do hours only
-            long minutes = seconds/(long)60.0;
-            long hours = minutes/(long)60.0;
-            long days = hours/(long)24.0;
-            String[] time = new String[]{ Long.toString(seconds), Long.toString(minutes), Long.toString(hours), Long.toString(days) };
+            double seconds = (double)runTime/1000.0; // could do hours only
+            double minutes = (double)seconds/60.0;
+            double hours = (double)minutes/60.0;
+            double days = (double)hours/24.0;
+            String[] time = new String[]{ Double.toString(seconds), Double.toString(minutes), Double.toString(hours), Double.toString(days) };
             
-            System.out.println(Constants.TIME + String.join(Constants.OUTPUT_DELIMITER, time));
+            System.out.println(Constants.TIME + Constants.OUTPUT_DELIMITER + String.join(Constants.OUTPUT_DELIMITER, time));
         }
 
     }
