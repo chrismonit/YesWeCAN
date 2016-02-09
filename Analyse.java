@@ -79,9 +79,9 @@ public class Analyse {
                     ArrayPrinter.toString(result, Constants.OUTPUT_DELIMITER) ); 
             
             double seconds = (double)runTime/1000.0; // could do hours only
-            double minutes = (double)seconds/60.0;
-            double hours = (double)minutes/60.0;
-            double days = (double)hours/24.0;
+            double minutes = seconds/60.0;
+            double hours = minutes/60.0;
+            double days = hours/24.0;
             String[] time = new String[]{ Double.toString(seconds), Double.toString(minutes), Double.toString(hours), Double.toString(days) };
             
             System.out.println(Constants.TIME + Constants.OUTPUT_DELIMITER + String.join(Constants.OUTPUT_DELIMITER, time));

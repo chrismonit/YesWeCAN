@@ -42,16 +42,11 @@ public class CANFunction implements MultivariateFunction {
         // NB 0th omega is fixed to 1.0 for neutral evolution
     }
     
-    private int counter = 0;
  
     @Override
     public double value(double[] point) {
         //System.out.println("value");
         // NB 0th omega is fixed to 1.0 for neutral evolution
-        counter++;
-        if (counter % 50 == 0){
-            System.out.println(counter);
-        }
         
         Mapper.setOptimisable(this.canModel.getParameters(), point);
         
