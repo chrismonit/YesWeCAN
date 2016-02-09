@@ -12,6 +12,7 @@ import pal.alignment.Alignment;
 import pal.alignment.AlignmentBuilder;
 import pal.tree.Node;
 import pal.tree.Tree;
+import yeswecan.Constants;
 import yeswecan.model.ProbMatrixGenerator;
 
 /**
@@ -22,8 +23,10 @@ public abstract class SimModel {
     
     abstract Alignment simulate();
     
+    protected String subCountHeader = 
+            "site"+Constants.OUTPUT_DELIMITER+"part"+Constants.OUTPUT_DELIMITER+"type"+Constants.OUTPUT_DELIMITER+"count";
     
-    private class SubCount{
+    protected class SubCount{
         int count = 0;
     }
     
