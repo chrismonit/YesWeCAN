@@ -12,53 +12,53 @@ package yeswecan;
  */
 public class Constants {
     
-    public static double EPSILON = 1e-10;
+    public static final double EPSILON = 1e-10;
     
-    public static int RELATIVE_TRESHOLD = -1;
-    public static double ABSOLUTE_THRESHOLD = 5.0e-6;
-    public static int MAXIMUM_EVALUATIONS = 4000;
-    public static int MAXIMUM_ITERATIONS = 10000;
+    public static final int RELATIVE_TRESHOLD = -1;
+    public static final double ABSOLUTE_THRESHOLD = 5.0e-6;
+    public static final int MAXIMUM_EVALUATIONS = 4000;
+    public static final int MAXIMUM_ITERATIONS = 10000;
     
-    public static double DEFAULT_KAPPA = 1.0;
-    public static String DEFAULT_PI = "0.25,0.25,0.25,0.25";
-    public static double DEFAULT_SCALING = 1.0;
-    public static double DEFAULT_OMEGA = 1.0;
-    public static double DEFAULT_OMEGA_0 = 0.99;
-    public static double DEFAULT_OMEGA_2 = 1.01;
+    public static final double DEFAULT_KAPPA = 1.0;
+    public static final String DEFAULT_PI = "0.25,0.25,0.25,0.25";
+    public static final double DEFAULT_SCALING = 1.0;
+    public static final double DEFAULT_OMEGA = 1.0;
+    public static final double DEFAULT_OMEGA_0 = 0.99;
+    public static final double DEFAULT_OMEGA_2 = 1.01;
     
-    public static int HKY_IDENTIFIER = -1;
-    public static int CAN0 = 0;
-    public static int M1_IDENTIFIER = 1;
-    public static int M2_IDENTIFIER = 2;
+    public static final int HKY_IDENTIFIER = -1;
+    public static final int CAN0 = 0;
+    public static final int M1_IDENTIFIER = 1;
+    public static final int M2_IDENTIFIER = 2;
 
-    public static int NUM_M1_SITE_CLASSES = 2;
-    public static int NUM_M2_SITE_CLASSES = 3;
+    public static final int NUM_M1_SITE_CLASSES = 2;
+    public static final int NUM_M2_SITE_CLASSES = 3;
     
-    public static String OMEGA_STRING = "w";
-    public static String PROB_STRING = "p";
-    public static String SITE_CLASS_0 = "0";
-    public static String SITE_CLASS_2 = "2";
+    public static final String OMEGA_STRING = "w";
+    public static final String PROB_STRING = "p";
+    public static final String SITE_CLASS_0 = "0";
+    public static final String SITE_CLASS_2 = "2";
     
-    public static String ERROR_PREFIX = "ERROR: ";
+    public static final String ERROR_PREFIX = "ERROR: ";
     
-    public static String ARGS_DELIMITER = ",";
+    public static final String ARGS_DELIMITER = ",";
     
-    public static char[] FRAMES = {'A', 'B', 'C'};
+    public static final char[] FRAMES = {'A', 'B', 'C'};
     
     // for output text
-    public static String OUTPUT_DELIMITER = "\t";
-    public static String LAYOUT = "LAYOUT"; // prefix for genetic structure diagram
-    public static String HEADER = "HEADER"; // prefix for header in output
-    public static String INITIAL = "INITIAL";
-    public static String CALC = "CALC";
-    public static String MLE = "MLE";
-    public static String WITIHIN_FIELD_SEPARATOR = "_";
+    public static final String OUTPUT_DELIMITER = "\t";
+    public static final String LAYOUT = "LAYOUT"; // prefix for genetic structure diagram
+    public static final String HEADER = "HEADER"; // prefix for header in output
+    public static final String INITIAL = "INITIAL";
+    public static final String CALC = "CALC";
+    public static final String MLE = "MLE";
+    public static final String WITIHIN_FIELD_SEPARATOR = "_";
     
     // arguments for -fix option
     // e.g. "-fix kappa pi" will fix kappa and pi parameters, but omegas and scaling will be optimised
-    public static String FIX_ALL = "all"; // compute lnL only
-    public static String FIX_KAPPA = "kappa"; 
-    public static String FIX_FREQUENCIES = "pi";
-    public static String FIX_SCALING = "sc";
+    public static final String FIX_ALL = "all"; // compute lnL only
+    public static final String FIX_KAPPA = "kappa"; 
+    public static final String FIX_FREQUENCIES = "pi";
+    public static final String FIX_SCALING = "sc";
     
 }

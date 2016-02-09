@@ -17,6 +17,7 @@ import pal.tree.Tree;
 import yeswecan.cli.CommandArgs;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.GeneticStructure;
+import yeswecan.utils.ArrayPrinter;
 
 /**
  *
@@ -48,13 +49,43 @@ public class Analyse {
                 
         loadData(this.comArgs.alignment(), this.comArgs.tree(), Boolean.parseBoolean(this.comArgs.phy()));
  
-        this.genStruct = new GeneticStructure(this.comArgs.aFrame(),
-                                                            this.comArgs.bFrame(),
-                                                            this.comArgs.cFrame(),
-                                                            this.comArgs.lengths());
+        RunModel run;
+        
+        switch (this.comArgs.getModel()){
+            case Constants.HKY_IDENTIFIER: run = new RunHKY(alignment, tree, this.comArgs);
+        
+        
+        }
+        
+
+        
+        
+        
+        
+        
         
         // TODO determine model to use and invoke relevant Run class
         //
+    }
+    
+    private void makeGenStruct(){
+        this.genStruct = new GeneticStructure(this.comArgs.aFrame(),
+                                                        this.comArgs.bFrame(),
+                                                        this.comArgs.cFrame(),
+                                                        this.comArgs.lengths());
+    }
+    
+    private void run(RunModel run){
+        System.out.println(Constants.HEADER + Constants.OUTPUT_DELIMITER + String.join(Constants.OUTPUT_DELIMITER, run.getHeader()));
+        
+        System.out.println(Constants.INITIAL + Constants.OUTPUT_DELIMITER + 
+                ArrayPrinter.toString(run.getInitialValues(), Constants.OUTPUT_DELIMITER));
+        
+        System.out.println(Constants.CALC + Constants.OUTPUT_DELIMITER +
+                ArrayPrinter.toString(run.calculate(), Constants.OUTPUT_DELIMITER));
+        
+        System.out.println(Constants.MLE + Constants.OUTPUT_DELIMITER +
+                ArrayPrinter.toString(run.fit(), Constants.OUTPUT_DELIMITER)); 
     }
     
     
