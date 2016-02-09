@@ -52,6 +52,7 @@ public class Constants {
     public static final String INITIAL = "INITIAL";
     public static final String CALC = "CALC";
     public static final String MLE = "MLE";
+    public static final String TIME = "TIME";
     public static final String WITIHIN_FIELD_SEPARATOR = "_";
     
     // arguments for -fix option
@@ -60,5 +61,4 @@ public class Constants {
     public static final String FIX_KAPPA = "kappa"; 
     public static final String FIX_FREQUENCIES = "pi";
     public static final String FIX_SCALING = "sc";
-    
 }
