@@ -38,30 +38,7 @@ import yeswecan.utils.ArrayPrinter;
 public class Simulator {
     
     
-    public static void main(String[] args){
-        
-        // read in command args etc
-        String treePath = "/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/simulator_tests/basic.tre";
-        double kappa = 2.0;
-        double[] baseFrequencies = new double[]{.1,.2,.3,.4};
-        double branchScaling = 1.0;
-        
-        double[] omegas = new double[]{0.1, 0.2, 0.3};
-        String a = "0,1,1,1,2";
-        String b = "2,2,0,0,0";
-        String c = "3,3,3,3,0";
-        String lengths = "5,5,5,5,5";
-        
-        GeneticStructure genStruct = new GeneticStructure(a,b,c,lengths,",");
-        
-        //Simulator sim = new Simulator(tree, genStruct, kappa, baseFrequencies, omegas, branchScaling);
-        //Alignment aln = sim.simulate();
-        //System.out.println(new FastaWriter().fastaString(aln));
-    
-        
-    }
-  
-    
+
     private Tree tree;
     private GeneticStructure genStruct;
     private TsTvRatioAdvanced kappa;
@@ -69,9 +46,8 @@ public class Simulator {
     private Omega[] geneOmegas;
     private BranchScaling scaling;
             
-    private Random rand = new Random();
+    private Random rand = new Random(123456789);
     private AlignmentBuilder siteStates;
-    private CommandArgs comArgs;
 
     
     public Simulator(Tree tree, GeneticStructure genStruct, double kappaValue, double[] baseFrequencyValues, double[] omegaValues, double branchScalingValue){
@@ -112,7 +88,7 @@ public class Simulator {
             RatioScaler ratioScaler = RatioScalerFactory.getRatioScaler();
             CodonAwareMatrix canQ = new CodonAwareMatrix(this.kappa, this.freqs, ratioScaler, siteType, aOmega, bOmega, cOmega, this.scaling);            
             ProbMatrixGenerator Pgen = ProbMatrixFactory.getPGenerator(canQ);
-
+            
             // simulate according to process
             Node root = tree.getRoot();
 
