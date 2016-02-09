@@ -80,7 +80,7 @@ public class Analyse {
             
             System.out.println("");
             
-            double seconds = (double)runTime/1000.0; // could do hours only
+            double seconds = (double)runTime/1000.0;
             double minutes = seconds/60.0;
             double hours = minutes/60.0;
             double days = hours/24.0;
