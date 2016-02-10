@@ -13,8 +13,6 @@ import pal.alignment.ConcatenatedAlignment;
 import pal.datatype.Nucleotides;
 import pal.tree.Node;
 import pal.tree.Tree;
-import swmutsel.model.parameters.BaseFrequencies;
-import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Omega;
 import yeswecan.Constants;
 import yeswecan.model.CodonAwareMatrix;
@@ -23,7 +21,6 @@ import yeswecan.model.ProbMatrixGenerator;
 import yeswecan.model.RatioScaler;
 import yeswecan.model.RatioScalerFactory;
 import yeswecan.model.can.CANModel;
-import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.GeneticStructure;
 
 /**
