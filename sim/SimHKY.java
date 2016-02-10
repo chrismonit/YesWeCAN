@@ -20,6 +20,7 @@ import yeswecan.model.ProbMatrixGenerator;
 import yeswecan.model.RateMatrix;
 import yeswecan.model.hky.HKYModel;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
+import yeswecan.utils.MatrixPrinter;
 
 /**
  *
@@ -54,11 +55,17 @@ public class SimHKY extends SimModel {
         }
         
         RateMatrix Q = new RateMatrix(this.kappa, this.freqs);
+        MatrixPrinter.PrintMatrix(Q.getData(), "Q here");
+        //System.out.println(Q.getBaseFrequencies().toString());
+        
         ProbMatrixGenerator Pgen = ProbMatrixFactory.getPGenerator(Q);
         Node root = tree.getRoot();
         
+        MatrixPrinter.PrintMatrix(Pgen.getQ().getData(), "Pgen Q A");
+
         for (int iSite = 0; iSite < this.length; iSite++) {
-            int rootState = SimModel.draw(this.freqs.get(), this.rand.nextDouble());
+            double r = this.rand.nextDouble();
+            int rootState = SimModel.draw(this.freqs.get(), r);
             
             this.siteStates = new AlignmentBuilder(this.tree.getExternalNodeCount()); // an 'alignment' for a single site, which will be populated with states by downTree.
 

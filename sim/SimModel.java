@@ -14,6 +14,8 @@ import pal.tree.Node;
 import pal.tree.Tree;
 import yeswecan.Constants;
 import yeswecan.model.ProbMatrixGenerator;
+import yeswecan.utils.ArrayPrinter;
+import yeswecan.utils.MatrixPrinter;
 
 /**
  *
@@ -41,8 +43,11 @@ public abstract class SimModel {
                 Node childNode = parentNode.getChild(iChild);
                 double branchLength = childNode.getBranchLength();
                 RealMatrix P = Pgen.getP( branchLength);
-                double[] transProbDistribution = P.getRow(parentState);
+                //MatrixPrinter.PrintMatrix(P.getData(), "P matrix");
+                MatrixPrinter.PrintMatrix(Pgen.getQ().getData(), "Pgen Q");
                 
+                double[] transProbDistribution = P.getRow(parentState);
+                //ArrayPrinter.print(transProbDistribution, ",");
                 int childState = draw(transProbDistribution, rand.nextDouble());
                 
                 if (childState != parentState) {
@@ -61,6 +66,7 @@ public abstract class SimModel {
     public static int draw(double[] distribution, double randomUniform){
         // NB elements of distribution MUST sum to one!
         // randomUniform must be between 0 and 1
+        //ArrayPrinter.print(distribution, ",");
         double current = 0.0;
         for (int i = 0; i < distribution.length; i++) {
             if (randomUniform > current && randomUniform < current + distribution[i] ) {

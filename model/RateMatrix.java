@@ -3,7 +3,6 @@ package yeswecan.model;
 
 import yeswecan.model.parameters.*;
 
-import yeswecan.utils.MatrixPrinter;
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import swmutsel.model.parameters.BaseFrequencies;
@@ -52,9 +51,7 @@ public class RateMatrix extends Array2DRowRealMatrix {
             }// j
         }// i
           
-        
-        this.populateDiagonals();
-        this.scale();
+
     }//constructor
     
     
