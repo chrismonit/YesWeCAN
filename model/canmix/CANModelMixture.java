@@ -42,7 +42,8 @@ public class CANModelMixture extends CANModel {
             super.addParameters(p);
         }
     }
-    
+    // NB this does NOT override parent method getOmega(int gene)
+    // calling that method from this class would give you the wrong omega instance
     public Omega getOmega(int gene, int siteClass){
         int index = gene * this.numSiteClasses + siteClass;
         return super.getOmegas().get(index);
