@@ -53,5 +53,8 @@ public class CANModelMixture extends CANModel {
         return this.probabilities.get(gene).get()[siteClass];
     }
     
+    public Probabilities getGeneProbabilities(int gene){
+        return this.probabilities.get(gene);
+    }
     
 }
