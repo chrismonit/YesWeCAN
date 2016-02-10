@@ -18,6 +18,7 @@ import yeswecan.Constants;
 import yeswecan.model.ProbMatrixFactory;
 import yeswecan.model.ProbMatrixGenerator;
 import yeswecan.model.RateMatrix;
+import yeswecan.model.hky.HKYModel;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 
 /**
@@ -35,12 +36,11 @@ public class SimHKY extends SimModel {
     private boolean printSubCounts;
     
     
-    public SimHKY(Tree tree, double kappaValue, double[] baseFrequencyValues, 
-            Random rand, int length, boolean printSubCounts){
+    public SimHKY(Tree tree, Random rand, HKYModel hky, int length){
       
         this.tree = tree;
-        this.kappa = new TsTvRatioAdvanced(kappaValue);
-        this.freqs = new BaseFrequencies(baseFrequencyValues);
+        this.kappa = hky.getKappa();
+        this.freqs = hky.getPi();
         this.rand = rand;
         this.length = length;
         this.printSubCounts = printSubCounts;
