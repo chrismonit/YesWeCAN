@@ -36,7 +36,7 @@ public class SimHKY extends SimModel {
     private boolean printSubCounts;
     
     
-    public SimHKY(Tree tree, Random rand, HKYModel hky, int length){
+    public SimHKY(Tree tree, Random rand, HKYModel hky, int length, boolean printSubCounts){
       
         this.tree = tree;
         this.kappa = hky.getKappa();

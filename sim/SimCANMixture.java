@@ -10,6 +10,6 @@ package yeswecan.sim;
  *
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>
  */
-public class SimCANMixture {
-    
+public class SimCANMixture extends SimModel {
+     
 }

@@ -22,6 +22,7 @@ import yeswecan.model.ProbMatrixFactory;
 import yeswecan.model.ProbMatrixGenerator;
 import yeswecan.model.RatioScaler;
 import yeswecan.model.RatioScalerFactory;
+import yeswecan.model.can.CANModel;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.GeneticStructure;
 
@@ -34,40 +35,25 @@ public class SimCAN extends SimModel {
     
     private Tree tree;
     private GeneticStructure genStruct;
-    private TsTvRatioAdvanced kappa;
-    private BaseFrequencies freqs;
-    private Omega[] geneOmegas;
-    private BranchScaling scaling;
-            
+    private CANModel can;        
     private Random rand;
     private AlignmentBuilder siteStates;
     private boolean printSubCounts;
 
     
-    public SimCAN(Tree tree, GeneticStructure genStruct, double kappaValue, 
-            double[] baseFrequencyValues, double[] omegaValues, double branchScalingValue, Random rand, boolean printSubCounts){
-        
+    public SimCAN(Tree tree, Random rand, CANModel can, GeneticStructure genStruct, boolean printSubCounts){
       
         this.tree = tree;
         this.genStruct = genStruct;
-        this.kappa = new TsTvRatioAdvanced(kappaValue);
-        this.freqs = new BaseFrequencies(baseFrequencyValues);
-        this.scaling = new BranchScaling(branchScalingValue);
         this.rand = rand;
-        
-        // geneOmegas[0] will be for 'no gene' regions, ie where omega=1
-        this.geneOmegas = new Omega[omegaValues.length+1];
-        this.geneOmegas[0] = new Omega(1.0); // neutral evolution
-        for (int i = 1; i < this.geneOmegas.length; i++) { // NB starting at i=1
-            this.geneOmegas[i] = new Omega(omegaValues[i-1]);
-        }
+        this.can = can;
+
     }
     
     public Alignment simulate(){
        
         Alignment[] sites = new Alignment[this.genStruct.getTotalLength()];
         
-        System.out.println(genStruct.toString());
         
         if (this.printSubCounts){
             System.out.println(super.subCountHeader);
@@ -80,19 +66,19 @@ public class SimCAN extends SimModel {
             
             int siteType = iSite % 3;
             int[] genes = genStruct.getGenes(iSite); // the genes present in the three frames in this partition
-            Omega aOmega = this.geneOmegas[genes[0]]; // genes[0] is the gene present in frame A
-            Omega bOmega = this.geneOmegas[genes[1]]; 
-            Omega cOmega = this.geneOmegas[genes[2]]; 
+            Omega aOmega = this.can.getOmega(genes[0]); // genes[0] is the gene present in frame A
+            Omega bOmega = this.can.getOmega(genes[1]);  
+            Omega cOmega = this.can.getOmega(genes[2]);  
                         
             // make model
             
             RatioScaler ratioScaler = RatioScalerFactory.getRatioScaler();
-            CodonAwareMatrix canQ = new CodonAwareMatrix(this.kappa, this.freqs, ratioScaler, siteType, aOmega, bOmega, cOmega, this.scaling);            
+            CodonAwareMatrix canQ = new CodonAwareMatrix(this.can.getKappa(), this.can.getPi(), ratioScaler, siteType, aOmega, bOmega, cOmega, this.can.getScaling());            
             ProbMatrixGenerator Pgen = ProbMatrixFactory.getPGenerator(canQ);
             
             // simulate according to process
             
-            int rootState = SimModel.draw(freqs.get(), rand.nextDouble());
+            int rootState = SimModel.draw(this.can.getPi().get(), rand.nextDouble());
 
             this.siteStates = new AlignmentBuilder(this.tree.getExternalNodeCount()); // an 'alignment' for a single site, which will be populated with states by downTree.
             
