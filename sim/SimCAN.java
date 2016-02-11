@@ -22,6 +22,7 @@ import yeswecan.model.RatioScaler;
 import yeswecan.model.RatioScalerFactory;
 import yeswecan.model.can.CANModel;
 import yeswecan.phylo.GeneticStructure;
+import yeswecan.utils.MatrixPrinter;
 
 /**
  *
@@ -71,10 +72,12 @@ public class SimCAN extends SimModel {
             
             RatioScaler ratioScaler = RatioScalerFactory.getRatioScaler();
             CodonAwareMatrix canQ = new CodonAwareMatrix(this.can.getKappa(), this.can.getPi(), ratioScaler, siteType, aOmega, bOmega, cOmega, this.can.getScaling());            
+            //MatrixPrinter.PrintMatrix(canQ.getData(), "Q sim can", "");
+
             ProbMatrixGenerator Pgen = ProbMatrixFactory.getPGenerator(canQ);
-            
+            //MatrixPrinter.PrintMatrix(Pgen.getP(0.2).getData(), "P(0.2)");
             // simulate according to process
-            
+                        
             int rootState = SimModel.draw(this.can.getPi().get(), rand.nextDouble());
 
             this.siteStates = new AlignmentBuilder(this.tree.getExternalNodeCount()); // an 'alignment' for a single site, which will be populated with states by downTree.

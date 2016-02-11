@@ -18,7 +18,7 @@ public class ProbMatrixFactory {
      */
     public static ProbMatrixGenerator getPGenerator(RateMatrix Q){
         return new YangEigenDecomposition(Q);
-        //return new PtSeriesExpansion(Q, 10);
+        //return new PtSeriesExpansion(Q, 4);
 
     }
 

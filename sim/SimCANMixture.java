@@ -46,6 +46,14 @@ public class SimCANMixture extends SimModel {
 
     }
     
+    /*
+    TODO we need to print the w_x for each gene for each site
+    otherwise we don't know what process is active where!
+    
+    */
+    
+    
+    
     public Alignment simulate(){
         Alignment[] sites = new Alignment[this.genStruct.getTotalLength()];
         
