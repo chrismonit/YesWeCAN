@@ -69,9 +69,15 @@ public class SimCANMixture extends SimModel {
             int siteType = iSite % 3;
             int[] genes = genStruct.getGenes(iSite); // the genes present in the three frames in this partition
         
-            Omega aOmega = this.canMix.getOmega(genes[0], SimModel.draw(this.canMix.getGeneProbabilities(genes[0]).get(), rand.nextDouble())); // genes[0] is the gene present in frame A
-            Omega bOmega = this.canMix.getOmega(genes[1], SimModel.draw(this.canMix.getGeneProbabilities(genes[1]).get(), rand.nextDouble()));  
-            Omega cOmega = this.canMix.getOmega(genes[2], SimModel.draw(this.canMix.getGeneProbabilities(genes[2]).get(), rand.nextDouble()));  
+            int aFrameSiteClass = SimModel.draw(this.canMix.getGeneProbabilities(genes[0]).get(), rand.nextDouble());
+            int bFrameSiteClass = SimModel.draw(this.canMix.getGeneProbabilities(genes[1]).get(), rand.nextDouble());
+            int cFrameSiteClass = SimModel.draw(this.canMix.getGeneProbabilities(genes[2]).get(), rand.nextDouble());
+                        
+            Omega aOmega = this.canMix.getOmega(genes[0], aFrameSiteClass); // genes[0] is the gene present in frame A
+            Omega bOmega = this.canMix.getOmega(genes[1], bFrameSiteClass);  
+            Omega cOmega = this.canMix.getOmega(genes[2], cFrameSiteClass);  
+            
+            System.out.println("PROCESS"+Constants.OUTPUT_DELIMITER+iSite+Constants.OUTPUT_DELIMITER+aFrameSiteClass+Constants.OUTPUT_DELIMITER+bFrameSiteClass+Constants.OUTPUT_DELIMITER+cFrameSiteClass);
             
             RatioScaler ratioScaler = RatioScalerFactory.getRatioScaler();
             CodonAwareMatrix canQ = new CodonAwareMatrix(this.canMix.getKappa(), this.canMix.getPi(), ratioScaler, siteType, aOmega, bOmega, cOmega, this.canMix.getScaling());            
@@ -88,7 +94,7 @@ public class SimCANMixture extends SimModel {
             SimModel.downTree(tree, Pgen, root, rootState, count, this.siteStates, this.rand);
             
             if (this.printSubCounts){
-                System.out.println(iSite + Constants.OUTPUT_DELIMITER + "0" + Constants.OUTPUT_DELIMITER + iSite%3 + Constants.OUTPUT_DELIMITER + count.count); // hard coded 0 represents the alignment partition. Since there are no partitiions with HKY, every site is in partition 0
+                System.out.println("COUNT"+Constants.OUTPUT_DELIMITER +iSite + Constants.OUTPUT_DELIMITER + "0" + Constants.OUTPUT_DELIMITER + iSite%3 + Constants.OUTPUT_DELIMITER + count.count); // hard coded 0 represents the alignment partition. Since there are no partitiions with HKY, every site is in partition 0
             }
             
             // add this newly simulated site to the total set
