@@ -44,11 +44,11 @@ public class SimCAN extends SimModel {
         this.genStruct = genStruct;
         this.rand = rand;
         this.can = can;
+        this.printSubCounts = printSubCounts;
 
     }
     
     public Alignment simulate(){
-       
         Alignment[] sites = new Alignment[this.genStruct.getTotalLength()];
         
         

@@ -43,11 +43,8 @@ public abstract class SimModel {
                 Node childNode = parentNode.getChild(iChild);
                 double branchLength = childNode.getBranchLength();
                 RealMatrix P = Pgen.getP( branchLength);
-                //MatrixPrinter.PrintMatrix(P.getData(), "P matrix");
-                MatrixPrinter.PrintMatrix(Pgen.getQ().getData(), "Pgen Q");
-                
+
                 double[] transProbDistribution = P.getRow(parentState);
-                //ArrayPrinter.print(transProbDistribution, ",");
                 int childState = draw(transProbDistribution, rand.nextDouble());
                 
                 if (childState != parentState) {
