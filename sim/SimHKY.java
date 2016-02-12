@@ -76,7 +76,6 @@ public class SimHKY extends SimModel {
             sites[iSite] = siteStates.generateAlignment(new Nucleotides());
 
         } // for iSite
-        
         Alignment allSites = new ConcatenatedAlignment(sites);
         return allSites;
     

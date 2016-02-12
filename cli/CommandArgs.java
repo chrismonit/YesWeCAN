@@ -75,7 +75,7 @@ public class CommandArgs {
     private String cFrame = "";
     
     @Parameter(names = {"-lengths", "-l"}, required = false, description = "Lengths for each partition, delimted by comma")
-    private String lengths = "0"; 
+    private String lengths = ""; 
     
    
     
