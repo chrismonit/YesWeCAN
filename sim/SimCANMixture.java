@@ -92,9 +92,6 @@ public class SimCANMixture extends SimModel {
             
             if (this.printSubCounts){
                 System.out.println(super.subCountHeader);
-            }
-            
-            if (this.printSubCounts){
                 System.out.println("count"+Constants.DEL +iSite + Constants.DEL + genStruct.getPartitionIndex(iSite) + Constants.DEL + iSite%3 + Constants.DEL + count.count); 
             }
             System.out.println("");
