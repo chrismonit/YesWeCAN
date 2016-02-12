@@ -130,7 +130,7 @@ public class RunCANMixture extends RunModel {
     }
     
     
-    public CANModelMixture makeMixture(CommandArgs comArgs, int mixtureModel){
+    public static CANModelMixture makeMixture(CommandArgs comArgs, int mixtureModel){
         
         HKYModel hky = RunHKY.makeHKY(comArgs);
         
@@ -203,7 +203,7 @@ public class RunCANMixture extends RunModel {
            
         } // for iGene
         
-        return new CANModelMixture(hky, scaling, omegas, probs, this.numSiteClasses);
+        return new CANModelMixture(hky, scaling, omegas, probs, numberSiteClasses(mixtureModel)); // need to call numberSiteClasses rather than using numSiteClasses field so this method can be static
     }// make mixture
     
     
