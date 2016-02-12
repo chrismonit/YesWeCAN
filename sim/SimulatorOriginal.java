@@ -35,7 +35,7 @@ import yeswecan.utils.ArrayPrinter;
  *
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>
  */
-public class Simulator {
+public class SimulatorOriginal {
     
     
 
@@ -50,7 +50,7 @@ public class Simulator {
     private AlignmentBuilder siteStates;
 
     
-    public Simulator(Tree tree, GeneticStructure genStruct, double kappaValue, double[] baseFrequencyValues, double[] omegaValues, double branchScalingValue){
+    public SimulatorOriginal(Tree tree, GeneticStructure genStruct, double kappaValue, double[] baseFrequencyValues, double[] omegaValues, double branchScalingValue){
         
       
         this.tree = tree;

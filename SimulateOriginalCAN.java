@@ -14,7 +14,7 @@ import pal.tree.Tree;
 import yeswecan.cli.CommandArgs;
 import yeswecan.phylo.FastaWriter;
 import yeswecan.phylo.GeneticStructure;
-import yeswecan.sim.Simulator;
+import yeswecan.sim.SimulatorOriginal;
 
 /**
  *
@@ -56,7 +56,7 @@ public class SimulateOriginalCAN {
         double[] omegaValues = this.comArgs.omegas();
         double scaling = this.comArgs.scaling();
         
-        Simulator sim = new Simulator(tree, genStruct, kappa, baseFrequencies, omegaValues, scaling);
+        SimulatorOriginal sim = new SimulatorOriginal(tree, genStruct, kappa, baseFrequencies, omegaValues, scaling);
         Alignment result = sim.simulate();
         
         
