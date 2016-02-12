@@ -74,7 +74,7 @@ public class CommandArgs {
     @Parameter(names = {"-frameC", "-c"}, required = false, description = "Gene layout for frame C, delimited by comma")
     private String cFrame = "";
     
-    @Parameter(names = {"-lengths", "-l"}, required = false, description = "Lengths for each partition, delimted by comma")
+    @Parameter(names = {"-lengths", "-l"}, required = true, description = "Lengths for each partition, delimted by comma")
     private String lengths = ""; 
     
    
