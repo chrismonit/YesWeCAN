@@ -75,7 +75,7 @@ public class CommandArgs {
     private String cFrame = "";
     
     @Parameter(names = {"-lengths", "-l"}, required = false, description = "Lengths for each partition, delimted by comma")
-    private String lengths = ""; // can't have default since don't know how many genes there are
+    private String lengths = "0"; 
     
    
     
@@ -85,6 +85,8 @@ public class CommandArgs {
     @Parameter(names = {"-phy"}, required = false, description = "Sequence data are in Phylip format (assumes Fasta format by default")
     private boolean phy = false;
     
+    @Parameter(names = {"-verbose", "-v"}, required = false, description = "Print additional information during program run")
+    private boolean verbose = false;
     
 
     @Parameter(names = {"-fix"}, variableArity = true, required = false, description = "Parameters to be fixed at initial values")
@@ -103,6 +105,10 @@ public class CommandArgs {
     }
   
     public boolean phy(){
+        return phy;
+    }
+    
+    public boolean verbose(){
         return phy;
     }
     

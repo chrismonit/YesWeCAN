@@ -125,7 +125,7 @@ public class RunCANMixture extends RunModel {
  
     
     @Override
-    public double[] getInitialValues(){ // NB first element does not contain lnL
+    public  double[] getInitialValues(){ // NB first element does not contain lnL
         return getValueArray( makeMixture(this.comArgs, this.comArgs.getModel()) );
     }
     

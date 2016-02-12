@@ -6,10 +6,121 @@
 
 package yeswecan;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
+import java.util.Random;
+import pal.alignment.Alignment;
+import pal.tree.ReadTree;
+import pal.tree.Tree;
+import swmutsel.model.parameters.BaseFrequencies;
+import yeswecan.cli.CommandArgs;
+import yeswecan.model.can.CANModel;
+import yeswecan.model.hky.HKYModel;
+import yeswecan.model.parameters.TsTvRatioAdvanced;
+import yeswecan.phylo.AdvancedAlignment;
+import yeswecan.phylo.FastaWriter;
+import yeswecan.phylo.GeneticStructure;
+import yeswecan.sim.SimCAN;
+import yeswecan.sim.SimHKY;
+import yeswecan.sim.SimModel;
+
 /**
  *
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>
  */
 public class Simulate {
+    public static void main(String[] args){
+        new Simulate(args);
+    }
+    
+    private AdvancedAlignment alignment;
+    private Tree tree;
+    private CommandArgs comArgs;
+    
+    public Simulate(String[] args){
+        this.comArgs = new CommandArgs();
+        JCommander jcom = new JCommander(this.comArgs);
+        
+        try{
+            jcom.parse(args);
+        }
+        catch(ParameterException ex){
+            System.out.println(ex.getMessage());
+        }
+        
+        this.tree = loadTree(this.comArgs.tree());
+        
+        // need to print a report of the params used
+        // inc genStruct
+        
+        Alignment result = null;
+        
+        Random rand = new Random();
+        
+        if (this.comArgs.getModel() == Constants.HKY_IDENTIFIER){
+            // print input params using RunHKY.getInititalValues
+            HKYModel hky = new HKYModel(
+                    new TsTvRatioAdvanced(this.comArgs.kappa()), 
+                    new BaseFrequencies(this.comArgs.pi())
+            );
+            
+            SimHKY simHky = new SimHKY(this.tree, rand, hky, 
+                    this.comArgs.lengths()[0], this.comArgs.verbose());
+            
+            result = simHky.simulate();
+        }
+        else if (this.comArgs.getModel() == Constants.CAN0_IDENTIFIER){
+            CANModel can = RunCAN.makeCAN(this.comArgs);
+            SimCAN simCan = new SimCAN(
+                    this.tree, rand, can, makeGenStruct(this.comArgs), this.comArgs.verbose()
+            );
+            result = simCan.simulate();
+        }
+        else if (this.comArgs.getModel() == Constants.M1_IDENTIFIER){
+        
+        
+        }
+        else if (this.comArgs.getModel() == Constants.M2_IDENTIFIER){
+        
+        
+        }
+        else{
+            throw new RuntimeException(Constants.ERROR_PREFIX + "Invalid model argument (-m)");
+        
+        }
+        
+        new FastaWriter().writeFasta(result, this.comArgs.alignment());        
+    }// constructor
+        
+    
+    private GeneticStructure makeGenStruct(CommandArgs comArgs){
+        return new GeneticStructure(
+                comArgs.aFrame(),
+                comArgs.bFrame(),
+                comArgs.cFrame(),
+                comArgs.lengths()
+        );
+    }
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    private Tree loadTree(String treePath){  // a box for the boring exception code for reading in tree
+        try{
+            return new ReadTree(treePath);
+        }
+        catch(Exception e){
+            System.out.println("Failed to read in tree for Simulator");
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return null;
+    }
+    
     
 }
