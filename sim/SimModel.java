@@ -26,7 +26,7 @@ public abstract class SimModel {
     abstract Alignment simulate();
     
     protected String subCountHeader = 
-            "site"+Constants.OUTPUT_DELIMITER+"part"+Constants.OUTPUT_DELIMITER+"type"+Constants.OUTPUT_DELIMITER+"count";
+            "COUNT"+Constants.DEL+"site"+Constants.DEL+"part"+Constants.DEL+"type"+Constants.DEL+"count";
     
     protected class SubCount{
         int count = 0;

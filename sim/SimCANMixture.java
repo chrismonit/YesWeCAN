@@ -37,29 +37,24 @@ public class SimCANMixture extends SimModel {
     private boolean printSubCounts;
 
     
-    public SimCANMixture(Tree tree, Random rand, CANModelMixture can, GeneticStructure genStruct, boolean printSubCounts){
+    public SimCANMixture(Tree tree, Random rand, CANModelMixture can, 
+        GeneticStructure genStruct, boolean printSubCounts){
       
         this.tree = tree;
         this.genStruct = genStruct;
         this.rand = rand;
         this.canMix = can;
+        this.printSubCounts = printSubCounts;
 
     }
-    
-    /*
-    TODO we need to print the w_x for each gene for each site
-    otherwise we don't know what process is active where!
-    
-    */
+
     
     
     
     public Alignment simulate(){
         Alignment[] sites = new Alignment[this.genStruct.getTotalLength()];
         
-        if (this.printSubCounts){
-            System.out.println(super.subCountHeader);
-        }
+        
         
         Node root = tree.getRoot();
         
@@ -77,7 +72,9 @@ public class SimCANMixture extends SimModel {
             Omega bOmega = this.canMix.getOmega(genes[1], bFrameSiteClass);  
             Omega cOmega = this.canMix.getOmega(genes[2], cFrameSiteClass);  
             
-            System.out.println("PROCESS"+Constants.OUTPUT_DELIMITER+iSite+Constants.OUTPUT_DELIMITER+aFrameSiteClass+Constants.OUTPUT_DELIMITER+bFrameSiteClass+Constants.OUTPUT_DELIMITER+cFrameSiteClass);
+            System.out.println("MODEL"+Constants.DEL+"site"+Constants.DEL+"A"+Constants.DEL+"B"+Constants.DEL+"C"); // just a header for the class and w rows
+            System.out.println("class"+Constants.DEL+iSite+Constants.DEL+aFrameSiteClass+Constants.DEL+bFrameSiteClass+Constants.DEL+cFrameSiteClass);
+            System.out.println("w"+Constants.DEL+iSite+Constants.DEL+aOmega.get()+Constants.DEL+bOmega.get()+Constants.DEL+cOmega.get());
             
             RatioScaler ratioScaler = RatioScalerFactory.getRatioScaler();
             CodonAwareMatrix canQ = new CodonAwareMatrix(this.canMix.getKappa(), this.canMix.getPi(), ratioScaler, siteType, aOmega, bOmega, cOmega, this.canMix.getScaling());            
@@ -94,9 +91,14 @@ public class SimCANMixture extends SimModel {
             SimModel.downTree(tree, Pgen, root, rootState, count, this.siteStates, this.rand);
             
             if (this.printSubCounts){
-                System.out.println("COUNT"+Constants.OUTPUT_DELIMITER +iSite + Constants.OUTPUT_DELIMITER + "0" + Constants.OUTPUT_DELIMITER + iSite%3 + Constants.OUTPUT_DELIMITER + count.count); // hard coded 0 represents the alignment partition. Since there are no partitiions with HKY, every site is in partition 0
+                System.out.println(super.subCountHeader);
             }
             
+            if (this.printSubCounts){
+                System.out.println("count"+Constants.DEL +iSite + Constants.DEL + genStruct.getPartitionIndex(iSite) + Constants.DEL + iSite%3 + Constants.DEL + count.count); 
+            }
+            System.out.println("");
+
             // add this newly simulated site to the total set
             sites[iSite] = siteStates.generateAlignment(new Nucleotides());
                     

@@ -70,7 +70,7 @@ public class SimHKY extends SimModel {
             downTree(this.tree, Pgen, root, rootState, count, this.siteStates, rand);
             
             if (this.printSubCounts){
-                System.out.println(iSite + Constants.OUTPUT_DELIMITER + "0" + Constants.OUTPUT_DELIMITER + iSite%3 + Constants.OUTPUT_DELIMITER + count.count); // hard coded 0 represents the alignment partition. Since there are no partitiions with HKY, every site is in partition 0
+                System.out.println(iSite + Constants.DEL + "0" + Constants.DEL + iSite%3 + Constants.DEL + count.count); // hard coded 0 represents the alignment partition. Since there are no partitiions with HKY, every site is in partition 0
             }
             
             sites[iSite] = siteStates.generateAlignment(new Nucleotides());

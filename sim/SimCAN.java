@@ -87,7 +87,7 @@ public class SimCAN extends SimModel {
             SimModel.downTree(tree, Pgen, root, rootState, count, this.siteStates, this.rand);
             
             if (this.printSubCounts){
-                System.out.println(iSite + Constants.OUTPUT_DELIMITER + "0" + Constants.OUTPUT_DELIMITER + iSite%3 + Constants.OUTPUT_DELIMITER + count.count); // hard coded 0 represents the alignment partition. Since there are no partitiions with HKY, every site is in partition 0
+                System.out.println(iSite + Constants.DEL + genStruct.getPartitionIndex(iSite) + Constants.DEL + iSite%3 + Constants.DEL + count.count);
             }
             
             // add this newly simulated site to the total set

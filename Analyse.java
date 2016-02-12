@@ -60,13 +60,13 @@ public class Analyse {
 
         }
         
-        System.out.println(Constants.HEADER + Constants.OUTPUT_DELIMITER + String.join(Constants.OUTPUT_DELIMITER, run.getHeader()));
+        System.out.println(Constants.HEADER + Constants.DEL + String.join(Constants.DEL, run.getHeader()));
         
         if (this.comArgs.fix().contains(Constants.FIX_ALL)){
             double[] result = run.calculate();
             
-            System.out.println( Constants.CALC + Constants.OUTPUT_DELIMITER +
-                ArrayPrinter.toString(result, Constants.OUTPUT_DELIMITER) );
+            System.out.println( Constants.CALC + Constants.DEL +
+                ArrayPrinter.toString(result, Constants.DEL) );
         }
         else{
             long start = System.currentTimeMillis();
@@ -75,8 +75,8 @@ public class Analyse {
             
             long runTime = System.currentTimeMillis() - start;
             
-            System.out.println( Constants.MLE + Constants.OUTPUT_DELIMITER +
-                    ArrayPrinter.toString(result, Constants.OUTPUT_DELIMITER) ); 
+            System.out.println( Constants.MLE + Constants.DEL +
+                    ArrayPrinter.toString(result, Constants.DEL) ); 
             
             System.out.println("");
             
@@ -86,7 +86,7 @@ public class Analyse {
             double days = hours/24.0;
             String[] time = new String[]{ Double.toString(seconds), Double.toString(minutes), Double.toString(hours), Double.toString(days) };
             
-            System.out.println(Constants.TIME + Constants.OUTPUT_DELIMITER + String.join(Constants.OUTPUT_DELIMITER, time));
+            System.out.println(Constants.TIME + Constants.DEL + String.join(Constants.DEL, time));
         }
 
     }
