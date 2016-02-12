@@ -20,16 +20,16 @@ import yeswecan.sim.Simulator;
  *
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>
  */
-public class Simulate {
+public class SimulateOriginalCAN {
     
     public static void main(String[] args){
-        new Simulate(args);
+        new SimulateOriginalCAN(args);
     }
     
     private CommandArgs comArgs;
     
     
-    public Simulate(String[] args){
+    public SimulateOriginalCAN(String[] args){
         System.out.println("Simulating");
         this.comArgs = new CommandArgs();
         JCommander jcom = new JCommander(this.comArgs);
