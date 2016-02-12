@@ -109,7 +109,7 @@ public class CommandArgs {
     }
     
     public boolean verbose(){
-        return phy;
+        return verbose;
     }
     
     public String alignment(){

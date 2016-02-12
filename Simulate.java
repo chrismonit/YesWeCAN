@@ -15,12 +15,14 @@ import pal.tree.Tree;
 import swmutsel.model.parameters.BaseFrequencies;
 import yeswecan.cli.CommandArgs;
 import yeswecan.model.can.CANModel;
+import yeswecan.model.canmix.CANModelMixture;
 import yeswecan.model.hky.HKYModel;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.FastaWriter;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.sim.SimCAN;
+import yeswecan.sim.SimCANMixture;
 import yeswecan.sim.SimHKY;
 import yeswecan.sim.SimModel;
 
@@ -52,6 +54,7 @@ public class Simulate {
         
         // need to print a report of the params used
         // inc genStruct
+        // and say exactly what model used
         
         Alignment result = null;
         
@@ -76,24 +79,23 @@ public class Simulate {
             );
             result = simCan.simulate();
         }
-        else if (this.comArgs.getModel() == Constants.M1_IDENTIFIER){
-        
-        
+        else if (this.comArgs.getModel() == Constants.M1_IDENTIFIER || this.comArgs.getModel() == Constants.M2_IDENTIFIER ){
+            CANModelMixture canMix = RunCANMixture.makeMixture(this.comArgs, this.comArgs.getModel());
+            SimCANMixture simMix = new SimCANMixture(
+                    this.tree, rand, canMix, makeGenStruct(this.comArgs), this.comArgs.verbose()
+            );
+            result = simMix.simulate(); 
         }
-        else if (this.comArgs.getModel() == Constants.M2_IDENTIFIER){
         
-        
-        }
         else{
             throw new RuntimeException(Constants.ERROR_PREFIX + "Invalid model argument (-m)");
-        
         }
         
         new FastaWriter().writeFasta(result, this.comArgs.alignment());        
     }// constructor
         
     
-    private GeneticStructure makeGenStruct(CommandArgs comArgs){
+    private static GeneticStructure makeGenStruct(CommandArgs comArgs){ // convenience method
         return new GeneticStructure(
                 comArgs.aFrame(),
                 comArgs.bFrame(),
