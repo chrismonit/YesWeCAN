@@ -69,6 +69,10 @@ public class Analyse {
                 ArrayPrinter.toString(result, Constants.DEL) );
         }
         else{
+            double[] initial = run.getInitialValues();
+            System.out.println(Constants.INITIAL + Constants.DEL + 
+                    ArrayPrinter.toString(initial, Constants.DEL));
+            
             long start = System.currentTimeMillis();
             
             double[] result = run.fit();
