@@ -219,7 +219,6 @@ public class RunCANMixture extends RunModel {
         long start = System.currentTimeMillis();
         CANModelMixture result = (CANModelMixture)opt.optNMS(optFunction, canMix);
         long time = System.currentTimeMillis() - start;
-        System.out.println("opt time (s): "+time/1000.0);
         
         double[] mles = getValueArray(result);        
         return mles;
