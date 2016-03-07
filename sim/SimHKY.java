@@ -66,11 +66,10 @@ public class SimHKY extends SimModel {
             this.siteStates = new AlignmentBuilder(this.tree.getExternalNodeCount()); // an 'alignment' for a single site, which will be populated with states by downTree.
 
             SubCount count = new SubCount();
-            
             downTree(this.tree, Pgen, root, rootState, count, this.siteStates, rand);
             
             if (this.printSubCounts){
-                System.out.println(iSite + Constants.DEL + "0" + Constants.DEL + iSite%3 + Constants.DEL + count.count); // hard coded 0 represents the alignment partition. Since there are no partitiions with HKY, every site is in partition 0
+                System.out.println(Constants.DEL + iSite + Constants.DEL + "0" + Constants.DEL + iSite%3 + Constants.DEL + count.count); // hard coded 0 represents the alignment partition. Since there are no partitiions with HKY, every site is in partition 0
             }
             
             sites[iSite] = siteStates.generateAlignment(new Nucleotides());

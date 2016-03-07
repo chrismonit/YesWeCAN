@@ -39,7 +39,7 @@ public class Simulate {
     private Tree tree;
     private CommandArgs comArgs;
     
-    public Simulate(String[] args){
+    public Simulate(String[] args){        
         this.comArgs = new CommandArgs();
         JCommander jcom = new JCommander(this.comArgs);
         
@@ -59,18 +59,18 @@ public class Simulate {
         Alignment result = null;
         
         Random rand = new Random();
-        
+        //RunModel run;
         if (this.comArgs.getModel() == Constants.HKY_IDENTIFIER){
             // print input params using RunHKY.getInititalValues
             HKYModel hky = new HKYModel(
                     new TsTvRatioAdvanced(this.comArgs.kappa()), 
                     new BaseFrequencies(this.comArgs.pi())
             );
-            
+            // NB if -l has more than one length given, hky only uses the first in the list
             SimHKY simHky = new SimHKY(this.tree, rand, hky, 
                     this.comArgs.lengths()[0], this.comArgs.verbose());
-            
             result = simHky.simulate();
+
         }
         else if (this.comArgs.getModel() == Constants.CAN0_IDENTIFIER){
             CANModel can = RunCAN.makeCAN(this.comArgs);
