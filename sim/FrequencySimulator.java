@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 import pal.datatype.CodonTable;
 import pal.datatype.CodonTableFactory;
+import pal.datatype.Codons;
 import pal.tree.Tree;
 import swmutsel.model.parameters.Omega;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
@@ -54,9 +55,9 @@ public class FrequencySimulator {
     
     public static void main(String[] args){
         CodonTable table = CodonTableFactory.createUniversalTranslator();
-        for (int i = 0; i < 64; i++) {
-            System.out.println(table.getAminoAcidCharFromCodonIndex(i));
-        }
+        
+        System.out.println(table.getAminoAcidCharFromCodonIndex(Codons.getCodonIndexFromNucleotideStates(new int[]{0,0,0})));
+        
     }
     
     

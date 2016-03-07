@@ -71,4 +71,19 @@ public class ReorderFrequencies {
     
     }
     
+    public static int[] pamlToAlpha(int[] tcagArray){
+        int[] acgtArray = new int[tcagArray.length];
+        for (int i = 0; i < acgtArray.length; i++) {
+            acgtArray[i] = ReorderFrequencies.pamlToAlpha(tcagArray[i]);
+        }
+        return acgtArray;
+    }
+    
+    public static int[] alphaToPaml(int[] acgtArray){
+        int[] tcagArray = new int[acgtArray.length];
+        for (int i = 0; i <tcagArray.length; i++) {
+            tcagArray[i] = ReorderFrequencies.pamlToAlpha(acgtArray[i]);
+        }
+        return tcagArray;
+    }
 }
