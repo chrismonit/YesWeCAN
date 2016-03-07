@@ -36,4 +36,23 @@ public class ReorderFrequencies {
     }
     
     
+    public static int[] pamlToAlpha(int[] tcag){
+        int[] acgt = new int[4];
+        acgt[0] = tcag[2];
+        acgt[1] = tcag[1];
+        acgt[2] = tcag[3];
+        acgt[3] = tcag[0];
+        return acgt;
+    }
+    
+
+    public static int[] alphaToPaml(int[] acgt){
+        int[] tcag = new int[4];
+        tcag[2] = acgt[0];
+        tcag[1] = acgt[1];
+        tcag[3] = acgt[2];
+        tcag[0] = acgt[3];
+        return tcag;
+    }
+    
 }
