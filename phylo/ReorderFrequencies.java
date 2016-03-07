@@ -37,7 +37,7 @@ public class ReorderFrequencies {
     
     
 
-    
+    // TODO could use these methods in the above
     private static int pamlToAlpha(int tcag){
         switch (tcag){
             case 0: // T
