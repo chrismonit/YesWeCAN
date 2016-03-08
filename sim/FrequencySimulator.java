@@ -62,21 +62,33 @@ public class FrequencySimulator {
             System.out.println("frame "+iFrame);
             int[] codonI_array = getCodon(quintStates, quintStates[2], iFrame, site%3);
             int codonI = Codons.getCodonIndexFromNucleotideStates(codonI_array);
-            System.out.println("I");
-            ArrayPrinter.print(codonI_array, ",");
+            System.out.println("codon_I: " + ArrayPrinter.toString(codonI_array, ","));
+            System.out.println("codon_I aa: "+codonTable.getAminoAcidCharFromCodonIndex(codonI));
 
             
             int[] codonJ_array = getCodon(quintStates, j, iFrame, site%3);
+
             int codonJ = Codons.getCodonIndexFromNucleotideStates(codonJ_array);
-            System.out.println("J");
-            ArrayPrinter.print(codonJ_array, ",");
+            System.out.println("codon_J: " + ArrayPrinter.toString(codonJ_array, ","));
+            System.out.println("codon_J aa: "+codonTable.getAminoAcidCharFromCodonIndex(codonJ));
             
-            if (this.codonTable.isSynonymous(codonI, codonJ)) { 
+            if (!this.codonTable.isSynonymous(codonI, codonJ)) { 
+                System.out.println("nonsyn and omega is "+this.omegas.get(genes[iFrame]).get());
                 product *= this.omegas.get(genes[iFrame]).get();
             }
             
-            product *= this.codonFrequencies.get(genes[iFrame]).getFrequency(codonJ_array); 
+            System.out.println("gene: "+genes[iFrame]);
             
+            CodonFrequencies geneCodonFreq = this.codonFrequencies.get(genes[iFrame]);
+            int[] mappedToPaml = ReorderFrequencies.alphaToPaml(codonJ_array);
+            System.out.println("pi_J mapped to paml: "+ArrayPrinter.toString(mappedToPaml, ","));
+            double pi_J = geneCodonFreq.getFrequency(mappedToPaml); 
+            System.out.println("π_J: "+pi_J);
+            
+            product *= pi_J;
+            
+            
+            System.out.println("");
         }// iFrame
         return product;
     }
@@ -148,7 +160,7 @@ public class FrequencySimulator {
         FrequencySimulator sim = new FrequencySimulator(tree, destination, rand, genStruct, kappa, omegas, codonFrequencies);
         
         int[] quint = new int[]{0, 1, 2, 3, 0};
-        double r = sim.computeRate(quint, 3, 30);
+        double r = sim.computeRate(quint, 0, 3);
         System.out.println("rate: "+r);
         
         

@@ -55,7 +55,7 @@ public class ReorderFrequencies {
     
     
     
-    private static int alpaToPaml(int acgt){
+    private static int alphaToPaml(int acgt){
         switch (acgt){
             case 0: // A
                 return 2;
@@ -82,7 +82,7 @@ public class ReorderFrequencies {
     public static int[] alphaToPaml(int[] acgtArray){
         int[] tcagArray = new int[acgtArray.length];
         for (int i = 0; i <tcagArray.length; i++) {
-            tcagArray[i] = ReorderFrequencies.pamlToAlpha(acgtArray[i]);
+            tcagArray[i] = ReorderFrequencies.alphaToPaml(acgtArray[i]);
         }
         return tcagArray;
     }
