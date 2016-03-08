@@ -24,6 +24,17 @@ public class CodonFrequencies {
     
     private double[][] frequencies;
     
+    // for no gene (neutral) case. all codon frequencies = 1/64
+    public CodonFrequencies(){
+        this.frequencies = new double[16][4];
+        for (int i = 0; i < this.frequencies.length; i++) {
+            for (int j = 0; j < this.frequencies[0].length; j++) {
+                this.frequencies[i][j] = 1.0/64.0;
+            }
+        }
+    }
+    
+    
     public CodonFrequencies(String frequenciesFilePath){
         this.frequencies = new double[16][4];
         List<String[]> textData;
@@ -54,7 +65,7 @@ public class CodonFrequencies {
             System.exit(1);
         }
         
-        MatrixPrinter.PrintMatrix(frequencies, "frequencies");
+        //MatrixPrinter.PrintMatrix(frequencies, "frequencies");
     }
     
     /**
@@ -73,7 +84,7 @@ public class CodonFrequencies {
         return this.frequencies[i][j];
     }
     
-    
+
     
     
     public static void main(String[] args){
