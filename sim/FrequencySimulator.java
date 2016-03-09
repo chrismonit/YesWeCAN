@@ -11,6 +11,7 @@ import pal.datatype.Codons;
 import pal.tree.ReadTree;
 import pal.tree.Tree;
 import swmutsel.model.parameters.Omega;
+import yeswecan.Constants;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.phylo.ReorderFrequencies;
@@ -36,6 +37,8 @@ public class FrequencySimulator {
     private TsTvRatioAdvanced kappa;
     private List<CodonFrequencies> codonFrequencies;
     private CodonTable codonTable;
+    
+    private int nTERMINAL_SITES_IGNORED = 2;
     
     public FrequencySimulator(Tree tree, String alignmentDestinationPath,
         Random rand, GeneticStructure genStruct, TsTvRatioAdvanced kappa,
@@ -96,51 +99,77 @@ public class FrequencySimulator {
     }
     
     // branchPosition is current position along the branch as me move along it, branch length is the total length
-    private int[] simulate(int[] sequence, double branchLength){
+    public int[] simulate(int[] sequence, double branchLength){
         double branchPosition = 0.0;
-        
-        while (branchPosition < branchLength){
+        while (branchPosition < branchLength){        
+            System.out.println("branch position: "+branchPosition);
+
             double R = computeSumRates(sequence);
             ExponentialDistribution expDist = new ExponentialDistribution(R);
             double deltaT = expDist.sample();
-
             if (branchPosition+deltaT >= branchLength){
                 break; // we've close to the end of the branch, so just finish evolving
             }
             
-            
-            // chose a mutation proportional to r_ijl
-            Hashtable<Integer, List<Integer>> mutationStates = new Hashtable();
-            
-            double[] probabilities = new double[(sequence.length-4)*3]; // -4 because don't include first and last 2 bases; *3 because 3 mutation states for each site
-            for (int iSite = 0; iSite < sequence.length-4; iSite++) {
+            /*
+                The method States.draw takes a distribution array and returns the index of the element chosen
+                If I make a probabilities array, containing probs for all i-> transitions at each site, 
+                I will lose the information about the exact site and mutatino which is chosen by States.draw.
+                I therefore have a Hashtable, with probabilities[] indices as keys and (site, mutation) pairs as values      
+            */
+            // chose a siteAndMutationIndex proportional to r_ijl
+            Hashtable<Integer, List<Integer>> mutationStatesTable = new Hashtable(); // keys are indices in probabilities array, values are (site, siteAndMutationIndex) pairs
+            int probabilitiesLength = (sequence.length - 2*nTERMINAL_SITES_IGNORED) * (States.NT_STATES-1); // -4 because don't include first and last 2 bases; *3 because 3 siteAndMutationIndex states for each site
+            double[] probabilities = new double[probabilitiesLength]; 
+            for (int iSite = nTERMINAL_SITES_IGNORED; iSite < sequence.length-nTERMINAL_SITES_IGNORED; iSite++) {
                 
                 int[] quint = new int[]{ sequence[iSite-2], sequence[iSite-1], sequence[iSite], sequence[iSite+1], sequence[iSite+2] };
+                
+                int[] mutationStates = States.getMutationStates(sequence[iSite], 4); // all j != i
+                for (int iMutationState = 0; iMutationState < mutationStates.length; iMutationState++) {
+                    //System.out.println("Mutation "+mutationStates[iMutationState]);
+                    //System.out.println("probabilities index "+((iSite-2)+iMutationState));
+                    int probsIndex = (iSite-2)+iMutationState;
+                    probabilities[probsIndex] = computeRate(quint, mutationStates[iMutationState], iSite) / R; // remember R = \sum_{i}\sum_{j \neq i}\sum_{\ell} r_{ij\ell}
 
-                for (int jMutation : States.getMutationStates(sequence[iSite], 4)) { // only considering i != j
-                    probabilities[iSite+jMutation] = computeRate(quint, jMutation, iSite) / R; // rememmber R = \sum_{i}\sum_{j \neq i}\sum_{\ell} r_{ij\ell}
-                    
                     List<Integer> siteAndMutation = new ArrayList<Integer>();
                     siteAndMutation.add(iSite);
-                    siteAndMutation.add(jMutation);
-                    mutationStates.put(iSite, siteAndMutation);
-                }
+                    siteAndMutation.add(mutationStates[iMutationState]);
+                    mutationStatesTable.put(probsIndex, siteAndMutation);
+                    
+                }// for mutation
+                
+            }// for iSite
+            
+            // sanity check
+            double sum = 0.0;
+            for (int i = 0; i < probabilities.length; i++) {
+                sum += probabilities[i];
+            }
+            if (sum < 1. - 1e-10 || sum > 1. + 1e-10){
+                throw new RuntimeException("Warning! probabilities don't sum to 1! Sum = "+sum);
             }
             
+            //ArrayPrinter.print(probabilities, ",");
+
+            int siteAndMutationIndex = States.draw(probabilities, this.rand.nextDouble());
+            System.out.println("siteAndMutationIndex "+siteAndMutationIndex);
+            List<Integer> siteAndMutation = mutationStatesTable.get(siteAndMutationIndex);
+            int site = siteAndMutation.get(0);
+            int mutationState = siteAndMutation.get(1);
             
-            // TODO
-            // now sample from these probabilities and make that change
-            // not sure how to get the exact mutation state though...
-            
+            sequence[site] = mutationState;
+            ArrayPrinter.print(sequence, ",");
             branchPosition += deltaT;
-        }// while
+            System.out.println("");
+        }        
         return sequence;
         
     }
     
     
     
-   
+    
     
     
     
