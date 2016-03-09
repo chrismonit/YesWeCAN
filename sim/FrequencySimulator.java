@@ -5,15 +5,17 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
 import org.apache.commons.math3.distribution.ExponentialDistribution;
+import pal.alignment.Alignment;
 import pal.alignment.AlignmentBuilder;
 import pal.datatype.CodonTable;
 import pal.datatype.CodonTableFactory;
 import pal.datatype.Codons;
+import pal.datatype.Nucleotides;
 import pal.tree.Node;
 import pal.tree.ReadTree;
+import pal.tree.SimpleNode;
 import pal.tree.Tree;
 import swmutsel.model.parameters.Omega;
-import yeswecan.Constants;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.phylo.ReorderFrequencies;
@@ -42,7 +44,6 @@ public class FrequencySimulator {
     
     private int nTERMINAL_SITES_IGNORED = 2;
     
-    AlignmentBuilder alnBuilder;
     
     public FrequencySimulator(Tree tree, String alignmentDestinationPath,
         Random rand, GeneticStructure genStruct, TsTvRatioAdvanced kappa,
@@ -55,7 +56,6 @@ public class FrequencySimulator {
         this.kappa = kappa;
         this.codonFrequencies = codonFrequencies;
         this.codonTable = CodonTableFactory.createUniversalTranslator();
-        this.alnBuilder = new AlignmentBuilder(this.tree.getExternalNodeCount());
     }
     
     // TODO make this private after testing
@@ -104,7 +104,7 @@ public class FrequencySimulator {
     }
     
     // branchPosition is current position along the branch as me move along it, branch length is the total length
-    public int[] simulate(int[] sequence, double branchLength){
+    public int[] evolveBranch(int[] sequence, double branchLength){
         int[] newSequence = new int[sequence.length];
         System.arraycopy(sequence, 0, newSequence, 0, newSequence.length);
             
@@ -192,27 +192,50 @@ public class FrequencySimulator {
         return bytes;
     }
     
-    private void downTree(Node parent){
+    private void downTree(Node parent, AlignmentBuilder alnBuilder){
         int[] parentSequence = bytesToInts(parent.getSequence());
         
         if (parent.isLeaf()){
-            this.alnBuilder.addSequence(parentSequence, parent.getIdentifier().getName());
+            alnBuilder.addSequence(parentSequence, parent.getIdentifier().getName());
         }else{
             for (int iChild = 0; iChild < parent.getChildCount(); iChild++) {
                 Node child = parent.getChild(iChild);
-                double branchlength = child.getBranchLength();
+                double branchLength = child.getBranchLength();
                 
-                int[] childSequence = simulate(parentSequence, branchlength);
+                int[] childSequence = evolveBranch(parentSequence, branchLength);
                 child.setSequence(intsToBytes(childSequence));
                 
-                downTree(child);
+                downTree(child, alnBuilder);
             }
         }
         
     }
     
+    /**
+     * We can generate a random sequence and then evolve it for a while according to this model
+     * prior to starting the simulation properly, so that the actual starting sequence 
+     * is consistent with the process we are describing
+     */
+    public int[] equilibriateSequence(int sequenceLength, double branchLength){
+        // generate random sequence
+        int[] sequence = new int[sequenceLength];
+        for (int i = 0; i < sequence.length; i++) {
+            sequence[i] = this.rand.nextInt(States.NT_STATES);
+        }
+        
+        return evolveBranch(sequence, branchLength);
+            
+    }
     
-    
+    public Alignment simulate(int[] rootSequence){
+        AlignmentBuilder alnBuilder = new AlignmentBuilder(this.tree.getExternalNodeCount());
+        
+        Node root = new SimpleNode(this.tree.getRoot());
+        root.setSequence(intsToBytes(rootSequence));
+        downTree(root, alnBuilder);
+        
+        return alnBuilder.generateAlignment(new Nucleotides());
+    }
     
      /*Matrix A is accessed using the site type and the frame you want the codon for.
      * Each row off matrix B contains the co-ordinates of the nt positions for the codon you want, relative to position
