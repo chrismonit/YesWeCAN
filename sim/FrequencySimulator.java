@@ -1,8 +1,10 @@
 package yeswecan.sim;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
+import org.apache.commons.math3.distribution.ExponentialDistribution;
 import pal.datatype.CodonTable;
 import pal.datatype.CodonTableFactory;
 import pal.datatype.Codons;
@@ -83,13 +85,70 @@ public class FrequencySimulator {
         
         for (int iSite = 2; iSite < sequence.length-2; iSite++) { // can't include first and last 2 nuceltodides, because we're working with quints
             int[] quint = new int[]{ sequence[iSite-2], sequence[iSite-1], sequence[iSite], sequence[iSite+1], sequence[iSite+2] };
-            for (int jMutation = 0; jMutation < 4; jMutation++) { // including i==j here, might want to check
+            for (int jMutation = 0; jMutation < 4; jMutation++) { // including j==j here, might want to check
                 sum += computeRate(quint, jMutation, iSite);
             }
         }
         
         return sum;
     }
+    
+    // branchPosition is current position along the branch as me move along it, branch length is the total length
+    private int[] simulate(int[] sequence, double branchLength){
+        double branchPosition = 0.0;
+        
+        while (branchPosition < branchLength){
+            double R = computeSumRates(sequence);
+            ExponentialDistribution expDist = new ExponentialDistribution(R);
+            double deltaT = expDist.sample();
+
+            if (branchPosition+deltaT >= branchLength){
+                break; // we've close to the end of the branch, so just finish evolving
+            }
+            
+            
+            // chose a mutation proportional to r_ijl
+            Hashtable<Integer, List<Integer>> mutationStates = new Hashtable();
+            
+            double[] probabilities = new double[(sequence.length-4)*4]; // -4 because don't include first and last 2 bases; *4 because 4 mutation states for each site
+            for (int iSite = 0; iSite < sequence.length-4; iSite++) {
+                
+                int[] quint = new int[]{ sequence[iSite-2], sequence[iSite-1], sequence[iSite], sequence[iSite+1], sequence[iSite+2] };
+
+                for (int jMutation = 0; jMutation < 4; jMutation++) {
+                    probabilities[iSite+jMutation] = computeRate(quint, jMutation, iSite);
+                    List<Integer> siteAndMutation = new ArrayList<Integer>();
+                    siteAndMutation.add(iSite);
+                    siteAndMutation.add(jMutation);
+                    mutationStates.put(iSite, siteAndMutation);
+                }
+            }
+            
+            // now sample from these probabilities and make that change
+            // not sure how to get the exact mutation state though...
+            
+            branchPosition += deltaT;
+        }// while
+        return sequence;
+        
+    }
+    
+    
+    
+    
+    private int[] getMutationStates(int originalState, int numberOfStates){
+        int[] mutationStates = new int[numberOfStates];
+        for (int j = 0; j < mutationStates.length; j++) {
+            if (j == originalState){
+                continue;
+            }else{
+                mutationStates[j] = j;
+            }
+        }
+        return mutationStates;
+    }
+    
+    
     
      /*Matrix A is accessed using the site type and the frame you want the codon for.
      * Each row off matrix B contains the co-ordinates of the nt positions for the codon you want, relative to position
