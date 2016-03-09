@@ -48,7 +48,6 @@ public class FrequencySimulator {
     }
     
     // TODO make this private after testing
-    // TEST 
     public double computeRate(int[] quintStates, int j, int site){
         // r_ijl = k * w_A * w_B * w_C * π_A * π_B * π_C
         
@@ -59,36 +58,26 @@ public class FrequencySimulator {
         
         product *= this.kappa.getKappaIfTransition(quintStates[2], j);
         for (int iFrame = 0; iFrame < 3; iFrame++) {
-            System.out.println("frame "+iFrame);
             int[] codonI_array = getCodon(quintStates, quintStates[2], iFrame, site%3);
             int codonI = Codons.getCodonIndexFromNucleotideStates(codonI_array);
-            System.out.println("codon_I: " + ArrayPrinter.toString(codonI_array, ","));
-            System.out.println("codon_I aa: "+codonTable.getAminoAcidCharFromCodonIndex(codonI));
 
             
             int[] codonJ_array = getCodon(quintStates, j, iFrame, site%3);
 
             int codonJ = Codons.getCodonIndexFromNucleotideStates(codonJ_array);
-            System.out.println("codon_J: " + ArrayPrinter.toString(codonJ_array, ","));
-            System.out.println("codon_J aa: "+codonTable.getAminoAcidCharFromCodonIndex(codonJ));
-            
+
             if (!this.codonTable.isSynonymous(codonI, codonJ)) { 
-                System.out.println("nonsyn and omega is "+this.omegas.get(genes[iFrame]).get());
                 product *= this.omegas.get(genes[iFrame]).get();
             }
             
-            System.out.println("gene: "+genes[iFrame]);
             
             CodonFrequencies geneCodonFreq = this.codonFrequencies.get(genes[iFrame]);
             int[] mappedToPaml = ReorderFrequencies.alphaToPaml(codonJ_array);
-            System.out.println("pi_J mapped to paml: "+ArrayPrinter.toString(mappedToPaml, ","));
             double pi_J = geneCodonFreq.getFrequency(mappedToPaml); 
-            System.out.println("π_J: "+pi_J);
             
             product *= pi_J;
             
             
-            System.out.println("");
         }// iFrame
         return product;
     }
@@ -132,40 +121,6 @@ public class FrequencySimulator {
         codon[2] = quintCopy[ 2 + B[ A[siteType][frame] ][2] ];
         return codon;
     }
-    
-    
-    public static void main(String[] args){
-        CodonTable table = CodonTableFactory.createUniversalTranslator();
-        
-        //System.out.println(table.getAminoAcidCharFromCodonIndex(Codons.getCodonIndexFromNucleotideStates(ReorderFrequencies.alphaToPaml(new int[]{2,1,3}))));
-        
-        //int[] quint = new int[]{0,1,2,3,0};
-        
-        //System.out.println(ArrayPrinter.toString(getCodon(quint, 2, 0, 0), ","));
-        
-        //FrequencySimulator sim = new FrequencySimulator();
-        Tree tree = loadTree("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/tree.tre");
-        GeneticStructure genStruct = new GeneticStructure("1", "0", "0", "100", ",");
-        Random rand = new Random();
-        TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(2.0);
-        List<CodonFrequencies> codonFrequencies = new ArrayList<CodonFrequencies>();
-        codonFrequencies.add(new CodonFrequencies()); // default constructor has all freq = 1/64
-        CodonFrequencies feq = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/hiv_freq.csv");
-        codonFrequencies.add(feq);
-        List<Omega> omegas = new ArrayList<Omega>();
-        omegas.add(new Omega(1.0));
-        omegas.add(new Omega(0.5));
-        String destination = "/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/freqSim.out";
-        
-        FrequencySimulator sim = new FrequencySimulator(tree, destination, rand, genStruct, kappa, omegas, codonFrequencies);
-        
-        int[] quint = new int[]{0, 1, 2, 3, 0};
-        double r = sim.computeRate(quint, 0, 3);
-        System.out.println("rate: "+r);
-        
-        
-    }// main
-    
     
     
     public static Tree loadTree(String treePath){  
