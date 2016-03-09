@@ -192,26 +192,8 @@ public class FrequencySimulator {
     }
     
     
-    private static int[] getMutationStates(int originalState, int numberOfStates){
-        int[] mutationStates = new int[]{-1, -1, -1};
-        
-        int mutState = 0;
-        for (int jIndex = 0; jIndex < mutationStates.length; jIndex++) {
-            
-            if (mutState == originalState){ // move onto next possible mutation state
-                mutState++;
-            }
-            
-            mutationStates[jIndex] = mutState;            
-            mutState++;
-      
-        }
-        
-        return mutationStates;
-    }
+
     
-    public static void main(String[] args){
-        ArrayPrinter.print(getMutationStates(3, 4), ",");
-    }
+
     
 }

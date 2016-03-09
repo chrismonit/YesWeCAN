@@ -16,14 +16,20 @@ public class States {
     //Note that PAL uses ACGT and therefore deviating from this could cause issues in the pruning algorithm
 
     public static int[] getMutationStates(int originalState, int numberOfStates){
-        int[] mutationStates = new int[numberOfStates];
-        for (int j = 0; j < mutationStates.length; j++) {
-            if (j == originalState){
-                continue;
-            }else{
-                mutationStates[j] = j;
+        int[] mutationStates = new int[]{-1, -1, -1};
+        
+        int mutState = 0;
+        for (int jIndex = 0; jIndex < mutationStates.length; jIndex++) {
+            
+            if (mutState == originalState){ // move onto next possible mutation state
+                mutState++;
             }
+            
+            mutationStates[jIndex] = mutState;            
+            mutState++;
+      
         }
+        
         return mutationStates;
     }
     
