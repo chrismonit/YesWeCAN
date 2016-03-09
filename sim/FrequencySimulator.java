@@ -35,8 +35,8 @@ public class FrequencySimulator {
     private CodonTable codonTable;
     
     public FrequencySimulator(Tree tree, String alignmentDestinationPath,
-            Random rand, GeneticStructure genStruct, TsTvRatioAdvanced kappa,
-            List<Omega> omegas, List<CodonFrequencies> codonFrequencies){
+        Random rand, GeneticStructure genStruct, TsTvRatioAdvanced kappa,
+        List<Omega> omegas, List<CodonFrequencies> codonFrequencies){
     
         this.tree = tree;
         this.rand = rand;
@@ -53,14 +53,11 @@ public class FrequencySimulator {
         
         int[] genes = this.genStruct.getGenes(site);
         double product = 1.0; // multiplicative identity
-        
-        //ArrayPrinter.print(genes, ",");
-        
+                
         product *= this.kappa.getKappaIfTransition(quintStates[2], j);
         for (int iFrame = 0; iFrame < 3; iFrame++) {
             int[] codonI_array = getCodon(quintStates, quintStates[2], iFrame, site%3);
             int codonI = Codons.getCodonIndexFromNucleotideStates(codonI_array);
-
             
             int[] codonJ_array = getCodon(quintStates, j, iFrame, site%3);
 
@@ -70,18 +67,29 @@ public class FrequencySimulator {
                 product *= this.omegas.get(genes[iFrame]).get();
             }
             
-            
             CodonFrequencies geneCodonFreq = this.codonFrequencies.get(genes[iFrame]);
-            int[] mappedToPaml = ReorderFrequencies.alphaToPaml(codonJ_array);
+            int[] mappedToPaml = ReorderFrequencies.alphaToPaml(codonJ_array); // expecting codons will be ordered TCAG in codonFrequencies instances
             double pi_J = geneCodonFreq.getFrequency(mappedToPaml); 
             
             product *= pi_J;
-            
             
         }// iFrame
         return product;
     }
     
+    
+    private double computeSumRates(int[] sequence){
+        double sum = 0.0;
+        
+        for (int iSite = 2; iSite < sequence.length-2; iSite++) { // can't include first and last 2 nuceltodides, because we're working with quints
+            int[] quint = new int[]{ sequence[iSite-2], sequence[iSite-1], sequence[iSite], sequence[iSite+1], sequence[iSite+2] };
+            for (int jMutation = 0; jMutation < 4; jMutation++) { // including i==j here, might want to check
+                sum += computeRate(quint, jMutation, iSite);
+            }
+        }
+        
+        return sum;
+    }
     
      /*Matrix A is accessed using the site type and the frame you want the codon for.
      * Each row off matrix B contains the co-ordinates of the nt positions for the codon you want, relative to position
