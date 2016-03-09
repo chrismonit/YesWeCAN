@@ -20,6 +20,7 @@ import yeswecan.model.ProbMatrixGenerator;
 import yeswecan.model.RateMatrix;
 import yeswecan.model.hky.HKYModel;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
+import yeswecan.phylo.States;
 
 /**
  *
@@ -61,7 +62,7 @@ public class SimHKY extends SimModel {
 
         for (int iSite = 0; iSite < this.length; iSite++) {
             double r = this.rand.nextDouble();
-            int rootState = SimModel.draw(this.freqs.get(), r);
+            int rootState = States.draw(this.freqs.get(), r);
             
             this.siteStates = new AlignmentBuilder(this.tree.getExternalNodeCount()); // an 'alignment' for a single site, which will be populated with states by downTree.
 

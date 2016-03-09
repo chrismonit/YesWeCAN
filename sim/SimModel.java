@@ -14,6 +14,7 @@ import pal.tree.Node;
 import pal.tree.Tree;
 import yeswecan.Constants;
 import yeswecan.model.ProbMatrixGenerator;
+import yeswecan.phylo.States;
 import yeswecan.utils.ArrayPrinter;
 import yeswecan.utils.MatrixPrinter;
 
@@ -45,7 +46,7 @@ public abstract class SimModel {
                 RealMatrix P = Pgen.getP( branchLength);
 
                 double[] transProbDistribution = P.getRow(parentState);
-                int childState = draw(transProbDistribution, rand.nextDouble());
+                int childState = States.draw(transProbDistribution, rand.nextDouble());
                 
                 if (childState != parentState) {
                     count.count += 1;
@@ -56,25 +57,6 @@ public abstract class SimModel {
         }// else (not leaf)
         
     }// downTree
-    
-    
-    
-    // draw a state (0/1/2/3 for nt states) from a probability distribution
-    public static int draw(double[] distribution, double randomUniform){
-        // NB elements of distribution MUST sum to one!
-        // randomUniform must be between 0 and 1
-        //ArrayPrinter.print(distribution, ",");
-        double current = 0.0;
-        for (int i = 0; i < distribution.length; i++) {
-            if (randomUniform > current && randomUniform < current + distribution[i] ) {
-                return i;
-            }
-            else{
-                current += distribution[i];
-            }
-        } //for 
-        return distribution.length-1; 
-    }
     
     
 }

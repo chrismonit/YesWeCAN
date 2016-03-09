@@ -22,6 +22,7 @@ import yeswecan.model.RatioScaler;
 import yeswecan.model.RatioScalerFactory;
 import yeswecan.model.canmix.CANModelMixture;
 import yeswecan.phylo.GeneticStructure;
+import yeswecan.phylo.States;
 
 /**
  *
@@ -64,9 +65,9 @@ public class SimCANMixture extends SimModel {
             int siteType = iSite % 3;
             int[] genes = genStruct.getGenes(iSite); // the genes present in the three frames in this partition
         
-            int aFrameSiteClass = SimModel.draw(this.canMix.getGeneProbabilities(genes[0]).get(), rand.nextDouble());
-            int bFrameSiteClass = SimModel.draw(this.canMix.getGeneProbabilities(genes[1]).get(), rand.nextDouble());
-            int cFrameSiteClass = SimModel.draw(this.canMix.getGeneProbabilities(genes[2]).get(), rand.nextDouble());
+            int aFrameSiteClass = States.draw(this.canMix.getGeneProbabilities(genes[0]).get(), rand.nextDouble());
+            int bFrameSiteClass = States.draw(this.canMix.getGeneProbabilities(genes[1]).get(), rand.nextDouble());
+            int cFrameSiteClass = States.draw(this.canMix.getGeneProbabilities(genes[2]).get(), rand.nextDouble());
                         
             Omega aOmega = this.canMix.getOmega(genes[0], aFrameSiteClass); // genes[0] is the gene present in frame A
             Omega bOmega = this.canMix.getOmega(genes[1], bFrameSiteClass);  
@@ -82,7 +83,7 @@ public class SimCANMixture extends SimModel {
             
             // simulate according to process
             
-            int rootState = SimModel.draw(this.canMix.getPi().get(), rand.nextDouble());
+            int rootState = States.draw(this.canMix.getPi().get(), rand.nextDouble());
 
             this.siteStates = new AlignmentBuilder(this.tree.getExternalNodeCount()); // an 'alignment' for a single site, which will be populated with states by downTree.
             
