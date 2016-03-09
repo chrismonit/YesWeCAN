@@ -14,6 +14,7 @@ import swmutsel.model.parameters.Omega;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.phylo.ReorderFrequencies;
+import yeswecan.phylo.States;
 import yeswecan.utils.ArrayPrinter;
 
 /*
@@ -85,7 +86,8 @@ public class FrequencySimulator {
         
         for (int iSite = 2; iSite < sequence.length-2; iSite++) { // can't include first and last 2 nuceltodides, because we're working with quints
             int[] quint = new int[]{ sequence[iSite-2], sequence[iSite-1], sequence[iSite], sequence[iSite+1], sequence[iSite+2] };
-            for (int jMutation = 0; jMutation < 4; jMutation++) { // including jIndex==jIndex here, might want to check
+            
+            for (int jMutation : States.getMutationStates(sequence[iSite], 4)){ // only considering i != j
                 sum += computeRate(quint, jMutation, iSite);
             }
         }
@@ -110,13 +112,14 @@ public class FrequencySimulator {
             // chose a mutation proportional to r_ijl
             Hashtable<Integer, List<Integer>> mutationStates = new Hashtable();
             
-            double[] probabilities = new double[(sequence.length-4)*4]; // -4 because don't include first and last 2 bases; *4 because 4 mutation states for each site
+            double[] probabilities = new double[(sequence.length-4)*3]; // -4 because don't include first and last 2 bases; *3 because 3 mutation states for each site
             for (int iSite = 0; iSite < sequence.length-4; iSite++) {
                 
                 int[] quint = new int[]{ sequence[iSite-2], sequence[iSite-1], sequence[iSite], sequence[iSite+1], sequence[iSite+2] };
 
-                for (int jMutation = 0; jMutation < 4; jMutation++) {
-                    probabilities[iSite+jMutation] = computeRate(quint, jMutation, iSite);
+                for (int jMutation : States.getMutationStates(sequence[iSite], 4)) { // only considering i != j
+                    probabilities[iSite+jMutation] = computeRate(quint, jMutation, iSite) / R; // rememmber R = \sum_{i}\sum_{j \neq i}\sum_{\ell} r_{ij\ell}
+                    
                     List<Integer> siteAndMutation = new ArrayList<Integer>();
                     siteAndMutation.add(iSite);
                     siteAndMutation.add(jMutation);
@@ -124,6 +127,8 @@ public class FrequencySimulator {
                 }
             }
             
+            
+            // TODO
             // now sample from these probabilities and make that change
             // not sure how to get the exact mutation state though...
             
