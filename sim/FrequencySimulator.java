@@ -5,9 +5,11 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
 import org.apache.commons.math3.distribution.ExponentialDistribution;
+import pal.alignment.AlignmentBuilder;
 import pal.datatype.CodonTable;
 import pal.datatype.CodonTableFactory;
 import pal.datatype.Codons;
+import pal.tree.Node;
 import pal.tree.ReadTree;
 import pal.tree.Tree;
 import swmutsel.model.parameters.Omega;
@@ -40,6 +42,8 @@ public class FrequencySimulator {
     
     private int nTERMINAL_SITES_IGNORED = 2;
     
+    AlignmentBuilder alnBuilder;
+    
     public FrequencySimulator(Tree tree, String alignmentDestinationPath,
         Random rand, GeneticStructure genStruct, TsTvRatioAdvanced kappa,
         List<Omega> omegas, List<CodonFrequencies> codonFrequencies){
@@ -51,6 +55,7 @@ public class FrequencySimulator {
         this.kappa = kappa;
         this.codonFrequencies = codonFrequencies;
         this.codonTable = CodonTableFactory.createUniversalTranslator();
+        this.alnBuilder = new AlignmentBuilder(this.tree.getExternalNodeCount());
     }
     
     // TODO make this private after testing
@@ -100,6 +105,9 @@ public class FrequencySimulator {
     
     // branchPosition is current position along the branch as me move along it, branch length is the total length
     public int[] simulate(int[] sequence, double branchLength){
+        int[] newSequence = new int[sequence.length];
+        System.arraycopy(sequence, 0, newSequence, 0, newSequence.length);
+            
         double branchPosition = 0.0;
         while (branchPosition < branchLength){        
             System.out.println("branch position: "+branchPosition);
@@ -157,25 +165,58 @@ public class FrequencySimulator {
             List<Integer> siteAndMutation = mutationStatesTable.get(siteAndMutationIndex);
             int site = siteAndMutation.get(0);
             int mutationState = siteAndMutation.get(1);
-            
-            sequence[site] = mutationState;
+                        
+            newSequence[site] = mutationState;
             ArrayPrinter.print(sequence, ",");
             branchPosition += deltaT;
             System.out.println("");
         }        
-        return sequence;
+        return newSequence;
+        
+    }
+    
+    
+    private int[] bytesToInts(byte[] bytes){
+        int[] ints = new int[bytes.length];
+        for (int i = 0; i < ints.length; i++) {
+            ints[i] = (int)bytes[i];
+        }
+        return ints;
+    }
+    
+    private byte[] intsToBytes(int[] ints){
+        byte[] bytes = new byte[ints.length];
+        for (int i = 0; i < ints.length; i++) {
+            bytes[i] = (byte)ints[i];
+        }
+        return bytes;
+    }
+    
+    private void downTree(Node parent){
+        int[] parentSequence = bytesToInts(parent.getSequence());
+        
+        if (parent.isLeaf()){
+            this.alnBuilder.addSequence(parentSequence, parent.getIdentifier().getName());
+        }else{
+            for (int iChild = 0; iChild < parent.getChildCount(); iChild++) {
+                Node child = parent.getChild(iChild);
+                double branchlength = child.getBranchLength();
+                
+                int[] childSequence = simulate(parentSequence, branchlength);
+                child.setSequence(intsToBytes(childSequence));
+                
+                downTree(child);
+            }
+        }
         
     }
     
     
     
     
-    
-    
-    
      /*Matrix A is accessed using the site type and the frame you want the codon for.
      * Each row off matrix B contains the co-ordinates of the nt positions for the codon you want, relative to position
-     * Using the two in combination, we get the characters in the sequence which
+     * Using the two in combination, we get the characters in the parentSequence which
      * correspond to the codon we want for each frame
      */
 
