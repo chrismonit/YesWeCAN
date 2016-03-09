@@ -85,7 +85,7 @@ public class FrequencySimulator {
         
         for (int iSite = 2; iSite < sequence.length-2; iSite++) { // can't include first and last 2 nuceltodides, because we're working with quints
             int[] quint = new int[]{ sequence[iSite-2], sequence[iSite-1], sequence[iSite], sequence[iSite+1], sequence[iSite+2] };
-            for (int jMutation = 0; jMutation < 4; jMutation++) { // including j==j here, might want to check
+            for (int jMutation = 0; jMutation < 4; jMutation++) { // including jIndex==jIndex here, might want to check
                 sum += computeRate(quint, jMutation, iSite);
             }
         }
@@ -135,18 +135,7 @@ public class FrequencySimulator {
     
     
     
-    
-    private int[] getMutationStates(int originalState, int numberOfStates){
-        int[] mutationStates = new int[numberOfStates];
-        for (int j = 0; j < mutationStates.length; j++) {
-            if (j == originalState){
-                continue;
-            }else{
-                mutationStates[j] = j;
-            }
-        }
-        return mutationStates;
-    }
+   
     
     
     
@@ -156,7 +145,7 @@ public class FrequencySimulator {
      * correspond to the codon we want for each frame
      */
 
-    private static final int[][] A = {  //i = site type (alpha, beta, gamma), j = frame (a, b, c)
+    private static final int[][] A = {  //i = site type (alpha, beta, gamma), jIndex = frame (a, b, c)
         { 2, 0, 1 },
         { 1, 2, 0 },
         { 0, 1, 2 }
@@ -173,7 +162,7 @@ public class FrequencySimulator {
         provide array of length 5 with nuceltodie states, with site of interest in the centre (index=2)
         centralState is the nuceltide state at quint[2]. 
             If the quint is not mutated: centralState == quint[2]
-            If quint is mutated: centralState == j
+            If quint is mutated: centralState == jIndex
         siteType is siteIndex%3 (and obviously not quint[2]%3)
     */
     
@@ -202,5 +191,27 @@ public class FrequencySimulator {
         return null;
     }
     
+    
+    private static int[] getMutationStates(int originalState, int numberOfStates){
+        int[] mutationStates = new int[]{-1, -1, -1};
+        
+        int mutState = 0;
+        for (int jIndex = 0; jIndex < mutationStates.length; jIndex++) {
+            
+            if (mutState == originalState){ // move onto next possible mutation state
+                mutState++;
+            }
+            
+            mutationStates[jIndex] = mutState;            
+            mutState++;
+      
+        }
+        
+        return mutationStates;
+    }
+    
+    public static void main(String[] args){
+        ArrayPrinter.print(getMutationStates(3, 4), ",");
+    }
     
 }
