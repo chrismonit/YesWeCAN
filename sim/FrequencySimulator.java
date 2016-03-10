@@ -117,7 +117,7 @@ public class FrequencySimulator {
             ExponentialDistribution expDist = new ExponentialDistribution(R);
             double deltaT = expDist.sample();
             branchPosition += deltaT;
-            System.out.println("branchPosition "+branchPosition);
+            //System.out.println("branchPosition "+branchPosition);
             if (branchPosition >= branchLength){
                 break; // we're very close to the end of the branch, so don't evolve further
             }
@@ -143,7 +143,6 @@ public class FrequencySimulator {
                     //System.out.println("Mutation "+mutationStates[iMutationState]);
                     int probsIndex = ((iSite-nTERMINAL_SITES_IGNORED)*(States.NT_STATES-1))+iMutationState; // == (iSite-2) * 3 + iMutationState
                     probabilities[probsIndex] = computeRate(quint, mutationStates[iMutationState], iSite) / R; // remember R = \sum_{\ell} \sum_{j \neq i} r_{ij\ell}
-                    System.out.println("prob "+probabilities[probsIndex]);
                     
                     List<Integer> siteAndMutation = new ArrayList<Integer>();
                     siteAndMutation.add(iSite);
@@ -154,7 +153,7 @@ public class FrequencySimulator {
                 
             }// for iSite
             
-            ArrayPrinter.print(probabilities, ",");
+            //ArrayPrinter.print(probabilities, ",");
 
             // sanity check
             double sumProbs = 0.0;
@@ -172,8 +171,7 @@ public class FrequencySimulator {
             int mutationState = siteMutationPair.get(1);
                         
             newSequence[site] = mutationState; // mutation is now a substitution (ie accepted)
-            ArrayPrinter.print(newSequence, ",");
-            
+            //ArrayPrinter.print(newSequence, ",");
         }        
         return newSequence;
         
@@ -214,7 +212,6 @@ public class FrequencySimulator {
         }
         
     }
-        // UNTESTED
 
     /**
      * We can generate a random sequence and then evolve it for a while according to this model
@@ -224,15 +221,20 @@ public class FrequencySimulator {
     public int[] equilibriateSequence(int sequenceLength, double branchLength){
         // generate random sequence
         int[] sequence = new int[sequenceLength];
+        
         for (int i = 0; i < sequence.length; i++) {
             sequence[i] = this.rand.nextInt(States.NT_STATES);
         }
-        
+        //System.out.println("start "+ArrayPrinter.toString(sequence, ","));
         return evolveBranch(sequence, branchLength);
             
     }
-        // UNTESTED
-
+    
+    public boolean sequenceAcceptable(int[] sequence){
+        
+        return false;
+    }
+    
     public Alignment simulate(int[] rootSequence){
         AlignmentBuilder alnBuilder = new AlignmentBuilder(this.tree.getExternalNodeCount());
         
