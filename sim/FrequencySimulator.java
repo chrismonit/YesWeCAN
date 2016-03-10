@@ -89,7 +89,8 @@ public class FrequencySimulator {
     }
     
     
-    private double computeSumRates(int[] sequence){
+    
+    public double computeSumRates(int[] sequence){
         double sum = 0.0;
         
         for (int iSite = 2; iSite < sequence.length-2; iSite++) { // can't include first and last 2 nuceltodides, because we're working with quints
@@ -110,14 +111,18 @@ public class FrequencySimulator {
             
         double branchPosition = 0.0;
         while (branchPosition < branchLength){        
-            System.out.println("branch position: "+branchPosition);
+            //System.out.println("branch position: "+branchPosition);
 
-            double R = computeSumRates(sequence);
+            double R = computeSumRates(newSequence);
             ExponentialDistribution expDist = new ExponentialDistribution(R);
             double deltaT = expDist.sample();
-            if (branchPosition+deltaT >= branchLength){
-                break; // we've close to the end of the branch, so just finish evolving
+            branchPosition += deltaT;
+            System.out.println("branchPosition "+branchPosition);
+            if (branchPosition >= branchLength){
+                break; // we're very close to the end of the branch, so don't evolve further
             }
+            
+            // Compute mutation probabilities
             
             /*
                 The method States.draw takes a distribution array and returns the index of the element chosen
@@ -127,19 +132,19 @@ public class FrequencySimulator {
             */
             // chose a siteAndMutationIndex proportional to r_ijl
             Hashtable<Integer, List<Integer>> mutationStatesTable = new Hashtable(); // keys are indices in probabilities array, values are (site, siteAndMutationIndex) pairs
-            int probabilitiesLength = (sequence.length - 2*nTERMINAL_SITES_IGNORED) * (States.NT_STATES-1); // -4 because don't include first and last 2 bases; *3 because 3 siteAndMutationIndex states for each site
+            int probabilitiesLength = (newSequence.length - 2*nTERMINAL_SITES_IGNORED) * (States.NT_STATES-1); // -4 because don't include first and last 2 bases; *3 because 3 siteAndMutationIndex states for each site
             double[] probabilities = new double[probabilitiesLength]; 
-            for (int iSite = nTERMINAL_SITES_IGNORED; iSite < sequence.length-nTERMINAL_SITES_IGNORED; iSite++) {
+            for (int iSite = nTERMINAL_SITES_IGNORED; iSite < (newSequence.length - nTERMINAL_SITES_IGNORED); iSite++) {
                 
-                int[] quint = new int[]{ sequence[iSite-2], sequence[iSite-1], sequence[iSite], sequence[iSite+1], sequence[iSite+2] };
+                int[] quint = new int[]{ newSequence[iSite-2], newSequence[iSite-1], newSequence[iSite], newSequence[iSite+1], newSequence[iSite+2] };
                 
-                int[] mutationStates = States.getMutationStates(sequence[iSite], 4); // all j != i
+                int[] mutationStates = States.getMutationStates(newSequence[iSite], 4); // all j != i
                 for (int iMutationState = 0; iMutationState < mutationStates.length; iMutationState++) {
                     //System.out.println("Mutation "+mutationStates[iMutationState]);
-                    //System.out.println("probabilities index "+((iSite-2)+iMutationState));
-                    int probsIndex = (iSite-2)+iMutationState;
-                    probabilities[probsIndex] = computeRate(quint, mutationStates[iMutationState], iSite) / R; // remember R = \sum_{i}\sum_{j \neq i}\sum_{\ell} r_{ij\ell}
-
+                    int probsIndex = ((iSite-nTERMINAL_SITES_IGNORED)*(States.NT_STATES-1))+iMutationState; // == (iSite-2) * 3 + iMutationState
+                    probabilities[probsIndex] = computeRate(quint, mutationStates[iMutationState], iSite) / R; // remember R = \sum_{\ell} \sum_{j \neq i} r_{ij\ell}
+                    System.out.println("prob "+probabilities[probsIndex]);
+                    
                     List<Integer> siteAndMutation = new ArrayList<Integer>();
                     siteAndMutation.add(iSite);
                     siteAndMutation.add(mutationStates[iMutationState]);
@@ -149,27 +154,26 @@ public class FrequencySimulator {
                 
             }// for iSite
             
-            // sanity check
-            double sum = 0.0;
-            for (int i = 0; i < probabilities.length; i++) {
-                sum += probabilities[i];
-            }
-            if (sum < 1. - 1e-10 || sum > 1. + 1e-10){
-                throw new RuntimeException("Warning! probabilities don't sum to 1! Sum = "+sum);
-            }
-            
-            //ArrayPrinter.print(probabilities, ",");
+            ArrayPrinter.print(probabilities, ",");
 
+            // sanity check
+            double sumProbs = 0.0;
+            for (int i = 0; i < probabilities.length; i++) {
+                sumProbs += probabilities[i];
+            }
+            if (sumProbs < 1. - 1e-10 || sumProbs > 1. + 1e-10){
+                throw new RuntimeException("Warning! probabilities don't sum to 1! Sum = "+sumProbs);
+            }
+
+            
             int siteAndMutationIndex = States.draw(probabilities, this.rand.nextDouble());
-            System.out.println("siteAndMutationIndex "+siteAndMutationIndex);
-            List<Integer> siteAndMutation = mutationStatesTable.get(siteAndMutationIndex);
-            int site = siteAndMutation.get(0);
-            int mutationState = siteAndMutation.get(1);
+            List<Integer> siteMutationPair = mutationStatesTable.get(siteAndMutationIndex);
+            int site = siteMutationPair.get(0);
+            int mutationState = siteMutationPair.get(1);
                         
-            newSequence[site] = mutationState;
-            ArrayPrinter.print(sequence, ",");
-            branchPosition += deltaT;
-            System.out.println("");
+            newSequence[site] = mutationState; // mutation is now a substitution (ie accepted)
+            ArrayPrinter.print(newSequence, ",");
+            
         }        
         return newSequence;
         
@@ -191,7 +195,7 @@ public class FrequencySimulator {
         }
         return bytes;
     }
-    
+    // UNTESTED
     private void downTree(Node parent, AlignmentBuilder alnBuilder){
         int[] parentSequence = bytesToInts(parent.getSequence());
         
@@ -210,7 +214,8 @@ public class FrequencySimulator {
         }
         
     }
-    
+        // UNTESTED
+
     /**
      * We can generate a random sequence and then evolve it for a while according to this model
      * prior to starting the simulation properly, so that the actual starting sequence 
@@ -226,7 +231,8 @@ public class FrequencySimulator {
         return evolveBranch(sequence, branchLength);
             
     }
-    
+        // UNTESTED
+
     public Alignment simulate(int[] rootSequence){
         AlignmentBuilder alnBuilder = new AlignmentBuilder(this.tree.getExternalNodeCount());
         
