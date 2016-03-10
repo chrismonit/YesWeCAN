@@ -128,6 +128,10 @@ public class GeneticStructure {
         return this.partitions[partitionIndex].getGenes();
     }
     
+    public boolean containsGene(int partitionIndex, int frame){
+        return this.partitions[partitionIndex].getGene(frame) != 0;
+    }
+    
     @Override
     public String toString(){
         String d = "\t"; // column delimiter

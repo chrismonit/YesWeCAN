@@ -231,6 +231,9 @@ public class FrequencySimulator {
     }
     
     public boolean sequenceAcceptable(int[] sequence){
+        for (int iPartition = 0; iPartition < this.genStruct.getNumberOfPartitions(); iPartition++) {
+            
+        }
         
         return false;
     }
