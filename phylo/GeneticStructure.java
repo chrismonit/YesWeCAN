@@ -124,6 +124,10 @@ public class GeneticStructure {
         return this.partitions.length;
     }
     
+    public int[] getGenesByPartition(int partitionIndex){
+        return this.partitions[partitionIndex].getGenes();
+    }
+    
     @Override
     public String toString(){
         String d = "\t"; // column delimiter
