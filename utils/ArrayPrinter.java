@@ -36,5 +36,16 @@ public class ArrayPrinter {
         System.out.println(toString(array,delim));
     }
     
+    public static String toString(Integer[] array, String delim){
+       String[] strings = new String[array.length];
+        for (int i = 0; i < array.length; i++) {
+            strings[i] = Integer.toString(array[i]);
+        }
+        return String.join(delim, strings);
+    }
+    
+    public static void print(Integer[] array, String delim){
+        System.out.println(toString(array,delim));
+    }
     
 }

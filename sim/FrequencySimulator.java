@@ -1,6 +1,7 @@
 package yeswecan.sim;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
@@ -141,7 +142,7 @@ public class FrequencySimulator {
                 int[] mutationStates = States.getMutationStates(newSequence[iSite], 4); // all j != i
                 for (int iMutationState = 0; iMutationState < mutationStates.length; iMutationState++) {
                     //System.out.println("Mutation "+mutationStates[iMutationState]);
-                    int probsIndex = ((iSite-nTERMINAL_SITES_IGNORED)*(States.NT_STATES-1))+iMutationState; // == (iSite-2) * 3 + iMutationState
+                    int probsIndex = ((iSite-nTERMINAL_SITES_IGNORED)*(States.NT_STATES-1))+iMutationState; // == (iGene-2) * 3 + iMutationState
                     probabilities[probsIndex] = computeRate(quint, mutationStates[iMutationState], iSite) / R; // remember R = \sum_{\ell} \sum_{j \neq i} r_{ij\ell}
                     
                     List<Integer> siteAndMutation = new ArrayList<Integer>();
@@ -151,7 +152,7 @@ public class FrequencySimulator {
                     
                 }// for mutation
                 
-            }// for iSite
+            }// for iGene
             
             //ArrayPrinter.print(probabilities, ",");
 
@@ -230,9 +231,67 @@ public class FrequencySimulator {
             
     }
     
+    public void test(){
+        int codon = Codons.getCodonIndexFromNucleotideStates(new int[]{3,0,2});
+        System.out.println("codon "+codon);
+    }
+    
+    int[] stopCodons = {48, 56, 50};
+    
+//    public boolean sequenceAcceptable(int[] sequence){
+//        for (int iPartition = 0; iPartition < this.genStruct.getNumberOfPartitions(); iPartition++) {
+//            System.out.println("iPartition "+iPartition);
+//            
+//            for (int iFrame = 0; iFrame < 3; iFrame++) {
+//                System.out.println("frame "+iFrame);
+//                
+//                if (this.genStruct.containsGene(iPartition, iFrame)){
+//                    
+//                    int[] partitionSequence = Arrays.copyOfRange(sequence, genStruct.getPartitionStart(iPartition), genStruct.getPartitionEnd(iPartition)+1); // end is exclusive
+//                    ArrayPrinter.print(partitionSequence, ",");
+//                    for (int iGene = 0; iGene < partitionSequence.length-2; iGene+=3) { // CHECK that the condition of this loop is correct
+//                        int[] codonArray = { sequence[iGene], sequence[iGene+1], sequence[iGene+2] };
+//                        int codon = Codons.getCodonIndexFromNucleotideStates(codonArray);
+//                        for (int iStop = 0; iStop < stopCodons.length; iStop++) {
+//                            if (stopCodons[iStop] == codon){
+//                                return false;
+//                            }
+//                        }
+//                    }
+//                }
+//            } // iFrame
+//        }//  iPartition
+//        
+//        return false;
+//    }
+    
+    
     public boolean sequenceAcceptable(int[] sequence){
-        for (int iPartition = 0; iPartition < this.genStruct.getNumberOfPartitions(); iPartition++) {
+        ArrayList<ArrayList<Integer>> genes = new ArrayList<ArrayList<Integer>>();
+        
+        for (int iGene = 0; iGene < genStruct.getNumberOfGenes()+1; iGene++) { // let's include noncoding region as a gene
+            genes.add( new ArrayList<Integer>() );
+        } // initialise
+        
+        for (int iSite = 0; iSite < sequence.length; iSite++) {
             
+            for (int iFrame = 0; iFrame < 3; iFrame++) {
+                
+                int gene = this.genStruct.getGenes(iSite)[iFrame];
+                //System.out.println("site, frame, gene: " + iSite + "\t" + iFrame + "\t" + gene);
+                
+                genes.get(gene).add( sequence[iSite] );
+                
+                
+            } // iFrame
+            
+            
+        }// iSite
+        
+        for (int iGene = 0; iGene < genStruct.getNumberOfGenes()+1; iGene++) {
+            System.out.println("iGene "+iGene);
+            Integer[] seq = new Integer[genes.get(iGene).size()];
+            seq = genes.get(iGene).toArray(seq);
         }
         
         return false;
