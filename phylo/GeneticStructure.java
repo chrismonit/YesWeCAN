@@ -112,6 +112,18 @@ public class GeneticStructure {
     }
     
     
+    public int getPartitionStart(int partitionIndex){
+        return this.partitions[partitionIndex].getFirstSite();
+    }
+    
+    public int getPartitionEnd(int partitionIndex){
+        return this.partitions[partitionIndex].getLastSite();
+    }
+    
+    public int getNumberOfPartitions(){
+        return this.partitions.length;
+    }
+    
     @Override
     public String toString(){
         String d = "\t"; // column delimiter
