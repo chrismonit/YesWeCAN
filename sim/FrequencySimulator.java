@@ -97,7 +97,7 @@ public class FrequencySimulator {
         for (int iSite = 2; iSite < sequence.length-2; iSite++) { // can't include first and last 2 nuceltodides, because we're working with quints
             int[] quint = new int[]{ sequence[iSite-2], sequence[iSite-1], sequence[iSite], sequence[iSite+1], sequence[iSite+2] };
             
-            for (int jMutation : States.getMutationStates(sequence[iSite], 4)){ // only considering i != j
+            for (int jMutation : States.getMutationStates(sequence[iSite], 4)){ // only considering iStopCodon != j
                 sum += computeRate(quint, jMutation, iSite);
             }
         }
@@ -127,7 +127,7 @@ public class FrequencySimulator {
             
             /*
                 The method States.draw takes a distribution array and returns the index of the element chosen
-                If I make a probabilities array, containing probs for all i-> transitions at each site, 
+                If I make a probabilities array, containing probs for all iStopCodon-> transitions at each site, 
                 I will lose the information about the exact site and mutatino which is chosen by States.draw.
                 I therefore have a Hashtable, with probabilities[] indices as keys and (site, mutation) pairs as values      
             */
@@ -139,11 +139,11 @@ public class FrequencySimulator {
                 
                 int[] quint = new int[]{ newSequence[iSite-2], newSequence[iSite-1], newSequence[iSite], newSequence[iSite+1], newSequence[iSite+2] };
                 
-                int[] mutationStates = States.getMutationStates(newSequence[iSite], 4); // all j != i
+                int[] mutationStates = States.getMutationStates(newSequence[iSite], 4); // all j != iStopCodon
                 for (int iMutationState = 0; iMutationState < mutationStates.length; iMutationState++) {
                     //System.out.println("Mutation "+mutationStates[iMutationState]);
                     int probsIndex = ((iSite-nTERMINAL_SITES_IGNORED)*(States.NT_STATES-1))+iMutationState; // == (iGene-2) * 3 + iMutationState
-                    probabilities[probsIndex] = computeRate(quint, mutationStates[iMutationState], iSite) / R; // remember R = \sum_{\ell} \sum_{j \neq i} r_{ij\ell}
+                    probabilities[probsIndex] = computeRate(quint, mutationStates[iMutationState], iSite) / R; // remember R = \sum_{\ell} \sum_{j \neq iStopCodon} r_{ij\ell}
                     
                     List<Integer> siteAndMutation = new ArrayList<Integer>();
                     siteAndMutation.add(iSite);
@@ -236,9 +236,9 @@ public class FrequencySimulator {
         System.out.println("codon "+codon);
     }
     
-    int[] stopCodons = {48, 56, 50};
     
-//    public boolean sequenceAcceptable(int[] sequence){
+    
+//    public boolean sequenceAcceptable(int[] geneSequence){
 //        for (int iPartition = 0; iPartition < this.genStruct.getNumberOfPartitions(); iPartition++) {
 //            System.out.println("iPartition "+iPartition);
 //            
@@ -247,13 +247,13 @@ public class FrequencySimulator {
 //                
 //                if (this.genStruct.containsGene(iPartition, iFrame)){
 //                    
-//                    int[] partitionSequence = Arrays.copyOfRange(sequence, genStruct.getPartitionStart(iPartition), genStruct.getPartitionEnd(iPartition)+1); // end is exclusive
+//                    int[] partitionSequence = Arrays.copyOfRange(geneSequence, genStruct.getPartitionStart(iPartition), genStruct.getPartitionEnd(iPartition)+1); // end is exclusive
 //                    ArrayPrinter.print(partitionSequence, ",");
 //                    for (int iGene = 0; iGene < partitionSequence.length-2; iGene+=3) { // CHECK that the condition of this loop is correct
-//                        int[] codonArray = { sequence[iGene], sequence[iGene+1], sequence[iGene+2] };
-//                        int codon = Codons.getCodonIndexFromNucleotideStates(codonArray);
+//                        int[] codonArray = { geneSequence[iGene], geneSequence[iGene+1], geneSequence[iGene+2] };
+//                        int terminators = Codons.getCodonIndexFromNucleotideStates(codonArray);
 //                        for (int iStop = 0; iStop < stopCodons.length; iStop++) {
-//                            if (stopCodons[iStop] == codon){
+//                            if (stopCodons[iStop] == terminators){
 //                                return false;
 //                            }
 //                        }
@@ -265,37 +265,69 @@ public class FrequencySimulator {
 //        return false;
 //    }
     
-    
-    public boolean sequenceAcceptable(int[] sequence){
-        ArrayList<ArrayList<Integer>> genes = new ArrayList<ArrayList<Integer>>();
+    // assumes the gene sequence is in the frame of interest
+    public boolean containsStop(int[] geneSequence){
         
-        for (int iGene = 0; iGene < genStruct.getNumberOfGenes()+1; iGene++) { // let's include noncoding region as a gene
-            genes.add( new ArrayList<Integer>() );
-        } // initialise
+        //System.out.println("containsStop "+ArrayPrinter.toString(geneSequence, ","));
         
-        for (int iSite = 0; iSite < sequence.length; iSite++) {
+        int[] stopCodons = codonTable.getTerminatorIndexes(); // will return 48, 50, 56
+        int upperBound = geneSequence.length-2;
+        
+        // NB this will just ignore terminal nucletodies which don't belong to a whole codon
+        for (int iSite = 0; iSite < upperBound; iSite+=3) {
+            int[] codonArray = new int[]{ geneSequence[iSite], geneSequence[iSite+1], geneSequence[iSite+2]};
+            int codon = Codons.getCodonIndexFromNucleotideStates(codonArray);
+            //System.out.println("containsStop: codon = "+ArrayPrinter.toString(codonArray, ","));
             
-            for (int iFrame = 0; iFrame < 3; iFrame++) {
-                
-                int gene = this.genStruct.getGenes(iSite)[iFrame];
-                //System.out.println("site, frame, gene: " + iSite + "\t" + iFrame + "\t" + gene);
-                
-                genes.get(gene).add( sequence[iSite] );
-                
-                
-            } // iFrame
+            for (int iStopCodon = 0; iStopCodon < stopCodons.length; iStopCodon++) {
+                if (codon == stopCodons[iStopCodon]){
+                    return true;
+                }
+            }
             
-            
-        }// iSite
-        
-        for (int iGene = 0; iGene < genStruct.getNumberOfGenes()+1; iGene++) {
-            System.out.println("iGene "+iGene);
-            Integer[] seq = new Integer[genes.get(iGene).size()];
-            seq = genes.get(iGene).toArray(seq);
-        }
-        
+        }// for iSite
         return false;
     }
+    
+    
+    public boolean sequenceAcceptable(int[] sequence){
+        // initialise arrays. Each ArrayList<Integer> represents the sites comprising a gene
+        ArrayList<ArrayList<Integer>> genes = new ArrayList<ArrayList<Integer>>();
+        for (int iGene = 0; iGene < genStruct.getNumberOfGenes()+1; iGene++) { // let's include noncoding region as a gene
+            genes.add( new ArrayList<Integer>() );
+        } 
+        
+        // go through sites and assign sites from the sequence to lists of sites representing specific genes
+        for (int iSite = 0; iSite < sequence.length; iSite++) {
+            for (int iFrame = 0; iFrame < 3; iFrame++) {
+                
+                int gene = this.genStruct.getGenes(iSite)[iFrame]; // find which gene we're in, given this site and frame
+                genes.get(gene).add( sequence[iSite] );
+
+                //System.out.println("site, frame, gene: " + iSite + "\t" + iFrame + "\t" + gene);
+                
+            } // iFrame
+        }// iSite
+        
+        // go through genes and check for stop codons
+        
+        for (int iGene = 1; iGene < genStruct.getNumberOfGenes()+1; iGene++) { // don't include noncoding regions (gene 0)
+            // first need to convert Integer[] to int[]
+            Integer[] integerGeneSeq = new Integer[genes.get(iGene).size()];
+            integerGeneSeq = genes.get(iGene).toArray(integerGeneSeq);
+            int[] geneSeq = new int[integerGeneSeq.length];
+            for (int i = 0; i < geneSeq.length; i++) {
+                geneSeq[i] = integerGeneSeq[i].intValue();
+            }
+            
+            //System.out.println("iGene "+iGene+" "+"containsStop "+containsStop(geneSeq));
+            if (containsStop(geneSeq)){
+                return false;
+            }
+            
+        }// for iGene
+        return true;
+    }// sequenceAcceptable
     
     public Alignment simulate(int[] rootSequence){
         AlignmentBuilder alnBuilder = new AlignmentBuilder(this.tree.getExternalNodeCount());
@@ -307,10 +339,10 @@ public class FrequencySimulator {
         return alnBuilder.generateAlignment(new Nucleotides());
     }
     
-     /*Matrix A is accessed using the site type and the frame you want the codon for.
-     * Each row off matrix B contains the co-ordinates of the nt positions for the codon you want, relative to position
+     /*Matrix A is accessed using the site type and the frame you want the terminators for.
+     * Each row off matrix B contains the co-ordinates of the nt positions for the terminators you want, relative to position
      * Using the two in combination, we get the characters in the parentSequence which
-     * correspond to the codon we want for each frame
+     * correspond to the terminators we want for each frame
      */
 
     private static final int[][] A = {  //i = site type (alpha, beta, gamma), jIndex = frame (a, b, c)
@@ -320,9 +352,9 @@ public class FrequencySimulator {
     };
 
     private static final int[][] B = {   //represent nt positions in CODON in the quintuplet, relative to 'position' variable
-        { -2, -1, 0 }, //1st codon in quint
-        { -1, 0, 1 }, //2nd codon in quint
-        { 0, 1, 2 }  //3rd codon in quint
+        { -2, -1, 0 }, //1st terminators in quint
+        { -1, 0, 1 }, //2nd terminators in quint
+        { 0, 1, 2 }  //3rd terminators in quint
     };
     
     
