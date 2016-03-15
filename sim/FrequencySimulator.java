@@ -219,22 +219,21 @@ public class FrequencySimulator {
      * prior to starting the simulation properly, so that the actual starting sequence 
      * is consistent with the process we are describing
      */
-    public int[] equilibriateSequence(int sequenceLength, double branchLength){
-        // generate random sequence
+    
+    public int[] getRandomSequence(int sequenceLength){
+    
         int[] sequence = new int[sequenceLength];
         
         for (int i = 0; i < sequence.length; i++) {
             sequence[i] = this.rand.nextInt(States.NT_STATES);
         }
-        //System.out.println("start "+ArrayPrinter.toString(sequence, ","));
-        return evolveBranch(sequence, branchLength);
-            
+        return sequence;
     }
     
-    public void test(){
-        int codon = Codons.getCodonIndexFromNucleotideStates(new int[]{3,0,2});
-        System.out.println("codon "+codon);
-    }
+    
+
+    
+ 
     
     
     
