@@ -124,6 +124,10 @@ public class GeneticStructure {
         return this.partitions.length;
     }
     
+    public int getPartitionLength(int partitionIndex){
+        return this.partitions[partitionIndex].getLength();
+    }
+    
     public int[] getGenesByPartition(int partitionIndex){
         return this.partitions[partitionIndex].getGenes();
     }

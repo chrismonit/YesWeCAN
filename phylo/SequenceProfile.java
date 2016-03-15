@@ -14,12 +14,13 @@ import java.util.List;
  */
 public class SequenceProfile {
     
-    private List<SiteProfile> siteProfiles;
+    private SiteProfile[] siteProfiles;
     private GeneticStructure genStruct;
-    //public static final int nTERMINAL_IGNORE = 2;
+    public static final int nTERMINAL_IGNORE = 2;
     
     public SequenceProfile(GeneticStructure genStruct){
         this.genStruct = genStruct;
+        this.siteProfiles = new SiteProfile[(genStruct.getTotalLength() - nTERMINAL_IGNORE*2 )]; // ignoring first and last two positions in sequence
         init();
     }
     
