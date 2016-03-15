@@ -244,7 +244,7 @@ public class FrequencySimulator {
 //            for (int iFrame = 0; iFrame < 3; iFrame++) {
 //                System.out.println("frame "+iFrame);
 //                
-//                if (this.genStruct.containsGene(iPartition, iFrame)){
+//                if (this.genStruct.genePresent(iPartition, iFrame)){
 //                    
 //                    int[] partitionSequence = Arrays.copyOfRange(geneSequence, genStruct.getPartitionStart(iPartition), genStruct.getPartitionEnd(iPartition)+1); // end is exclusive
 //                    ArrayPrinter.print(partitionSequence, ",");

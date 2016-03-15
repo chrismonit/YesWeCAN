@@ -128,9 +128,11 @@ public class GeneticStructure {
         return this.partitions[partitionIndex].getGenes();
     }
     
-    public boolean containsGene(int partitionIndex, int frame){
+    public boolean genePresent(int partitionIndex, int frame){
         return this.partitions[partitionIndex].getGene(frame) != 0;
     }
+    
+    // new 'contains gene' method to go here
     
     @Override
     public String toString(){
