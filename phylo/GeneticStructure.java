@@ -132,7 +132,15 @@ public class GeneticStructure {
         return this.partitions[partitionIndex].getGene(frame) != 0;
     }
     
-    // new 'contains gene' method to go here
+    public boolean containsGene(int partitionIndex, int gene){
+        int[] genes = getGenesByPartition(partitionIndex);
+        for (int i = 0; i < genes.length; i++) {
+            if (genes[i] == gene){
+                return true;
+            }
+        }
+        return false;
+    }
     
     @Override
     public String toString(){
