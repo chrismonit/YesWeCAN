@@ -102,6 +102,10 @@ public class GeneticStructure {
         return this.partitions[partitionIndex].getGene(frame);
     }
     
+    public int getGeneBySite(int site, int frame){
+        return this.partitions[getPartitionIndex(site)].getGene(frame);
+    }
+    
     public int getPartitionIndex(int site){
         for (int i = 0; i < this.partitions.length; i++) {
             if (site >= this.partitions[i].getFirstSite() && site <= this.partitions[i].getLastSite()) {
