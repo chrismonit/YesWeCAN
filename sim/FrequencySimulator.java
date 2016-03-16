@@ -230,39 +230,7 @@ public class FrequencySimulator {
         return sequence;
     }
     
-    
 
-    
- 
-    
-    
-    
-//    public boolean sequenceAcceptable(int[] geneSequence){
-//        for (int iPartition = 0; iPartition < this.genStruct.getNumberOfPartitions(); iPartition++) {
-//            System.out.println("iPartition "+iPartition);
-//            
-//            for (int iFrame = 0; iFrame < 3; iFrame++) {
-//                System.out.println("frame "+iFrame);
-//                
-//                if (this.genStruct.genePresent(iPartition, iFrame)){
-//                    
-//                    int[] partitionSequence = Arrays.copyOfRange(geneSequence, genStruct.getPartitionStart(iPartition), genStruct.getPartitionEnd(iPartition)+1); // end is exclusive
-//                    ArrayPrinter.print(partitionSequence, ",");
-//                    for (int iGene = 0; iGene < partitionSequence.length-2; iGene+=3) { // CHECK that the condition of this loop is correct
-//                        int[] codonArray = { geneSequence[iGene], geneSequence[iGene+1], geneSequence[iGene+2] };
-//                        int terminators = Codons.getCodonIndexFromNucleotideStates(codonArray);
-//                        for (int iStop = 0; iStop < stopCodons.length; iStop++) {
-//                            if (stopCodons[iStop] == terminators){
-//                                return false;
-//                            }
-//                        }
-//                    }
-//                }
-//            } // iFrame
-//        }//  iPartition
-//        
-//        return false;
-//    }
     
     // assumes the gene sequence is in the frame of interest
     public boolean containsStop(int[] geneSequence){
