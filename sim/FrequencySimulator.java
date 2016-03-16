@@ -288,14 +288,18 @@ public class FrequencySimulator {
         return false;
     }
     
-    
+    /*
+    We want to make sure the starting (root) sequence used is viable
+    We define viable as simply not containing any stop codons in coding frames
+    This method scans a sequence for stop codons
+    */
     public boolean sequenceAcceptable(int[] sequence){
         // initialise arrays. Each ArrayList<Integer> represents the sites comprising a gene
         ArrayList<ArrayList<Integer>> genes = new ArrayList<ArrayList<Integer>>();
         for (int iGene = 0; iGene < genStruct.getNumberOfGenes()+1; iGene++) { // let's include noncoding region as a gene
             genes.add( new ArrayList<Integer>() );
         } 
-        
+                
         // go through sites and assign sites from the sequence to lists of sites representing specific genes
         for (int iSite = 0; iSite < sequence.length; iSite++) {
             for (int iFrame = 0; iFrame < 3; iFrame++) {
@@ -319,7 +323,6 @@ public class FrequencySimulator {
                 geneSeq[i] = integerGeneSeq[i].intValue();
             }
             
-            //System.out.println("iGene "+iGene+" "+"containsStop "+containsStop(geneSeq));
             if (containsStop(geneSeq)){
                 return false;
             }
