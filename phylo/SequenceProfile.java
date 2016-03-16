@@ -74,28 +74,28 @@ public class SequenceProfile {
     }
     
     // assuming we're at 5' of boundary for now
-    private int[] getCompletedCodonPenultimate(int siteIndex, int frame){
-        
-        int[] codon;
-        //int gene; // what should this be?
-        
-        if (siteIndex%3 == 0){
-//            switch (frame){
-//                case 0: codon = new int[]{ siteIndex, siteIndex+1, getNext( genStruct.getGeneBySite(siteIndex, frame), nSiteIndices, gene ) };
-//                    break;
+//    private int[] getCompletedCodonPenultimate(int siteIndex, int frame){
+//        
+//        int[] codon;
+//        //int gene; // what should this be?
+//        
+//        if (siteIndex%3 == 0){
+////            switch (frame){
+////                case 0: codon = new int[]{ siteIndex, siteIndex+1, getNext( genStruct.getGeneBySite(siteIndex, frame), nSiteIndices, gene ) };
+////                    break;
+////            }
+//            if (frame == 0) {
+//                int gene = genStruct.getGeneBySite(siteIndex, frame);
+//                codon = new int[]{ siteIndex, siteIndex+1, getNext(siteIndex, 1, gene)[0] };
 //            }
-            if (frame == 0) {
-                int gene = genStruct.getGeneBySite(siteIndex, frame);
-                codon = new int[]{ siteIndex, siteIndex+1, getNext(siteIndex, 1, gene)[0] };
-            }
-            // elif frame==1
-            //elif frame ==2
-        }
-        // if sitetype is beta
-        
-        // if site type is gamma
-        
-    }
+//            // elif frame==1
+//            //elif frame ==2
+//        }
+//        // if sitetype is beta
+//        
+//        // if site type is gamma
+//        
+//    }
     
     private void init(){
         
