@@ -109,13 +109,14 @@ public class FrequencySimulator {
     public int[] evolveBranch(int[] sequence, double branchLength){
         int[] newSequence = new int[sequence.length];
         System.arraycopy(sequence, 0, newSequence, 0, newSequence.length);
-            
+            //System.out.println("branch length "+branchLength);
         double branchPosition = 0.0;
         while (branchPosition < branchLength){        
             //System.out.println("branch position: "+branchPosition);
 
             double R = computeSumRates(newSequence);
-            ExponentialDistribution expDist = new ExponentialDistribution(R);
+            //System.out.println("R "+R);
+            ExponentialDistribution expDist = new ExponentialDistribution(1./R); // expecting the MEAN of the distribtuion, which is inverse of rate parameter (1/lambda)
             double deltaT = expDist.sample();
             branchPosition += deltaT;
             //System.out.println("branchPosition "+branchPosition);
