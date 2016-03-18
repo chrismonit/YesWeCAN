@@ -249,6 +249,7 @@ public class FrequencySimulator {
             
             for (int iStopCodon = 0; iStopCodon < stopCodons.length; iStopCodon++) {
                 if (codon == stopCodons[iStopCodon]){
+                    //System.out.println("codon "+ArrayPrinter.toString(codonArray, ",")+" gene_site "+iSite);
                     return true;
                 }
             }
@@ -260,23 +261,31 @@ public class FrequencySimulator {
     // crude way of dealing with stop codons in random sequences
     // just go through a sequence looking for stop codons and replacing the first T with C
     // nb this can't introduce stops into another frame because C never occurs in a stop codon
+    
+    int[][] indexAdjustments = new int[][]{
+        { 3, 5, 4 },
+        { 4, 3, 5 },
+        { 5, 4, 3 }
+    };
+    
+    
     public int[] changeStop(int[] geneSequence){
         Random rand = new Random();
         int[] newSequence = new int[geneSequence.length];
         System.arraycopy(geneSequence, 0, newSequence, 0, newSequence.length);
         
         int[] stopCodons = codonTable.getTerminatorIndexes(); // will return 48, 50, 56
-        //int upperBound = geneSequence.length-2;
+        
+        int[] adjustments = indexAdjustments[geneSequence.length%3];
         
         for (int iFrame = 0; iFrame < 3; iFrame++) {
-            System.out.println("iFrame "+iFrame);
-                // NB this will just ignore terminal nucletodies which don't belong to a whole codon
-            for (int iSite = iFrame; iSite < (geneSequence.length - (1+ iFrame)); iSite+=3) {
-                System.out.println("site "+iSite);
+
+            // NB this will just ignore terminal nucletodies which don't belong to a whole codon
+            for (int iSite = iFrame; iSite <= (geneSequence.length - adjustments[iFrame]); iSite+=3) {
+
                 int[] codonArray = new int[]{ newSequence[iSite], newSequence[iSite+1], newSequence[iSite+2]};
                 int codon = Codons.getCodonIndexFromNucleotideStates(codonArray);
-                System.out.println(" codon = "+ArrayPrinter.toString(codonArray, ","));
-                
+
                 for (int iStopCodon = 0; iStopCodon < stopCodons.length; iStopCodon++) {
                     if (codon == stopCodons[iStopCodon]){
                         //newSequence[iSite] = States.getMutationStates(newSequence[iSite], States.NT_STATES)[rand.nextInt(States.NT_STATES)]; // choses one of the mutation states at random
@@ -285,10 +294,8 @@ public class FrequencySimulator {
                 }
 
             }// for iSite
-            System.out.println("");
-        }// for iFrame
-        
-        
+
+        }// jFrame
         return newSequence;
         
     }
