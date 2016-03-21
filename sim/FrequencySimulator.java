@@ -59,8 +59,7 @@ public class FrequencySimulator {
         this.codonTable = CodonTableFactory.createUniversalTranslator();
     }
     
-    // TODO make this private after testing
-    public double computeRate(int[] quintStates, int j, int site){
+    public double computeRate(int[] quintStates, int j, int site, double nu){
         // r_ijl = k * w_A * w_B * w_C * π_A * π_B * π_C
 
         int[] genes = this.genStruct.getGenes(site);
@@ -85,19 +84,22 @@ public class FrequencySimulator {
             product *= pi_J;
             
         }// iFrame
+        
+        product *= nu;
+        
         return product;
     }
     
     
     
-    public double computeSumRates(int[] sequence){
+    public double computeSumRates(int[] sequence, double nu){
         double sum = 0.0;
         
         for (int iSite = 2; iSite < sequence.length-2; iSite++) { // can't include first and last 2 nuceltodides, because we're working with quints
             int[] quint = new int[]{ sequence[iSite-2], sequence[iSite-1], sequence[iSite], sequence[iSite+1], sequence[iSite+2] };
             
             for (int jMutation : States.getMutationStates(sequence[iSite], 4)){ // only considering iStopCodon != j
-                sum += computeRate(quint, jMutation, iSite);
+                sum += computeRate(quint, jMutation, iSite, nu);
             }
         }
         
@@ -106,11 +108,11 @@ public class FrequencySimulator {
     
     // code for making 1 substitution in a sequence, based on rates computed from that sequence
     // used in simulateNu and evolveBranch
-    public int[] substitute(int[] sequence){
+    public int[] substitute(int[] sequence, double nu){
         int[] newSequence = new int[sequence.length];
         System.arraycopy(sequence, 0, newSequence, 0, newSequence.length);
         
-        double R = computeSumRates(newSequence);
+        double R = computeSumRates(newSequence, nu);
         // Compute mutation probabilities and make substitution
         /*
             The method States.draw takes a distribution array and returns the index of the element chosen
@@ -130,7 +132,7 @@ public class FrequencySimulator {
             for (int iMutationState = 0; iMutationState < mutationStates.length; iMutationState++) {
                 //System.out.println("Mutation "+mutationStates[iMutationState]);
                 int probsIndex = ((iSite-nTERMINAL_SITES_IGNORED)*(States.NT_STATES-1))+iMutationState; // == (iGene-2) * 3 + iMutationState
-                probabilities[probsIndex] = computeRate(quint, mutationStates[iMutationState], iSite) / R; // remember R = \sum_{\ell} \sum_{j \neq iStopCodon} r_{ij\ell}
+                probabilities[probsIndex] = computeRate(quint, mutationStates[iMutationState], iSite, nu) / R; // remember R = \sum_{\ell} \sum_{j \neq iStopCodon} r_{ij\ell}
 
                 List<Integer> siteAndMutation = new ArrayList<Integer>();
                 siteAndMutation.add(iSite);
@@ -161,7 +163,7 @@ public class FrequencySimulator {
         return newSequence;
     }// substitute        
     
-    
+    // NB nu is hard coded to 1.0 in call to computSumRates and substitute
     public double branchLengthFromSubs(int[] startSequence, int numSubs){
         
         double T = 0.0; // branchlength which will result from this number of subs
@@ -169,13 +171,13 @@ public class FrequencySimulator {
         System.arraycopy(startSequence, 0, evolvingSequence, 0, evolvingSequence.length);
         
         for (int iSub = 0; iSub < numSubs; iSub++) {
-            double R = computeSumRates(evolvingSequence);
+            double R = computeSumRates(evolvingSequence, 1.0);
             //System.out.println("R "+R);
             ExponentialDistribution expDist = new ExponentialDistribution(1./R); // expecting the MEAN of the distribtuion, which is inverse of rate parameter (1/lambda)
             double deltaT = expDist.sample();
             T += deltaT;
             
-            evolvingSequence = substitute(evolvingSequence);
+            evolvingSequence = substitute(evolvingSequence, 1.0);
             
         }// for iSub
         
@@ -190,7 +192,7 @@ public class FrequencySimulator {
     
     
     // branchPosition is current position along the branch as me move along it, branch length is the total length
-    public int[] evolveBranch(int[] startSequence, double branchLength){
+    public int[] evolveBranch(int[] startSequence, double branchLength, double nu){
         int[] evolvingSequence = new int[startSequence.length];
         System.arraycopy(startSequence, 0, evolvingSequence, 0, evolvingSequence.length);
             //System.out.println("branch length "+branchLength);
@@ -200,7 +202,7 @@ public class FrequencySimulator {
            
             //System.out.println("branch position: "+branchPosition);
 
-            double R = computeSumRates(evolvingSequence);
+            double R = computeSumRates(evolvingSequence, nu);
             //System.out.println("R "+R);
             ExponentialDistribution expDist = new ExponentialDistribution(1./R); // expecting the MEAN of the distribtuion, which is inverse of rate parameter (1/lambda)
             double deltaT = expDist.sample();
@@ -211,7 +213,7 @@ public class FrequencySimulator {
                 break; // we're very close to the end of the branch, so don't evolve further
             }
             
-            evolvingSequence = substitute(evolvingSequence);
+            evolvingSequence = substitute(evolvingSequence, nu);
         }        
         
         // finished evolving
@@ -235,7 +237,7 @@ public class FrequencySimulator {
         return bytes;
     }
     // UNTESTED
-    private void downTree(Node parent, AlignmentBuilder alnBuilder){
+    private void downTree(Node parent, AlignmentBuilder alnBuilder, double nu){
         int[] parentSequence = bytesToInts(parent.getSequence());
         
         if (parent.isLeaf()){
@@ -245,10 +247,10 @@ public class FrequencySimulator {
                 Node child = parent.getChild(iChild);
                 double branchLength = child.getBranchLength();
                 
-                int[] childSequence = evolveBranch(parentSequence, branchLength);
+                int[] childSequence = evolveBranch(parentSequence, branchLength, nu);
                 child.setSequence(intsToBytes(childSequence));
                 
-                downTree(child, alnBuilder);
+                downTree(child, alnBuilder, nu);
             }
         }
         
@@ -382,12 +384,12 @@ public class FrequencySimulator {
         return true;
     }// sequenceAcceptable
     
-    public Alignment simulate(int[] rootSequence){
+    public Alignment simulate(int[] rootSequence, double nu){
         AlignmentBuilder alnBuilder = new AlignmentBuilder(this.tree.getExternalNodeCount());
         
         Node root = new SimpleNode(this.tree.getRoot());
         root.setSequence(intsToBytes(rootSequence));
-        downTree(root, alnBuilder);
+        downTree(root, alnBuilder, nu);
         
         return alnBuilder.generateAlignment(new Nucleotides());
     }
