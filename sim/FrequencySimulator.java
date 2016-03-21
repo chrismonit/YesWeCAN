@@ -62,7 +62,7 @@ public class FrequencySimulator {
     // TODO make this private after testing
     public double computeRate(int[] quintStates, int j, int site){
         // r_ijl = k * w_A * w_B * w_C * π_A * π_B * π_C
-        
+
         int[] genes = this.genStruct.getGenes(site);
         double product = 1.0; // multiplicative identity
                 
@@ -82,7 +82,6 @@ public class FrequencySimulator {
             CodonFrequencies geneCodonFreq = this.codonFrequencies.get(genes[iFrame]);
             int[] mappedToPaml = ReorderFrequencies.alphaToPaml(codonJ_array); // expecting codons will be ordered TCAG in codonFrequencies instances
             double pi_J = geneCodonFreq.getFrequency(mappedToPaml); 
-            
             product *= pi_J;
             
         }// iFrame
@@ -115,10 +114,11 @@ public class FrequencySimulator {
             //System.out.println("branch position: "+branchPosition);
 
             double R = computeSumRates(newSequence);
-            //System.out.println("R "+R);
+            System.out.println("R "+R);
             ExponentialDistribution expDist = new ExponentialDistribution(1./R); // expecting the MEAN of the distribtuion, which is inverse of rate parameter (1/lambda)
             double deltaT = expDist.sample();
             branchPosition += deltaT;
+            System.out.println("deltaT "+deltaT);
             //System.out.println("branchPosition "+branchPosition);
             if (branchPosition >= branchLength){
                 break; // we're very close to the end of the branch, so don't evolve further
