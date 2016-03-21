@@ -104,6 +104,8 @@ public class FrequencySimulator {
         return sum;
     }
     
+    // code for making 1 substitution in a sequence, based on rates computed from that sequence
+    // used in simulateNu and evolveBranch
     public int[] substitute(int[] sequence){
         int[] newSequence = new int[sequence.length];
         System.arraycopy(sequence, 0, newSequence, 0, newSequence.length);
@@ -160,8 +162,31 @@ public class FrequencySimulator {
     }// substitute        
     
     
+    public double branchLengthFromSubs(int[] startSequence, int numSubs){
+        
+        double T = 0.0; // branchlength which will result from this number of subs
+        int[] evolvingSequence = new int[startSequence.length];
+        System.arraycopy(startSequence, 0, evolvingSequence, 0, evolvingSequence.length);
+        
+        for (int iSub = 0; iSub < numSubs; iSub++) {
+            double R = computeSumRates(evolvingSequence);
+            //System.out.println("R "+R);
+            ExponentialDistribution expDist = new ExponentialDistribution(1./R); // expecting the MEAN of the distribtuion, which is inverse of rate parameter (1/lambda)
+            double deltaT = expDist.sample();
+            T += deltaT;
+            
+            evolvingSequence = substitute(evolvingSequence);
+            
+        }// for iSub
+        
+        return T;
+    }
     
-    
+    public double simulateNu(int[] startSequence, int numSubs){
+        double T = branchLengthFromSubs(startSequence, numSubs);
+        double nu = T / (double)numSubs * (double)genStruct.getTotalLength();
+        return nu;
+    }
     
     
     // branchPosition is current position along the branch as me move along it, branch length is the total length
