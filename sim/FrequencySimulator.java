@@ -104,79 +104,143 @@ public class FrequencySimulator {
         return sum;
     }
     
-    // branchPosition is current position along the branch as me move along it, branch length is the total length
-    public int[] evolveBranch(int[] sequence, double branchLength){
+    public int[] substitute(int[] sequence){
         int[] newSequence = new int[sequence.length];
         System.arraycopy(sequence, 0, newSequence, 0, newSequence.length);
+        
+        double R = computeSumRates(newSequence);
+        // Compute mutation probabilities and make substitution
+        /*
+            The method States.draw takes a distribution array and returns the index of the element chosen
+            If I make a probabilities array, containing probs for all iStopCodon-> transitions at each site, 
+            I will lose the information about the exact site and mutatino which is chosen by States.draw.
+            I therefore have a Hashtable, with probabilities[] indices as keys and (site, mutation) pairs as values      
+        */
+        // chose a siteAndMutationIndex proportional to r_ijl
+        Hashtable<Integer, List<Integer>> mutationStatesTable = new Hashtable(); // keys are indices in probabilities array, values are (site, siteAndMutationIndex) pairs
+        int probabilitiesLength = (newSequence.length - 2*nTERMINAL_SITES_IGNORED) * (States.NT_STATES-1); // -4 because don't include first and last 2 bases; *3 because 3 siteAndMutationIndex states for each site
+        double[] probabilities = new double[probabilitiesLength]; 
+        for (int iSite = nTERMINAL_SITES_IGNORED; iSite < (newSequence.length - nTERMINAL_SITES_IGNORED); iSite++) {
+
+            int[] quint = new int[]{ newSequence[iSite-2], newSequence[iSite-1], newSequence[iSite], newSequence[iSite+1], newSequence[iSite+2] };
+
+            int[] mutationStates = States.getMutationStates(newSequence[iSite], 4); // all j != iStopCodon
+            for (int iMutationState = 0; iMutationState < mutationStates.length; iMutationState++) {
+                //System.out.println("Mutation "+mutationStates[iMutationState]);
+                int probsIndex = ((iSite-nTERMINAL_SITES_IGNORED)*(States.NT_STATES-1))+iMutationState; // == (iGene-2) * 3 + iMutationState
+                probabilities[probsIndex] = computeRate(quint, mutationStates[iMutationState], iSite) / R; // remember R = \sum_{\ell} \sum_{j \neq iStopCodon} r_{ij\ell}
+
+                List<Integer> siteAndMutation = new ArrayList<Integer>();
+                siteAndMutation.add(iSite);
+                siteAndMutation.add(mutationStates[iMutationState]);
+                mutationStatesTable.put(probsIndex, siteAndMutation);
+
+            }// for mutation
+
+        }// for iGene
+
+        // sanity check
+        double sumProbs = 0.0;
+        for (int i = 0; i < probabilities.length; i++) {
+            sumProbs += probabilities[i];
+        }
+        if (sumProbs < 1. - 1e-10 || sumProbs > 1. + 1e-10){
+            throw new RuntimeException("Warning! probabilities don't sum to 1! Sum = "+sumProbs);
+        }
+
+        int siteAndMutationIndex = States.draw(probabilities, this.rand.nextDouble());
+        List<Integer> siteMutationPair = mutationStatesTable.get(siteAndMutationIndex);
+        int site = siteMutationPair.get(0);
+        int mutationState = siteMutationPair.get(1);
+
+        newSequence[site] = mutationState; // mutation is now a substitution (ie accepted)
+        //ArrayPrinter.print(evolvingSequence, ",");
+            
+        return newSequence;
+    }// substitute        
+    
+    
+    
+    
+    
+    
+    // branchPosition is current position along the branch as me move along it, branch length is the total length
+    public int[] evolveBranch(int[] startSequence, double branchLength){
+        int[] evolvingSequence = new int[startSequence.length];
+        System.arraycopy(startSequence, 0, evolvingSequence, 0, evolvingSequence.length);
             //System.out.println("branch length "+branchLength);
         double branchPosition = 0.0;
-        while (branchPosition < branchLength){        
+        while (branchPosition < branchLength){     
+            
+           
             //System.out.println("branch position: "+branchPosition);
 
-            double R = computeSumRates(newSequence);
-            System.out.println("R "+R);
+            double R = computeSumRates(evolvingSequence);
+            //System.out.println("R "+R);
             ExponentialDistribution expDist = new ExponentialDistribution(1./R); // expecting the MEAN of the distribtuion, which is inverse of rate parameter (1/lambda)
             double deltaT = expDist.sample();
             branchPosition += deltaT;
-            System.out.println("deltaT "+deltaT);
+            //System.out.println("deltaT "+deltaT);
             //System.out.println("branchPosition "+branchPosition);
             if (branchPosition >= branchLength){
                 break; // we're very close to the end of the branch, so don't evolve further
             }
             
-            // Compute mutation probabilities
-            
-            /*
-                The method States.draw takes a distribution array and returns the index of the element chosen
-                If I make a probabilities array, containing probs for all iStopCodon-> transitions at each site, 
-                I will lose the information about the exact site and mutatino which is chosen by States.draw.
-                I therefore have a Hashtable, with probabilities[] indices as keys and (site, mutation) pairs as values      
-            */
-            // chose a siteAndMutationIndex proportional to r_ijl
-            Hashtable<Integer, List<Integer>> mutationStatesTable = new Hashtable(); // keys are indices in probabilities array, values are (site, siteAndMutationIndex) pairs
-            int probabilitiesLength = (newSequence.length - 2*nTERMINAL_SITES_IGNORED) * (States.NT_STATES-1); // -4 because don't include first and last 2 bases; *3 because 3 siteAndMutationIndex states for each site
-            double[] probabilities = new double[probabilitiesLength]; 
-            for (int iSite = nTERMINAL_SITES_IGNORED; iSite < (newSequence.length - nTERMINAL_SITES_IGNORED); iSite++) {
-                
-                int[] quint = new int[]{ newSequence[iSite-2], newSequence[iSite-1], newSequence[iSite], newSequence[iSite+1], newSequence[iSite+2] };
-                
-                int[] mutationStates = States.getMutationStates(newSequence[iSite], 4); // all j != iStopCodon
-                for (int iMutationState = 0; iMutationState < mutationStates.length; iMutationState++) {
-                    //System.out.println("Mutation "+mutationStates[iMutationState]);
-                    int probsIndex = ((iSite-nTERMINAL_SITES_IGNORED)*(States.NT_STATES-1))+iMutationState; // == (iGene-2) * 3 + iMutationState
-                    probabilities[probsIndex] = computeRate(quint, mutationStates[iMutationState], iSite) / R; // remember R = \sum_{\ell} \sum_{j \neq iStopCodon} r_{ij\ell}
-                    
-                    List<Integer> siteAndMutation = new ArrayList<Integer>();
-                    siteAndMutation.add(iSite);
-                    siteAndMutation.add(mutationStates[iMutationState]);
-                    mutationStatesTable.put(probsIndex, siteAndMutation);
-                    
-                }// for mutation
-                
-            }// for iGene
-            
-            //ArrayPrinter.print(probabilities, ",");
-
-            // sanity check
-            double sumProbs = 0.0;
-            for (int i = 0; i < probabilities.length; i++) {
-                sumProbs += probabilities[i];
-            }
-            if (sumProbs < 1. - 1e-10 || sumProbs > 1. + 1e-10){
-                throw new RuntimeException("Warning! probabilities don't sum to 1! Sum = "+sumProbs);
-            }
-
-            
-            int siteAndMutationIndex = States.draw(probabilities, this.rand.nextDouble());
-            List<Integer> siteMutationPair = mutationStatesTable.get(siteAndMutationIndex);
-            int site = siteMutationPair.get(0);
-            int mutationState = siteMutationPair.get(1);
-                        
-            newSequence[site] = mutationState; // mutation is now a substitution (ie accepted)
-            //ArrayPrinter.print(newSequence, ",");
+            evolvingSequence = substitute(evolvingSequence);
+////            
+////            // Compute mutation probabilities
+////            
+////            /*
+////                The method States.draw takes a distribution array and returns the index of the element chosen
+////                If I make a probabilities array, containing probs for all iStopCodon-> transitions at each site, 
+////                I will lose the information about the exact site and mutatino which is chosen by States.draw.
+////                I therefore have a Hashtable, with probabilities[] indices as keys and (site, mutation) pairs as values      
+////            */
+////            // chose a siteAndMutationIndex proportional to r_ijl
+////            Hashtable<Integer, List<Integer>> mutationStatesTable = new Hashtable(); // keys are indices in probabilities array, values are (site, siteAndMutationIndex) pairs
+////            int probabilitiesLength = (evolvingSequence.length - 2*nTERMINAL_SITES_IGNORED) * (States.NT_STATES-1); // -4 because don't include first and last 2 bases; *3 because 3 siteAndMutationIndex states for each site
+////            double[] probabilities = new double[probabilitiesLength]; 
+////            for (int iSite = nTERMINAL_SITES_IGNORED; iSite < (evolvingSequence.length - nTERMINAL_SITES_IGNORED); iSite++) {
+////                
+////                int[] quint = new int[]{ evolvingSequence[iSite-2], evolvingSequence[iSite-1], evolvingSequence[iSite], evolvingSequence[iSite+1], evolvingSequence[iSite+2] };
+////                
+////                int[] mutationStates = States.getMutationStates(evolvingSequence[iSite], 4); // all j != iStopCodon
+////                for (int iMutationState = 0; iMutationState < mutationStates.length; iMutationState++) {
+////                    //System.out.println("Mutation "+mutationStates[iMutationState]);
+////                    int probsIndex = ((iSite-nTERMINAL_SITES_IGNORED)*(States.NT_STATES-1))+iMutationState; // == (iGene-2) * 3 + iMutationState
+////                    probabilities[probsIndex] = computeRate(quint, mutationStates[iMutationState], iSite) / R; // remember R = \sum_{\ell} \sum_{j \neq iStopCodon} r_{ij\ell}
+////                    
+////                    List<Integer> siteAndMutation = new ArrayList<Integer>();
+////                    siteAndMutation.add(iSite);
+////                    siteAndMutation.add(mutationStates[iMutationState]);
+////                    mutationStatesTable.put(probsIndex, siteAndMutation);
+////                    
+////                }// for mutation
+////                
+////            }// for iGene
+////            
+////            //ArrayPrinter.print(probabilities, ",");
+////
+////            // sanity check
+////            double sumProbs = 0.0;
+////            for (int i = 0; i < probabilities.length; i++) {
+////                sumProbs += probabilities[i];
+////            }
+////            if (sumProbs < 1. - 1e-10 || sumProbs > 1. + 1e-10){
+////                throw new RuntimeException("Warning! probabilities don't sum to 1! Sum = "+sumProbs);
+////            }
+////
+////            
+////            int siteAndMutationIndex = States.draw(probabilities, this.rand.nextDouble());
+////            List<Integer> siteMutationPair = mutationStatesTable.get(siteAndMutationIndex);
+////            int site = siteMutationPair.get(0);
+////            int mutationState = siteMutationPair.get(1);
+////                        
+////            evolvingSequence[site] = mutationState; // mutation is now a substitution (ie accepted)
+////            //ArrayPrinter.print(evolvingSequence, ",");
         }        
-        return newSequence;
         
+        return evolvingSequence;
     }
     
     
@@ -288,7 +352,7 @@ public class FrequencySimulator {
 
                 for (int iStopCodon = 0; iStopCodon < stopCodons.length; iStopCodon++) {
                     if (codon == stopCodons[iStopCodon]){
-                        //newSequence[iSite] = States.getMutationStates(newSequence[iSite], States.NT_STATES)[rand.nextInt(States.NT_STATES)]; // choses one of the mutation states at random
+                        //newSequence[iSite] = States.getMutationStates(evolvingSequence[iSite], States.NT_STATES)[rand.nextInt(States.NT_STATES)]; // choses one of the mutation states at random
                         newSequence[iSite] = 1; // replace with C
                     }
                 }
