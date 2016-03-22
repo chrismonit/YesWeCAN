@@ -1,7 +1,6 @@
 package yeswecan.sim;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
@@ -21,7 +20,6 @@ import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.phylo.ReorderFrequencies;
 import yeswecan.phylo.States;
-import yeswecan.utils.ArrayPrinter;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
