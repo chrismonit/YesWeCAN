@@ -91,6 +91,23 @@ public class CommandArgs {
 
     @Parameter(names = {"-fix"}, variableArity = true, required = false, description = "Parameters to be fixed at initial values")
     private List<String> fix = new ArrayList<>();
+   
+    // === arguments specific to codon frequency simulation ===
+    
+    // compulsary for codon frequency simulation
+    @Parameter(names = {"-codonfreq", "-cf"}, required = false, description = "Path to CSV file containing codon frequencies to be used in simulation. 16 rows, 4 columns. Ordered TCAG as in typical human-readable codon tables")
+    private String codonFrequencyFile = "";
+    
+    // optional
+    @Parameter(names = {"-nuNumSubs"}, required = false, description = "Number of substitutions to perform when doing simulation to get nu scaling parameter in codon frequency simulation (default is 1000)")
+    private int nuNumberSubs = 1000;
+    // optional
+    @Parameter(names = {"-nuNumRepeats"}, required = false, description = "Number of times to compute nu prior to doing codon frequency simulatinon run. Average is then used in the simulation itself. (Deafault is 10)")
+    private int nuNumRepeats = 10;
+    // optional
+    @Parameter(names = {"-eqBranchLength"}, required = false, description = "Length of branch for evolving root sequence to bring it to equilibrium prior to simulation (default is 10.0)")
+    private double eqBranchLength = 10.0;
+    
     
     public int getModel(){
         return model;
@@ -226,7 +243,7 @@ public class CommandArgs {
 //        return values;
 //    }
     
-    // for CANM
+    // for CAN0
     public double[] omegas(){
         return geneSpecificParameter(this.omegasArgument, Constants.DEFAULT_OMEGA);
     }
