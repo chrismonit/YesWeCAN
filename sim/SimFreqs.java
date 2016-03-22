@@ -21,9 +21,7 @@ import yeswecan.phylo.GeneticStructure;
  */
 public class SimFreqs {
     
-    private int nSubs;
-    private int nRepeats;
-    private double equiBranchLength;
+
     
     private Tree tree;
     private Random rand;
@@ -32,13 +30,18 @@ public class SimFreqs {
     private List<Omega> omegas;
     private List<CodonFrequencies> codonFrequencies;
     
+    private int nSubs;
+    private int nRepeats;
+    private double equiBranchLength;
+    
+    private FrequencySimulator simulator;
     
     public SimFreqs(Tree tree, Random rand, GeneticStructure genStruct, 
             CommandArgs comArgs){
         
         this.tree = tree;
-        this.genStruct = genStruct;
         this.rand = rand;
+        this.genStruct = genStruct;
         
         this.kappa = new TsTvRatioAdvanced(comArgs.kappa());
         
@@ -46,9 +49,7 @@ public class SimFreqs {
         this.omegas.add(new Omega(1.0)); // neutral, for noncoding regions/frames
         for (double omegaValue : comArgs.omegas()){
             this.omegas.add( new Omega(omegaValue) ); 
-        }
-        
-        
+        }        
         
         // only allowing one set of frequencies for all genes for now at least
         this.codonFrequencies = new ArrayList<CodonFrequencies>();
@@ -58,11 +59,11 @@ public class SimFreqs {
         this.nRepeats = comArgs.getNuNumRepeats();
         this.equiBranchLength = comArgs.getEquiBranchLength();
         
-        FrequencySimulator simulator = new FrequencySimulator(
+        this.simulator = new FrequencySimulator(
             this.tree, this.rand, this.genStruct, this.kappa, this.omegas, this.codonFrequencies
         );
-        
-    }
+ 
+    }// constructor
     
     
     
