@@ -91,7 +91,6 @@ public class Simulate {
             SimFreqs simFreqs = new SimFreqs(this.tree, rand, makeGenStruct(this.comArgs), this.comArgs);
             result = simFreqs.simulate();
         }
-        
         else{
             throw new RuntimeException(Constants.ERROR_PREFIX + "Invalid model argument (-m)");
         }

@@ -108,6 +108,9 @@ public class CommandArgs {
     @Parameter(names = {"-eqBranchLength"}, required = false, description = "Length of branch for evolving root sequence to bring it to equilibrium prior to simulation (default is 10.0)")
     private double eqBranchLength = 10.0;
     
+    @Parameter(names = {"-allowStops", "-as"}, required = false, description = "By default stop codons are not permitted in root sequence for the simulation, but this option can remove that constraint")
+    private boolean allowStops = false;
+    
     
     public int getModel(){
         return model;
@@ -319,6 +322,10 @@ public class CommandArgs {
 
     public double getEquiBranchLength(){
         return eqBranchLength;
+    }
+    
+    public boolean getAllowStops(){
+        return allowStops;
     }
     
 }//class
