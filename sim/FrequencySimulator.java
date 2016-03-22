@@ -186,7 +186,10 @@ public class FrequencySimulator {
     
     public double simulateNu(int[] startSequence, int numSubs){
         double T = branchLengthFromSubs(startSequence, numSubs);
-        double nu = T / (double)numSubs * (double)genStruct.getTotalLength();
+//        System.out.println("T "+T);
+//        System.out.println("nSubs "+numSubs);
+//        System.out.println("length "+genStruct.getTotalLength());
+        double nu = T / ((double)numSubs / (double)genStruct.getTotalLength());
         return nu;
     }
     
@@ -197,8 +200,8 @@ public class FrequencySimulator {
         System.arraycopy(startSequence, 0, evolvingSequence, 0, evolvingSequence.length);
             //System.out.println("branch length "+branchLength);
         double branchPosition = 0.0;
+        int subCount = 0;
         while (branchPosition < branchLength){     
-            
            
             //System.out.println("branch position: "+branchPosition);
 
@@ -212,11 +215,12 @@ public class FrequencySimulator {
             if (branchPosition >= branchLength){
                 break; // we're very close to the end of the branch, so don't evolve further
             }
-            
+            subCount++;
             evolvingSequence = substitute(evolvingSequence, nu);
         }        
         
         // finished evolving
+        //System.out.println("sub count "+subCount);
         return evolvingSequence;
     }
     
