@@ -44,7 +44,8 @@ public class FrequencySimulator {
     private int nTERMINAL_SITES_IGNORED = 2;
     
     
-    public FrequencySimulator(Tree tree, Random rand, GeneticStructure genStruct, TsTvRatioAdvanced kappa, List<Omega> omegas, List<CodonFrequencies> codonFrequencies){
+    public FrequencySimulator(Tree tree, Random rand, GeneticStructure genStruct,
+            TsTvRatioAdvanced kappa, List<Omega> omegas, List<CodonFrequencies> codonFrequencies){
     
         this.tree = tree;
         this.rand = rand;

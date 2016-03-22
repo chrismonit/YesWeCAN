@@ -103,7 +103,7 @@ public class CommandArgs {
     private int nuNumberSubs = 1000;
     // optional
     @Parameter(names = {"-nuNumRepeats"}, required = false, description = "Number of times to compute nu prior to doing codon frequency simulatinon run. Average is then used in the simulation itself. (Deafault is 10)")
-    private int nuNumRepeats = 10;
+    private int nuNumberRepeats = 10;
     // optional
     @Parameter(names = {"-eqBranchLength"}, required = false, description = "Length of branch for evolving root sequence to bring it to equilibrium prior to simulation (default is 10.0)")
     private double eqBranchLength = 10.0;
@@ -305,8 +305,17 @@ public class CommandArgs {
         return values;
     }
     
+    public String getCodonFrequencyPath(){
+        return codonFrequencyFile;
+    }
     
+    public int getNuNumSubs(){
+        return nuNumberSubs;
+    }
+    
+    public int getNuNumRepeats(){
+        return nuNumberRepeats;
+    }
 
-    
     
 }//class
