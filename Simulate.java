@@ -23,6 +23,7 @@ import yeswecan.phylo.FastaWriter;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.sim.SimCAN;
 import yeswecan.sim.SimCANMixture;
+import yeswecan.sim.SimFreqs;
 import yeswecan.sim.SimHKY;
 import yeswecan.sim.SimModel;
 
@@ -85,6 +86,10 @@ public class Simulate {
                     this.tree, rand, canMix, makeGenStruct(this.comArgs), this.comArgs.verbose()
             );
             result = simMix.simulate(); 
+        }
+        else if (this.comArgs.getModel() == Constants.CODON_FREQ_IDENTIFIER){
+            SimFreqs simFreqs = new SimFreqs(this.tree, rand, makeGenStruct(this.comArgs), this.comArgs);
+            result = simFreqs.simulate();
         }
         
         else{
