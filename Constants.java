@@ -30,6 +30,7 @@ public class Constants {
     public static final int CAN0_IDENTIFIER = 0;
     public static final int M1_IDENTIFIER = 1;
     public static final int M2_IDENTIFIER = 2;
+    public static final int CODON_FREQ_IDENTIFIER = 3;
 
     public static final int NUM_M1_SITE_CLASSES = 2;
     public static final int NUM_M2_SITE_CLASSES = 3;
