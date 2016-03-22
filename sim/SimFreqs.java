@@ -50,12 +50,13 @@ public class SimFreqs {
         
         
         
-        // need comArgs to accept one of these
+        // only allowing one set of frequencies for all genes for now at least
         this.codonFrequencies = new ArrayList<CodonFrequencies>();
+        this.codonFrequencies.add( new CodonFrequencies(comArgs.getCodonFrequencyPath()) );
         
-        
-        // initialise the stuff above
-        
+        this.nSubs = comArgs.getNuNumSubs();
+        this.nRepeats = comArgs.getNuNumRepeats();
+        this.equiBranchLength = comArgs.getEquiBranchLength();
         
         FrequencySimulator simulator = new FrequencySimulator(
             this.tree, this.rand, this.genStruct, this.kappa, this.omegas, this.codonFrequencies

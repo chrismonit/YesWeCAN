@@ -317,5 +317,8 @@ public class CommandArgs {
         return nuNumberRepeats;
     }
 
+    public double getEquiBranchLength(){
+        return eqBranchLength;
+    }
     
 }//class
