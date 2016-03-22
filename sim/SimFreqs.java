@@ -9,6 +9,7 @@ package yeswecan.sim;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import pal.alignment.Alignment;
 import pal.tree.Tree;
 import swmutsel.model.parameters.Omega;
 import yeswecan.cli.CommandArgs;
@@ -66,6 +67,29 @@ public class SimFreqs {
     }// constructor
     
     
+    public Alignment simulate(){
+        double Z = 0.0; // sum nu samples
+        for (int i = 0; i < nRepeats; i++) {
+            int[] random = simulator.getRandomSequence(genStruct.getTotalLength());
+            int[] changeStops = simulator.changeStop(random);
+            Z += simulator.simulateNu(changeStops, nSubs);
+        }
+        double nu = Z/(double)nRepeats;
+    
+        int[] randomSeq = simulator.getRandomSequence(genStruct.getTotalLength());
+        int[] changeStopSeq = simulator.changeStop(randomSeq);
+        
+        int[] rootSeq = simulator.evolveBranch(changeStopSeq, 10.0, nu);        
+        
+        // sanity check
+        if (!simulator.sequenceAcceptable(rootSeq)){
+            throw new RuntimeException("Root sequence for simulation contains stop codons");
+        }
+        
+        Alignment result = simulator.simulate(rootSeq, nu);
+        return result;
+        
+    }
     
     
     
