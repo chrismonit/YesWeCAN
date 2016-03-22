@@ -34,6 +34,7 @@ public class SimFreqs {
     private int nSubs;
     private int nRepeats;
     private double equiBranchLength;
+    private boolean allowStops;
     
     private FrequencySimulator simulator;
     
@@ -59,6 +60,7 @@ public class SimFreqs {
         this.nSubs = comArgs.getNuNumSubs();
         this.nRepeats = comArgs.getNuNumRepeats();
         this.equiBranchLength = comArgs.getEquiBranchLength();
+        this.allowStops = comArgs.getAllowStops();
         
         this.simulator = new FrequencySimulator(
             this.tree, this.rand, this.genStruct, this.kappa, this.omegas, this.codonFrequencies
@@ -70,9 +72,13 @@ public class SimFreqs {
     public Alignment simulate(){
         double Z = 0.0; // sum nu samples
         for (int i = 0; i < nRepeats; i++) {
-            int[] random = simulator.getRandomSequence(genStruct.getTotalLength());
-            int[] changeStops = simulator.changeStop(random);
-            Z += simulator.simulateNu(changeStops, nSubs);
+            int[] startSequence = simulator.getRandomSequence(genStruct.getTotalLength());
+            
+            if (!allowStops) {
+                startSequence = simulator.changeStop(startSequence);
+            }
+            
+            Z += simulator.simulateNu(startSequence, nSubs);
         }
         double nu = Z/(double)nRepeats;
     
