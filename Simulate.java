@@ -26,6 +26,7 @@ import yeswecan.sim.SimCANMixture;
 import yeswecan.sim.SimFreqs;
 import yeswecan.sim.SimHKY;
 import yeswecan.sim.SimModel;
+import yeswecan.utils.ArrayPrinter;
 
 /**
  *
@@ -93,7 +94,13 @@ public class Simulate {
         else if (this.comArgs.getModel() == Constants.CODON_FREQ_IDENTIFIER){
             System.out.println(Constants.CODON_FREQ_PATH + Constants.DEL + comArgs.getCodonFrequencyPath());
             SimFreqs simFreqs = new SimFreqs(this.tree, rand, makeGenStruct(this.comArgs), this.comArgs);
+            
+            System.out.println(Constants.HEADER + Constants.DEL + String.join(Constants.DEL, simFreqs.getHeader()));
+            System.out.println(Constants.SIMULATION + Constants.DEL + ArrayPrinter.toString(simFreqs.getSimParameters(), Constants.DEL));
+            
             result = simFreqs.simulate();
+            
+            System.out.println(Constants.NU + Constants.DEL + simFreqs.getMeanNu()); // NB this must be called after simulate method
         }
         else{
             throw new RuntimeException(Constants.ERROR_PREFIX + "Invalid model argument (-m)");

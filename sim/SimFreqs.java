@@ -7,11 +7,13 @@
 package yeswecan.sim;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import pal.alignment.Alignment;
 import pal.tree.Tree;
 import swmutsel.model.parameters.Omega;
+import yeswecan.Constants;
 import yeswecan.cli.CommandArgs;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.GeneticStructure;
@@ -36,7 +38,11 @@ public class SimFreqs {
     private double equiBranchLength;
     private boolean allowStops;
     
+    private int geneNumber; // just for get header and param values methods
+    
     private FrequencySimulator simulator;
+    
+    private double meanNu; // for purposes of output only
     
     public SimFreqs(Tree tree, Random rand, GeneticStructure genStruct, 
             CommandArgs comArgs){
@@ -67,6 +73,8 @@ public class SimFreqs {
         this.equiBranchLength = comArgs.getEquiBranchLength();
         this.allowStops = comArgs.getAllowStops();
         
+        this.geneNumber = this.genStruct.getNumberOfGenes();
+        
         this.simulator = new FrequencySimulator(
             this.tree, this.rand, this.genStruct, this.kappa, this.omegas, this.codonFrequencies
         );
@@ -89,7 +97,7 @@ public class SimFreqs {
             Z += simulator.simulateNu(startSequence, nSubs);
         }
         double nu = Z/(double)nRepeats;
-        
+        this.meanNu = nu;
         // 2) create root sequence
         
         int[] startSequence = simulator.getRandomSequence(genStruct.getTotalLength());
@@ -112,6 +120,33 @@ public class SimFreqs {
         
     }
     
+    public String[] getHeader(){
+        ArrayList<String> columns = new ArrayList<String>();
+        Collections.addAll(columns, "model", "kappa", "nuNumRepeats", "nuNumSubs", "equiBranchLength", "allowStops", "0_w");
+        for (int i = 0; i < this.geneNumber; i++) {
+            columns.add(Integer.toString(i+1) + "_" +Constants.OMEGA_STRING); // +1 for zero based correction
+        }
+        return columns.toArray(new String[columns.size()]);
+        
+    }
     
+    public double[] getSimParameters(){
+        double[] values = new double[ 7+this.geneNumber ]; // 4 are for the fields hard coded in getHeader
+        values[0] = Constants.CODON_FREQ_IDENTIFIER;
+        values[1] = this.kappa.get();
+        values[2] = this.nRepeats;
+        values[3] = this.nSubs;
+        values[4] = this.equiBranchLength;
+        values[5] = (this.allowStops) ? 1.0 : 0.0;
+        
+        for (int i = 0; i < this.geneNumber+1; i++) { // +1 here because I want to include no gene case
+            values[i+6] = this.omegas.get(i).get();
+        }
+        return values;
+    }
+    
+    public double getMeanNu(){
+        return this.meanNu;
+    }
     
 }
