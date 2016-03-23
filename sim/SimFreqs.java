@@ -75,7 +75,11 @@ public class SimFreqs {
     
     
     public Alignment simulate(){
-        double Z = 0.0; // sum nu samples
+        
+
+        // 1) Estimate Nu scaling parameter by simulation. Use mean of 'nRepeats' simulations
+        
+        double Z = 0.0; // sum
         for (int i = 0; i < nRepeats; i++) {
             int[] startSequence = simulator.getRandomSequence(genStruct.getTotalLength());
             
@@ -86,16 +90,23 @@ public class SimFreqs {
             Z += simulator.simulateNu(startSequence, nSubs);
         }
         double nu = Z/(double)nRepeats;
-    
-        int[] randomSeq = simulator.getRandomSequence(genStruct.getTotalLength());
-        int[] changeStopSeq = simulator.changeStop(randomSeq);
         
-        int[] rootSeq = simulator.evolveBranch(changeStopSeq, 10.0, nu);        
+        // 2) create root sequence
+        
+        int[] startSequence = simulator.getRandomSequence(genStruct.getTotalLength());
+        
+        if (!allowStops) {
+            startSequence = simulator.changeStop(startSequence);
+        }
+        
+        int[] rootSeq = simulator.evolveBranch(startSequence, equiBranchLength, nu);        
         
         // sanity check
-        if (!simulator.sequenceAcceptable(rootSeq)){
+        if (!simulator.sequenceAcceptable(rootSeq) && !allowStops){
             throw new RuntimeException("Root sequence for simulation contains stop codons");
         }
+        
+        // 3) simulate
         
         Alignment result = simulator.simulate(rootSeq, nu);
         return result;

@@ -54,8 +54,8 @@ public class Simulate {
         this.tree = loadTree(this.comArgs.tree());
         
         // need to print a report of the params used
-        // inc genStruct
         // and say exactly what model used
+        
         
         Alignment result = null;
         
@@ -88,7 +88,6 @@ public class Simulate {
             result = simMix.simulate(); 
         }
         else if (this.comArgs.getModel() == Constants.CODON_FREQ_IDENTIFIER){
-            System.out.println("here");
             SimFreqs simFreqs = new SimFreqs(this.tree, rand, makeGenStruct(this.comArgs), this.comArgs);
             result = simFreqs.simulate();
         }
@@ -101,12 +100,14 @@ public class Simulate {
         
     
     private static GeneticStructure makeGenStruct(CommandArgs comArgs){ // convenience method
-        return new GeneticStructure(
+        GeneticStructure genStruct = new GeneticStructure(
                 comArgs.aFrame(),
                 comArgs.bFrame(),
                 comArgs.cFrame(),
                 comArgs.lengths()
         );
+        System.out.println(genStruct.toString());
+        return genStruct;
     }
         
     
