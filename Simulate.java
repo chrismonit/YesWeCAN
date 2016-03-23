@@ -18,14 +18,12 @@ import yeswecan.model.can.CANModel;
 import yeswecan.model.canmix.CANModelMixture;
 import yeswecan.model.hky.HKYModel;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
-import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.FastaWriter;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.sim.SimCAN;
 import yeswecan.sim.SimCANMixture;
 import yeswecan.sim.SimFreqs;
 import yeswecan.sim.SimHKY;
-import yeswecan.sim.SimModel;
 import yeswecan.utils.ArrayPrinter;
 
 /**
@@ -66,30 +64,35 @@ public class Simulate {
         Random rand = new Random();
         //RunModel run;
         if (this.comArgs.getModel() == Constants.HKY_IDENTIFIER){
-            // print input params using RunHKY.getInititalValues
-            HKYModel hky = new HKYModel(
-                    new TsTvRatioAdvanced(this.comArgs.kappa()), 
-                    new BaseFrequencies(this.comArgs.pi())
-            );
+            HKYModel hky = new HKYModel(new TsTvRatioAdvanced(this.comArgs.kappa()), new BaseFrequencies(this.comArgs.pi()));
+            
             // NB if -l has more than one length given, hky only uses the first in the list
             SimHKY simHky = new SimHKY(this.tree, rand, hky, 
                     this.comArgs.lengths()[0], this.comArgs.verbose());
+            
+            printReport(new RunHKY(null, null, this.comArgs));
             result = simHky.simulate();
-
+            
         }
         else if (this.comArgs.getModel() == Constants.CAN0_IDENTIFIER){
             CANModel can = RunCAN.makeCAN(this.comArgs);
             SimCAN simCan = new SimCAN(
                     this.tree, rand, can, makeGenStruct(this.comArgs), this.comArgs.verbose()
             );
+            
+            printReport(new RunCAN(null, null, this.comArgs));
             result = simCan.simulate();
+            
         }
         else if (this.comArgs.getModel() == Constants.M1_IDENTIFIER || this.comArgs.getModel() == Constants.M2_IDENTIFIER ){
             CANModelMixture canMix = RunCANMixture.makeMixture(this.comArgs, this.comArgs.getModel());
             SimCANMixture simMix = new SimCANMixture(
                     this.tree, rand, canMix, makeGenStruct(this.comArgs), this.comArgs.verbose()
             );
+            
+            printReport(new RunCANMixture(null, null, this.comArgs, this.comArgs.getModel()));
             result = simMix.simulate(); 
+            
         }
         else if (this.comArgs.getModel() == Constants.CODON_FREQ_IDENTIFIER){
             System.out.println(Constants.CODON_FREQ_PATH + Constants.DEL + comArgs.getCodonFrequencyPath());
@@ -122,6 +125,14 @@ public class Simulate {
         return genStruct;
     }
         
+    private void printReport(RunModel run){
+        String[] paramsHeader = run.getHeader();
+        double[] paramsValues = run.getInitialValues();
+        
+        System.out.println(Constants.HEADER + Constants.DEL + String.join(Constants.DEL, paramsHeader));
+        System.out.println(Constants.SIMULATION + Constants.DEL + ArrayPrinter.toString(paramsValues, Constants.DEL));
+        System.out.println("");
+    }
     
     
     

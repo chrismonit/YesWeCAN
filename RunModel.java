@@ -14,7 +14,6 @@ import swmutsel.model.parameters.Omega;
 import swmutsel.model.parameters.Parameter;
 import swmutsel.model.parameters.Probabilities;
 import swmutsel.model.parameters.TsTvRatio;
-import yeswecan.cli.CommandArgs;
 
 /**
  *
