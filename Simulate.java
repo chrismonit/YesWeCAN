@@ -88,6 +88,7 @@ public class Simulate {
             result = simMix.simulate(); 
         }
         else if (this.comArgs.getModel() == Constants.CODON_FREQ_IDENTIFIER){
+            System.out.println("here");
             SimFreqs simFreqs = new SimFreqs(this.tree, rand, makeGenStruct(this.comArgs), this.comArgs);
             result = simFreqs.simulate();
         }

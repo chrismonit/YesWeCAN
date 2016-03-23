@@ -53,10 +53,15 @@ public class SimFreqs {
             this.omegas.add( new Omega(omegaValue) ); 
         }        
         
-        // only allowing one set of frequencies for all genes for now at least
-        this.codonFrequencies = new ArrayList<CodonFrequencies>();
-        this.codonFrequencies.add( new CodonFrequencies(comArgs.getCodonFrequencyPath()) );
         
+        this.codonFrequencies = new ArrayList<CodonFrequencies>();
+        codonFrequencies.add(new CodonFrequencies()); // default constructor has all freq = 1/64 for no gene case
+        
+        CodonFrequencies geneFrequencies = new CodonFrequencies(comArgs.getCodonFrequencyPath()); // only allowing one set of frequencies for all genes for now at least
+        for (int iGene = 0; iGene < this.genStruct.getNumberOfGenes(); iGene++) {
+            this.codonFrequencies.add( geneFrequencies ); // use reference to same instance for all genes
+        }
+                
         this.nSubs = comArgs.getNuNumSubs();
         this.nRepeats = comArgs.getNuNumRepeats();
         this.equiBranchLength = comArgs.getEquiBranchLength();

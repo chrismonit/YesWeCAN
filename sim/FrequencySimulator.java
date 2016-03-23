@@ -20,6 +20,7 @@ import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.phylo.ReorderFrequencies;
 import yeswecan.phylo.States;
+import yeswecan.utils.ArrayPrinter;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -74,7 +75,7 @@ public class FrequencySimulator {
             if (!this.codonTable.isSynonymous(codonI, codonJ)) { 
                 product *= this.omegas.get(genes[iFrame]).get();
             }
-            
+
             CodonFrequencies geneCodonFreq = this.codonFrequencies.get(genes[iFrame]);
             int[] mappedToPaml = ReorderFrequencies.alphaToPaml(codonJ_array); // expecting codons will be ordered TCAG in codonFrequencies instances
             double pi_J = geneCodonFreq.getFrequency(mappedToPaml); 
