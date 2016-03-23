@@ -36,7 +36,6 @@ public class Simulate {
         new Simulate(args);
     }
     
-    private AdvancedAlignment alignment;
     private Tree tree;
     private CommandArgs comArgs;
     
@@ -56,6 +55,7 @@ public class Simulate {
         // need to print a report of the params used
         // and say exactly what model used
         
+        System.out.println("Simulation");
         
         Alignment result = null;
         
@@ -95,7 +95,8 @@ public class Simulate {
             throw new RuntimeException(Constants.ERROR_PREFIX + "Invalid model argument (-m)");
         }
         
-        new FastaWriter().writeFasta(result, this.comArgs.alignment());        
+        new FastaWriter().writeFasta(result, this.comArgs.alignment());
+        System.out.println("Simulation complete");
     }// constructor
         
     

@@ -52,7 +52,7 @@ public class SimFreqs {
         for (double omegaValue : comArgs.omegas()){
             this.omegas.add( new Omega(omegaValue) ); 
         }        
-        
+
         
         this.codonFrequencies = new ArrayList<CodonFrequencies>();
         codonFrequencies.add(new CodonFrequencies()); // default constructor has all freq = 1/64 for no gene case
@@ -76,7 +76,6 @@ public class SimFreqs {
     
     public Alignment simulate(){
         
-
         // 1) Estimate Nu scaling parameter by simulation. Use mean of 'nRepeats' simulations
         
         double Z = 0.0; // sum
