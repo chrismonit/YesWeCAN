@@ -55,6 +55,9 @@ public class Constants {
     public static final String MLE = "MLE";
     public static final String TIME = "TIME";
     public static final String WITIHIN_FIELD_SEPARATOR = "_";
+    public static final String TREE_PATH = "TREE_PATH";
+    public static final String ALIGN_PATH = "ALIGN_PATH";
+    public static final String CODON_FREQ_PATH = "CODON_FREQ_PATH";
     
     // arguments for -fix option
     // e.g. "-fix kappa pi" will fix kappa and pi parameters, but omegas and scaling will be optimised

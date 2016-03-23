@@ -57,6 +57,9 @@ public class Simulate {
         
         System.out.println("Simulation");
         
+        System.out.println(Constants.TREE_PATH + Constants.DEL + this.comArgs.tree());
+        System.out.println(Constants.ALIGN_PATH + Constants.DEL + this.comArgs.alignment());
+        
         Alignment result = null;
         
         Random rand = new Random();
@@ -88,6 +91,7 @@ public class Simulate {
             result = simMix.simulate(); 
         }
         else if (this.comArgs.getModel() == Constants.CODON_FREQ_IDENTIFIER){
+            System.out.println(Constants.CODON_FREQ_PATH + Constants.DEL + comArgs.getCodonFrequencyPath());
             SimFreqs simFreqs = new SimFreqs(this.tree, rand, makeGenStruct(this.comArgs), this.comArgs);
             result = simFreqs.simulate();
         }
