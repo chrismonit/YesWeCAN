@@ -6,6 +6,7 @@
 
 package yeswecan.sim;
 
+import yeswecan.phylo.CodonFrequencies;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

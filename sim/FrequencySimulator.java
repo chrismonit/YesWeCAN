@@ -1,5 +1,6 @@
 package yeswecan.sim;
 
+import yeswecan.phylo.CodonFrequencies;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;

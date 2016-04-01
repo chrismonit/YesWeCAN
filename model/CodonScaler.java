@@ -5,7 +5,7 @@
  */
 package yeswecan.model;
 
-import yeswecan.sim.CodonFrequencies;
+import yeswecan.phylo.CodonFrequencies;
 
 /**
  *
