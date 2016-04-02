@@ -6,6 +6,7 @@
 package yeswecan.model;
 
 import pal.datatype.Codons;
+import yeswecan.Constants;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.ReorderFrequencies;
 import yeswecan.utils.ArrayPrinter;
@@ -73,6 +74,10 @@ public class CodonScaler implements RatioScaler {
         return (probSyn * 1.0) + (probNonSyn * ratio);
     }
     
+    @Override
+    public String toString(){
+        return ArrayPrinter.toString(probNonsyn, Constants.DEL);
+    }
     
     public static void main(String[] args){
         String path = "/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/freq_test/sapiens.csv";
@@ -84,6 +89,7 @@ public class CodonScaler implements RatioScaler {
         int frame = 0;
                 
         System.out.println("get "+scaler.get(ratio, siteType, frame));
+        System.out.println("to string "+scaler.toString());
     }
     
 }
