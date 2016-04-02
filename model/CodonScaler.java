@@ -49,7 +49,6 @@ public class CodonScaler implements RatioScaler {
                 sum += codonFreq * nonSynProportions[iCodonPos][iCodon];
             }
             probNonsyn[iCodonPos] = sum;
-            System.out.println("sum "+sum);
         }
         
     }

@@ -102,14 +102,38 @@ public class RunCAN extends RunModel {
         
     }
     
-    private RatioScaler getRatioScaler(CommandArgs comArgs){
-        switch (comArgs.getRatioScalingMethod()){
-            case Constants.PROPORTION_SCALER_IDENTIFIER: return new ProportionScaler();
-            case Constants.CODON_SCALER_IDENTIFIER: return new CodonScaler(new CodonFrequencies(comArgs.getCodonFrequencyPath()));
-            // any others we wish to add later
-            default: throw new RuntimeException("Unrecognised argument to ratio scaling option");      
+//    private RatioScaler getRatioScaler(CommandArgs comArgs){
+//        switch (comArgs.getRatioScalingMethod()){
+//            case Constants.PROPORTION_SCALER_IDENTIFIER: return new ProportionScaler();
+//            case Constants.CODON_SCALER_IDENTIFIER: return new CodonScaler(new CodonFrequencies(comArgs.getCodonFrequencyPath()));
+//            // any others we wish to add later
+//            default: throw new RuntimeException("Unrecognised argument to ratio scaling option");      
+//        }
+//    }
+    
+    private static RatioScaler getRatioScaler(CommandArgs comArgs){
+        RatioScaler scalerToReturn;
+        int identifier;
+        
+        if (comArgs.getRatioScalingMethod() == Constants.PROPORTION_SCALER_IDENTIFIER){
+            scalerToReturn = new ProportionScaler();
+            identifier = Constants.PROPORTION_SCALER_IDENTIFIER;
+        
+        }else if (comArgs.getRatioScalingMethod() == Constants.CODON_SCALER_IDENTIFIER){
+            scalerToReturn = new CodonScaler(new CodonFrequencies(comArgs.getCodonFrequencyPath()));
+            identifier = Constants.CODON_SCALER_IDENTIFIER;
+            
+            System.out.println(Constants.CODON_FREQ_PATH + Constants.DEL + comArgs.getCodonFrequencyPath());
+            
+        }else{
+            throw new RuntimeException("Unrecognised argument to ratio scaling option");
         }
+        
+        System.out.println(Constants.P_N + Constants.DEL + identifier + Constants.DEL + scalerToReturn.toString());
+        return scalerToReturn;
+                    
     }
+    
     
     @Override
     public double[] fit(){

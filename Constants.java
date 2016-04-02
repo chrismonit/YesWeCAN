@@ -63,6 +63,7 @@ public class Constants {
     public static final String CODON_FREQ_PATH = "CODON_FREQ_PATH";
     public static final String SIMULATION = "SIM";
     public static final String NU = "NU";
+    public static final String P_N = "P_N";
     
     // arguments for -fix option
     // e.g. "-fix kappa pi" will fix kappa and pi parameters, but omegas and scaling will be optimised

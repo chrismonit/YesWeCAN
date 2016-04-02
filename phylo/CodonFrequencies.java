@@ -10,6 +10,7 @@ import com.opencsv.CSVReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
+import yeswecan.Constants;
 import yeswecan.utils.MatrixPrinter;
 
 /**
@@ -43,7 +44,7 @@ public class CodonFrequencies {
             CSVReader reader = new CSVReader(new FileReader(frequenciesFilePath));
             textData = reader.readAll();
         }catch(IOException e){
-            System.out.println("Failed to read codon frequencies CSV");
+            System.out.println(Constants.ERROR_PREFIX+" Failed to read codon frequencies CSV. (NB required if using codon frequencies ratio scaling method!)");
             textData = null;
             e.printStackTrace();
         }
