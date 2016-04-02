@@ -239,7 +239,7 @@ public class FrequencySimulator {
         }
         return bytes;
     }
-    // UNTESTED
+    
     private void downTree(Node parent, AlignmentBuilder alnBuilder, double nu){
         int[] parentSequence = bytesToInts(parent.getSequence());
         
