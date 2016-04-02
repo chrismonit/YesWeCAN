@@ -17,6 +17,7 @@ import yeswecan.model.LikelihoodCalculator;
 import yeswecan.model.ProbMatrixFactory;
 import yeswecan.model.ProbMatrixGenerator;
 import yeswecan.model.ProportionScaler;
+import yeswecan.model.RatioScaler;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.GeneticStructure;
 
@@ -30,15 +31,15 @@ public class CANFunction implements MultivariateFunction {
     private Tree tree;
     private GeneticStructure genStruct;
     private CANModel canModel;
-    
+    private RatioScaler ratioScaler;
   
-    public CANFunction(AdvancedAlignment alignment, Tree tree, GeneticStructure genStruct, CANModel can){
+    public CANFunction(AdvancedAlignment alignment, Tree tree, GeneticStructure genStruct, CANModel can, RatioScaler ratioScaler){
         this.alignment = alignment;
         this.tree = tree;
         this.genStruct = genStruct;
         
         this.canModel = can;
-
+        this.ratioScaler = ratioScaler;
         // NB 0th omega is fixed to 1.0 for neutral evolution
     }
     
@@ -71,7 +72,7 @@ public class CANFunction implements MultivariateFunction {
             CodonAwareMatrix Q = new CodonAwareMatrix(
                     this.canModel.getKappa(),
                     this.canModel.getPi(),
-                    new ProportionScaler(),
+                    this.ratioScaler,
                     siteType,
                     aOmega, bOmega, cOmega,
                     this.canModel.getScaling()
