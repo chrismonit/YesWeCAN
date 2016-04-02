@@ -14,11 +14,15 @@ import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
 import yeswecan.cli.CommandArgs;
+import yeswecan.model.CodonScaler;
+import yeswecan.model.ProportionScaler;
+import yeswecan.model.RatioScaler;
 import yeswecan.model.can.CANFunction;
 import yeswecan.model.can.CANModel;
 import yeswecan.model.hky.HKYModel;
 import yeswecan.optim.Optimise;
 import yeswecan.phylo.AdvancedAlignment;
+import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.GeneticStructure;
 
 /**
@@ -98,12 +102,20 @@ public class RunCAN extends RunModel {
         
     }
     
+    private RatioScaler getRatioScaler(CommandArgs comArgs){
+        switch (comArgs.getRatioScalingMethod()){
+            case Constants.PROPORTION_SCALER_IDENTIFIER: return new ProportionScaler();
+            case Constants.CODON_SCALER_IDENTIFIER: return new CodonScaler(new CodonFrequencies(comArgs.getCodonFrequencyPath()));
+            // any others we wish to add later
+            default: throw new RuntimeException("Unrecognised argument to ratio scaling option");      
+        }
+    }
     
     @Override
     public double[] fit(){
   
         CANModel can = makeCAN(this.comArgs);
-        CANFunction optFunction = new CANFunction(this.alignment, this.tree, genStruct, can);
+        CANFunction optFunction = new CANFunction(this.alignment, this.tree, genStruct, can, getRatioScaler(this.comArgs));
         Optimise opt = new Optimise();
         CANModel result = (CANModel)opt.optNMS(optFunction, can);
         
@@ -123,7 +135,7 @@ public class RunCAN extends RunModel {
     public double[] calculate(){
         CANModel can = makeCAN(this.comArgs);
         double[] optimisableParams = Mapper.getOptimisable(can.getParameters()); // map parameters to optimisation space, so FunctionHKY.value can use them
-        CANFunction calculator = new CANFunction(this.alignment, this.tree, this.genStruct, can);
+        CANFunction calculator = new CANFunction(this.alignment, this.tree, this.genStruct, can, getRatioScaler(this.comArgs));
         
         ArrayList<Double> values = RunModel.getParameterValues(can.getParameters());
         double lnL = calculator.value(optimisableParams);

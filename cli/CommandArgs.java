@@ -92,12 +92,15 @@ public class CommandArgs {
     @Parameter(names = {"-fix"}, variableArity = true, required = false, description = "Parameters to be fixed at initial values")
     private List<String> fix = new ArrayList<>();
    
-    // === arguments specific to codon frequency simulation ===
-    
     // compulsary for codon frequency simulation
     @Parameter(names = {"-codonfreq", "-cf"}, required = false, description = "Path to CSV file containing codon frequencies to be used in simulation. 16 rows, 4 columns. Ordered TCAG as in typical human-readable codon tables")
-    private String codonFrequencyFile = "";
+    private String codonFrequencyFile = "/path/to/codon/frequency/CSV/file";
     
+    @Parameter(names = {"-ratioscaler", "-r"}, required = false, description = "Method for computing probabilities of nonsynonymous substitutions at the three codon positions. Default (0) uses no information about codon frequencies. Alternative (1) is used in conjunction with codon frequencies file")
+    private int ratioScalingMethod = 0;
+    
+    // === arguments specific to codon frequency simulation only ===
+        
     // optional
     @Parameter(names = {"-nuNumSubs"}, required = false, description = "Number of substitutions to perform when doing simulation to get nu scaling parameter in codon frequency simulation (default is 1000)")
     private int nuNumberSubs = 1000;
@@ -310,6 +313,10 @@ public class CommandArgs {
     
     public String getCodonFrequencyPath(){
         return codonFrequencyFile;
+    }
+    
+    public int getRatioScalingMethod(){
+        return ratioScalingMethod;
     }
     
     public int getNuNumSubs(){
