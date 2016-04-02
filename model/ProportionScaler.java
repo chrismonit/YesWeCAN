@@ -6,6 +6,9 @@
 
 package yeswecan.model;
 
+import yeswecan.Constants;
+import yeswecan.utils.ArrayPrinter;
+
 /**
  *
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>
@@ -43,6 +46,11 @@ public class ProportionScaler implements RatioScaler{
         double probNonSyn = probNonsyn[codonPos];
         double probSyn = 1.0 - probNonSyn;
         return (probSyn * 1.0) + (probNonSyn * ratio);
+    }
+    
+    @Override
+    public String toString(){
+        return ArrayPrinter.toString(probNonsyn, Constants.DEL);
     }
     
 }
