@@ -12,7 +12,7 @@ package yeswecan;
  */
 public class Constants {
     
-    public static final double EPSILON = 1e-10;
+    public static final double EPSILON = 1e-15;
     
     public static final int RELATIVE_TRESHOLD = -1;
     public static final double ABSOLUTE_THRESHOLD = 5.0e-6;
