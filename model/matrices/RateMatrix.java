@@ -31,6 +31,10 @@ public class RateMatrix extends Array2DRowRealMatrix {
         return this.kappa;
     }
     
+    protected void setPi(BaseFrequencies pi){
+        this.pi = pi;
+    }
+    
     public RateMatrix(TsTvRatioAdvanced kappa, BaseFrequencies pi){ // suitable for HKY with automatic scaling
         this(kappa, pi, true);
     }
