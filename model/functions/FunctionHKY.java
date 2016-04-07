@@ -8,7 +8,7 @@ Can pass alignment and tree to constructor
 
 */
 
-package yeswecan.model.hky;
+package yeswecan.model.functions;
 
 import yeswecan.model.hky.HKYModel;
 import java.util.List;
@@ -24,6 +24,7 @@ import yeswecan.model.LikelihoodCalculator;
 import yeswecan.model.LikelihoodCalculator;
 import yeswecan.model.ProbMatrixFactory;
 import yeswecan.model.ProbMatrixGenerator;
+import yeswecan.model.hky.HKYModel;
 import yeswecan.model.matrices.RateMatrix;
 import yeswecan.model.matrices.RateMatrix;
 import yeswecan.model.parameters.TsTvRatioAdvanced;

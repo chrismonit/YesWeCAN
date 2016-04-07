@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package yeswecan.model.canmix;
+package yeswecan.model.functions;
 
 import org.apache.commons.math3.analysis.MultivariateFunction;
 import org.apache.commons.math3.exception.MaxCountExceededException;
@@ -17,6 +17,7 @@ import yeswecan.model.LikelihoodCalculator;
 import yeswecan.model.ProbMatrixFactory;
 import yeswecan.model.ProbMatrixGenerator;
 import yeswecan.model.ProportionScaler;
+import yeswecan.model.canmix.CANModelMixture;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.GeneticStructure;
 

@@ -17,7 +17,7 @@ import yeswecan.cli.CommandArgs;
 import yeswecan.model.CodonScaler;
 import yeswecan.model.ProportionScaler;
 import yeswecan.model.RatioScaler;
-import yeswecan.model.can.CANFunction;
+import yeswecan.model.functions.CANFunction;
 import yeswecan.model.can.CANModel;
 import yeswecan.model.hky.HKYModel;
 import yeswecan.optim.Optimise;

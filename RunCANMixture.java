@@ -16,7 +16,7 @@ import swmutsel.model.parameters.Omega;
 import swmutsel.model.parameters.Parameter;
 import swmutsel.model.parameters.Probabilities;
 import yeswecan.cli.CommandArgs;
-import yeswecan.model.canmix.CANFunctionMixture;
+import yeswecan.model.functions.CANFunctionMixture;
 import yeswecan.model.canmix.CANModelMixture;
 import yeswecan.model.hky.HKYModel;
 import yeswecan.model.parameters.OmegaNegative;
