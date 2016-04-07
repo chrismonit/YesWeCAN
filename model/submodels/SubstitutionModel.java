@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package yeswecan.model;
+package yeswecan.model.submodels;
 
 import com.google.common.collect.Lists;
 import java.util.Collections;

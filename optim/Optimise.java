@@ -18,7 +18,7 @@ import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.SimplexOptimizer;
 import swmutsel.model.parameters.Mapper;
 //import swmutsel.model.parameters.Parameter;
 import yeswecan.Constants;
-import yeswecan.model.SubstitutionModel;
+import yeswecan.model.submodels.SubstitutionModel;
 import yeswecan.utils.ArrayPrinter;
 
 
