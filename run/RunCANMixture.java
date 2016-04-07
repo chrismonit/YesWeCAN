@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package yeswecan;
+package yeswecan.run;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +15,7 @@ import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
 import swmutsel.model.parameters.Parameter;
 import swmutsel.model.parameters.Probabilities;
+import yeswecan.Constants;
 import yeswecan.cli.CommandArgs;
 import yeswecan.model.functions.CANFunctionMixture;
 import yeswecan.model.submodels.CANModelMixture;

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package yeswecan;
+package yeswecan.run;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,13 +21,13 @@ import swmutsel.model.parameters.TsTvRatio;
  */
 public abstract class RunModel {
     
-    abstract String[] getHeader();
+    public abstract String[] getHeader();
     
-    abstract double[] getInitialValues();
+    public abstract double[] getInitialValues();
 
-    abstract double[] fit();
+    public abstract double[] fit();
     
-    abstract double[] calculate();
+    public abstract double[] calculate();
     
     
     public static ArrayList<Double> getParameterValues(List<Parameter> params){

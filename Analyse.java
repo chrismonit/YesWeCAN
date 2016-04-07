@@ -6,6 +6,10 @@
 
 package yeswecan;
 
+import yeswecan.run.RunCANMixture;
+import yeswecan.run.RunModel;
+import yeswecan.run.RunCAN;
+import yeswecan.run.RunHKY;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import java.io.FileReader;

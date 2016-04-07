@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package yeswecan;
+package yeswecan.run;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,6 +13,7 @@ import pal.tree.Tree;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
+import yeswecan.Constants;
 import yeswecan.cli.CommandArgs;
 import yeswecan.model.ratioscaling.CodonScaler;
 import yeswecan.model.ratioscaling.ProportionScaler;
