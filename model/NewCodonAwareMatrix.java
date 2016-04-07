@@ -50,18 +50,18 @@ public class NewCodonAwareMatrix extends RateMatrix {
         // need to extend to CAN properly
         
         double[][] matrixData = this.getData();
-                
-        MatrixPrinter.Print3RowMatrix(matrixData, "matrix data while still an HKY");
+
+        MatrixPrinter.PrintMatrix(matrixData, "matrix data while still an HKY");
        
         Omega[] omegas = new Omega[]{w_A, w_B, w_C}; // this ought to be done in function class, outside of value method, to avoid overhead
         
         for (int iState = 0; iState < States.NT_STATES; iState++) {
             for (int jState = 0; jState < States.NT_STATES; jState++) {
-                matrixData[iState][jState] *= getTermProducts(iState, jState, siteType, codonFrequencies, omegas, codonTable);
+                matrixData[iState][jState] *= getTermProducts(iState, jState, siteType, codonFrequencies, omegas, codonTable) * scaling.get();
             }
         }
         
-        MatrixPrinter.Print3RowMatrix(matrixData, "matrix data after multiplying by new rates");
+        MatrixPrinter.PrintMatrix(matrixData, "matrix data after multiplying by new rates");
 
         super.setSubMatrix(matrixData, 0, 0); // replace data with new values
     }
@@ -72,7 +72,7 @@ public class NewCodonAwareMatrix extends RateMatrix {
         
         for (int iFrame = 0; iFrame < 3; iFrame++) {
             product *= ( getTerm(iNucState, jNucState, siteType, iFrame, codonFrequencies, omegas[iFrame], codonTable) ) ; 
-            System.out.println("\n");
+            //System.out.println("\n");
         }
         
         return product;
@@ -131,11 +131,41 @@ public class NewCodonAwareMatrix extends RateMatrix {
     }
     
     
+    public static double computePi(int iNucState, int siteType,  
+        CodonFrequencies codonFrequencies, CodonTable codonTable){
+        
+        double product = 1.0;
+        int[] iCodon = new int[3];
+        
+        for (int iFrame = 0; iFrame < 3; iFrame++) {
+            double sum = 0.0;
+            
+            for (int nBase = 0; nBase < States.NT_STATES; nBase++) { // NB nBase/mBase have nothing to do with iNucState/jNucState. Iterating over the other bases in the codon, outside of the codon position of interest
+                for (int mBase = 0; mBase < States.NT_STATES; mBase++) {
+
+                    int codonPositionOfInterest = codonPositions[siteType][iFrame]; // the site of the hypothetical quintuplet which is actually changing
+
+                    iCodon[ codonPositionOfInterest ] = iNucState;
+                    iCodon[ otherCodonPositions[codonPositionOfInterest][0] ] = nBase;
+                    iCodon[ otherCodonPositions[codonPositionOfInterest][1] ] = mBase;
+
+                    double iCodonFreq = codonFrequencies.getFrequency(ReorderFrequencies.alphaToPaml(iCodon));
+                    sum += iCodonFreq;
+                }// for mBase
+            } // for nBase
+            product *= sum;
+        }// for iFrame
+        
+        return product;
+    }
+    
     
     public static void main(String[] args){
         System.out.println("hello world");
-        TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(1.0);
-        BaseFrequencies pi = new BaseFrequencies(BaseFrequencies.getDefault());
+        TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(2.0);
+        //double[] frequencies = new double[]{.1,.2,.3,.4};
+        double[] frequencies = BaseFrequencies.getDefault();
+        BaseFrequencies pi = new BaseFrequencies(frequencies);
         int siteType = 2;
         Omega w_A = new Omega(2.0);
         Omega w_B = new Omega(3.0);
@@ -159,6 +189,12 @@ public class NewCodonAwareMatrix extends RateMatrix {
         double termProducts = can.getTermProducts(iNucState, jNucState, siteType, codonFrequencies, omegas, table);
         System.out.println("termProducts "+termProducts);
 
+        
+        System.out.println("\ntesting original CAN\n");
+        
+        CodonAwareMatrix origCan = new CodonAwareMatrix(kappa, pi, new ProportionScaler(), siteType, w_A, w_B, w_C, scaling);
+        MatrixPrinter.PrintMatrix(origCan.getData(), "original CAN matrix");
+        
         System.out.println("\nfin");
     }
     
