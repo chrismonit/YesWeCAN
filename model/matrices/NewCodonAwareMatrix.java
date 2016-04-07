@@ -44,7 +44,7 @@ public class NewCodonAwareMatrix extends RateMatrix {
     
     
     
-    public NewCodonAwareMatrix(TsTvRatioAdvanced kappa, BaseFrequencies pi, int siteType,
+    public NewCodonAwareMatrix(TsTvRatioAdvanced kappa, int siteType,
         Omega w_A, Omega w_B, Omega w_C, BranchScaling scaling, CodonFrequencies codonFrequencies, CodonTable codonTable){
         
         super(kappa, false); // we want to build on an unscaled K80 matrix
@@ -55,31 +55,41 @@ public class NewCodonAwareMatrix extends RateMatrix {
         
         for (int iState = 0; iState < States.NT_STATES; iState++) {
             for (int jState = 0; jState < States.NT_STATES; jState++) {
-                matrixData[iState][jState] *= getTermProducts(iState, jState, siteType, codonFrequencies, omegas, codonTable) * scaling.get();
+                if (iState != jState){
+                    matrixData[iState][jState] *= getTermProducts(iState, jState, siteType, codonFrequencies, omegas, codonTable) * scaling.get();
+                }
             }
         }
-        
-        MatrixPrinter.PrintMatrix(matrixData, "matrix data after multiplying by new rates");
-
         super.setSubMatrix(matrixData, 0, 0); // replace data with new values
-    }
+
+        //MatrixPrinter.PrintMatrix(matrixData, "matrix data after multiplying by new rates");
+                
+        super.populateDiagonals();
+        
+        double[] piValues = new double[States.NT_STATES];
+        for (int i = 0; i < piValues.length; i++) {
+            piValues[i] = computePi(i, siteType, codonFrequencies);
+        }
+        super.setPi(new BaseFrequencies(piValues));
+        
+        super.scale(); // needs pi values to be set first
+    }// constructor
     
     
-    public static double getTermProducts(int iNucState, int jNucState, int siteType, 
-            CodonFrequencies codonFrequencies, Omega[] omegas, CodonTable codonTable){
+    private static double getTermProducts(int iNucState, int jNucState, int siteType, 
+        CodonFrequencies codonFrequencies, Omega[] omegas, CodonTable codonTable){
         double product = 1.0;
         
         for (int iFrame = 0; iFrame < 3; iFrame++) {
             product *= ( getTerm(iNucState, jNucState, siteType, iFrame, codonFrequencies, omegas[iFrame], codonTable) ) ; 
-            //System.out.println("\n");
         }
         
         return product;
     }
     
     
-    public static double getTerm(int iNucState, int jNucState, int siteType, int frame, 
-            CodonFrequencies codonFrequencies, Omega omega, CodonTable codonTable){ 
+    private static double getTerm(int iNucState, int jNucState, int siteType, int frame, 
+        CodonFrequencies codonFrequencies, Omega omega, CodonTable codonTable){ 
         
         double numerator = 0.0; // equivalent to flux from codon I to codon J
         double denominator = 0.0; // equivalent to probability of codon I
@@ -130,8 +140,7 @@ public class NewCodonAwareMatrix extends RateMatrix {
     }
     
     
-    public static double computePi(int iNucState, int siteType,  
-        CodonFrequencies codonFrequencies, CodonTable codonTable){
+    private static double computePi(int iNucState, int siteType, CodonFrequencies codonFrequencies){
         
         double product = 1.0;
         int[] iCodon = new int[3];
@@ -173,7 +182,7 @@ public class NewCodonAwareMatrix extends RateMatrix {
         CodonFrequencies codonFrequencies = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/hiv.csv");
         
         CodonTable table = CodonTableFactory.createUniversalTranslator();;
-        NewCodonAwareMatrix can = new NewCodonAwareMatrix(kappa, pi, siteType, w_A, w_B, w_C, scaling, codonFrequencies, table);
+        NewCodonAwareMatrix can = new NewCodonAwareMatrix(kappa, siteType, w_A, w_B, w_C, scaling, codonFrequencies, table);
         
         int iNucState = 0;
         int jNucState = 2;
@@ -185,8 +194,8 @@ public class NewCodonAwareMatrix extends RateMatrix {
         
         Omega[] omegas = new Omega[]{ w_A, w_B, w_C };
 
-        double termProducts = can.getTermProducts(iNucState, jNucState, siteType, codonFrequencies, omegas, table);
-        System.out.println("termProducts "+termProducts);
+        //double termProducts = can.getTermProducts(iNucState, jNucState, siteType, codonFrequencies, omegas, table);
+        //.out.println("termProducts "+termProducts);
 
         
         System.out.println("\ntesting original CAN\n");
