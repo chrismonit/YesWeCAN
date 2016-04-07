@@ -1,5 +1,5 @@
 
-package yeswecan.model;
+package yeswecan.model.likelihood;
 
 import yeswecan.model.matrices.RateMatrix;
 import java.lang.ArithmeticException;

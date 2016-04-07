@@ -1,5 +1,5 @@
 
-package yeswecan.model;
+package yeswecan.model.likelihood;
 import yeswecan.model.matrices.RateMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix; // may not need this by the end, useful in development

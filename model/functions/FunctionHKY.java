@@ -20,10 +20,10 @@ import swmutsel.model.parameters.Parameter;
 import swmutsel.model.parameters.TsTvRatio;
 import yeswecan.Constants;
 
-import yeswecan.model.LikelihoodCalculator;
-import yeswecan.model.LikelihoodCalculator;
-import yeswecan.model.ProbMatrixFactory;
-import yeswecan.model.ProbMatrixGenerator;
+import yeswecan.model.likelihood.LikelihoodCalculator;
+import yeswecan.model.likelihood.LikelihoodCalculator;
+import yeswecan.model.likelihood.ProbMatrixFactory;
+import yeswecan.model.likelihood.ProbMatrixGenerator;
 import yeswecan.model.submodels.HKYModel;
 import yeswecan.model.matrices.RateMatrix;
 import yeswecan.model.matrices.RateMatrix;

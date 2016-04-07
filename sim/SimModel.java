@@ -13,7 +13,7 @@ import pal.alignment.AlignmentBuilder;
 import pal.tree.Node;
 import pal.tree.Tree;
 import yeswecan.Constants;
-import yeswecan.model.ProbMatrixGenerator;
+import yeswecan.model.likelihood.ProbMatrixGenerator;
 import yeswecan.phylo.States;
 import yeswecan.utils.ArrayPrinter;
 import yeswecan.utils.MatrixPrinter;

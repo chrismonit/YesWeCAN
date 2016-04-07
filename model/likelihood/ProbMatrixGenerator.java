@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package yeswecan.model;
+package yeswecan.model.likelihood;
 
 import yeswecan.model.matrices.RateMatrix;
 import org.apache.commons.math3.linear.RealMatrix;

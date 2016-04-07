@@ -1,5 +1,5 @@
 
-package yeswecan.model;
+package yeswecan.model.likelihood;
 
 import yeswecan.phylo.AdvancedAlignment;
 
