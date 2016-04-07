@@ -31,7 +31,19 @@ public class RateMatrix extends Array2DRowRealMatrix {
         return this.kappa;
     }
     
-    public RateMatrix( TsTvRatioAdvanced kappa, BaseFrequencies pi){ 
+    public RateMatrix(TsTvRatioAdvanced kappa, BaseFrequencies pi){ // suitable for HKY with automatic scaling
+        this(kappa, pi, true);
+    }
+    
+    public RateMatrix(TsTvRatioAdvanced kappa){ //suitable for K80, with automatic scaling
+        this(kappa, new BaseFrequencies(BaseFrequencies.getDefault()), true); 
+    }
+    
+    public RateMatrix(TsTvRatioAdvanced kappa, boolean scale){ //suitable for K80, with optional scaling
+        this(kappa, new BaseFrequencies(BaseFrequencies.getDefault()), scale); 
+    }
+    
+    public RateMatrix( TsTvRatioAdvanced kappa, BaseFrequencies pi, boolean scale){ // general constructor, suitable for HKY with optional scaling
         //suitable for constructing a classic HKY85 Q matrix
         
         super(); // this will create a matrix with no data; populated at end of constructor
@@ -53,35 +65,13 @@ public class RateMatrix extends Array2DRowRealMatrix {
         }// i
           
         this.populateDiagonals();
-        this.scale();
-
+        
+        if (scale){
+            this.scale();
+        }
     }//constructor
     
-    
-    public RateMatrix(TsTvRatioAdvanced kappa){
-        // suitable for K80 matrix
-        super();
-        this.kappa = kappa;
-        this.pi = new BaseFrequencies(BaseFrequencies.getDefault());
-        this.numStates = States.NT_STATES;
-        super.setSubMatrix(new double[numStates][numStates], 0, 0); // makes a square zero matrix
-        
-        //populate off-diagonal elements
-        for (int i = 0; i < numStates; i++) {
-            for (int j = 0; j < numStates; j++) {
-                
-                if (i == j) continue;
-                double q_ij = this.kappa.getKappaIfTransition(i, j);
-                this.setEntry(i,j, q_ij);
-            }// j
-        }// i
-          
-        this.populateDiagonals();
-        this.scale();
-        
-    }
-    
-    
+ 
     public final void populateDiagonals(){
          for (int i = 0; i < numStates; i++) {
                 double rowSum = 0.0;

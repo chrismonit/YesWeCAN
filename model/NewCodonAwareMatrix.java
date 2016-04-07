@@ -44,14 +44,9 @@ public class NewCodonAwareMatrix extends RateMatrix {
     public NewCodonAwareMatrix(TsTvRatioAdvanced kappa, BaseFrequencies pi, int siteType,
         Omega w_A, Omega w_B, Omega w_C, BranchScaling scaling, CodonFrequencies codonFrequencies, CodonTable codonTable){
         
-        super(kappa, pi);
-        
-        // matrix is now an HKY
-        // need to extend to CAN properly
+        super(kappa, false); // we want to build on an unscaled K80 matrix
         
         double[][] matrixData = this.getData();
-
-        MatrixPrinter.PrintMatrix(matrixData, "matrix data while still an HKY");
        
         Omega[] omegas = new Omega[]{w_A, w_B, w_C}; // this ought to be done in function class, outside of value method, to avoid overhead
         
@@ -65,6 +60,7 @@ public class NewCodonAwareMatrix extends RateMatrix {
 
         super.setSubMatrix(matrixData, 0, 0); // replace data with new values
     }
+    
     
     public static double getTermProducts(int iNucState, int jNucState, int siteType, 
             CodonFrequencies codonFrequencies, Omega[] omegas, CodonTable codonTable){
@@ -159,7 +155,7 @@ public class NewCodonAwareMatrix extends RateMatrix {
         return product;
     }
     
-    
+     
     public static void main(String[] args){
         System.out.println("hello world");
         TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(2.0);
