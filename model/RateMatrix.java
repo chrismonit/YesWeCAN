@@ -6,6 +6,7 @@ import yeswecan.model.parameters.*;
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import swmutsel.model.parameters.BaseFrequencies;
+import yeswecan.phylo.States;
 
 /**
  *
@@ -55,6 +56,30 @@ public class RateMatrix extends Array2DRowRealMatrix {
         this.scale();
 
     }//constructor
+    
+    
+    public RateMatrix(TsTvRatioAdvanced kappa){
+        // suitable for K80 matrix
+        super();
+        this.kappa = kappa;
+        this.pi = new BaseFrequencies(BaseFrequencies.getDefault());
+        this.numStates = States.NT_STATES;
+        super.setSubMatrix(new double[numStates][numStates], 0, 0); // makes a square zero matrix
+        
+        //populate off-diagonal elements
+        for (int i = 0; i < numStates; i++) {
+            for (int j = 0; j < numStates; j++) {
+                
+                if (i == j) continue;
+                double q_ij = this.kappa.getKappaIfTransition(i, j);
+                this.setEntry(i,j, q_ij);
+            }// j
+        }// i
+          
+        this.populateDiagonals();
+        this.scale();
+        
+    }
     
     
     public final void populateDiagonals(){
