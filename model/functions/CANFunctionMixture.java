@@ -17,7 +17,7 @@ import yeswecan.model.LikelihoodCalculator;
 import yeswecan.model.ProbMatrixFactory;
 import yeswecan.model.ProbMatrixGenerator;
 import yeswecan.model.ProportionScaler;
-import yeswecan.model.canmix.CANModelMixture;
+import yeswecan.model.submodels.CANModelMixture;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.GeneticStructure;
 

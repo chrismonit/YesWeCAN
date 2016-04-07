@@ -18,7 +18,7 @@ import yeswecan.model.ProbMatrixFactory;
 import yeswecan.model.ProbMatrixGenerator;
 import yeswecan.model.ProportionScaler;
 import yeswecan.model.RatioScaler;
-import yeswecan.model.can.CANModel;
+import yeswecan.model.submodels.CANModel;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.GeneticStructure;
 

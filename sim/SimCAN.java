@@ -20,7 +20,7 @@ import yeswecan.model.ProbMatrixFactory;
 import yeswecan.model.ProbMatrixGenerator;
 import yeswecan.model.RatioScaler;
 import yeswecan.model.RatioScalerFactory;
-import yeswecan.model.can.CANModel;
+import yeswecan.model.submodels.CANModel;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.phylo.States;
 import yeswecan.utils.MatrixPrinter;

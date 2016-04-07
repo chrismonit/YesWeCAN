@@ -4,13 +4,12 @@
  * and open the template in the editor.
  */
 
-package yeswecan.model.can;
+package yeswecan.model.submodels;
 
 import java.util.List;
 import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Omega;
-import yeswecan.model.hky.HKYModel;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 
 /**

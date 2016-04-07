@@ -18,7 +18,7 @@ import yeswecan.Constants;
 import yeswecan.model.ProbMatrixFactory;
 import yeswecan.model.ProbMatrixGenerator;
 import yeswecan.model.matrices.RateMatrix;
-import yeswecan.model.hky.HKYModel;
+import yeswecan.model.submodels.HKYModel;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.States;
 

@@ -12,7 +12,7 @@ import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.Mapper;
 import yeswecan.cli.CommandArgs;
 import yeswecan.model.functions.FunctionHKY;
-import yeswecan.model.hky.HKYModel;
+import yeswecan.model.submodels.HKYModel;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.optim.Optimise;
 import yeswecan.phylo.AdvancedAlignment;

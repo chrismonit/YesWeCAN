@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package yeswecan.model.hky;
+package yeswecan.model.submodels;
 
 import yeswecan.model.SubstitutionModel;
 import swmutsel.model.parameters.BaseFrequencies;
