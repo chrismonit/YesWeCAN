@@ -6,6 +6,8 @@
 
 package yeswecan.model;
 
+import yeswecan.model.matrices.RateMatrix;
+
 /**
  *
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>

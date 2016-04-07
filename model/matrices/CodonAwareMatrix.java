@@ -4,10 +4,11 @@
  * and open the template in the editor.
  */
 
-package yeswecan.model;
+package yeswecan.model.matrices;
 import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Omega;
+import yeswecan.model.RatioScaler;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 
 /**

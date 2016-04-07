@@ -15,7 +15,7 @@ import pal.tree.Node;
 import pal.tree.Tree;
 import swmutsel.model.parameters.Omega;
 import yeswecan.Constants;
-import yeswecan.model.CodonAwareMatrix;
+import yeswecan.model.matrices.CodonAwareMatrix;
 import yeswecan.model.ProbMatrixFactory;
 import yeswecan.model.ProbMatrixGenerator;
 import yeswecan.model.RatioScaler;

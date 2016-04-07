@@ -12,7 +12,7 @@ import pal.tree.Tree;
 import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
 import swmutsel.model.parameters.Parameter;
-import yeswecan.model.CodonAwareMatrix;
+import yeswecan.model.matrices.CodonAwareMatrix;
 import yeswecan.model.LikelihoodCalculator;
 import yeswecan.model.ProbMatrixFactory;
 import yeswecan.model.ProbMatrixGenerator;

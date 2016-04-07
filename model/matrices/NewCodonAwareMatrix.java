@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package yeswecan.model;
+package yeswecan.model.matrices;
 
+import yeswecan.model.matrices.RateMatrix;
+import yeswecan.model.matrices.CodonAwareMatrix;
 import pal.datatype.CodonTable;
 import pal.datatype.CodonTableFactory;
 import pal.datatype.Codons;
@@ -12,6 +14,7 @@ import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Omega;
 import yeswecan.Constants;
+import yeswecan.model.ProportionScaler;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.ReorderFrequencies;

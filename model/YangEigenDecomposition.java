@@ -1,6 +1,7 @@
 
 package yeswecan.model;
 
+import yeswecan.model.matrices.RateMatrix;
 import java.lang.ArithmeticException;
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;

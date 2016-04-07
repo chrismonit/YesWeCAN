@@ -6,6 +6,7 @@
 
 package yeswecan.model;
 
+import yeswecan.model.matrices.RateMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
 /**

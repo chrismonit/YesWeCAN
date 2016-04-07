@@ -1,5 +1,5 @@
 
-package yeswecan.model;
+package yeswecan.model.matrices;
 
 import yeswecan.model.parameters.*;
 
@@ -72,7 +72,7 @@ public class RateMatrix extends Array2DRowRealMatrix {
     }//constructor
     
  
-    public final void populateDiagonals(){
+    protected final void populateDiagonals(){
          for (int i = 0; i < numStates; i++) {
                 double rowSum = 0.0;
                 for (int j = 0; j < numStates; j++) {
@@ -84,7 +84,7 @@ public class RateMatrix extends Array2DRowRealMatrix {
     }
     
     
-    public final void scale(){
+    protected final void scale(){
         // scale matrix such that average substitution rate is 1
         // compute nu
         

@@ -17,7 +17,7 @@ import swmutsel.model.parameters.BaseFrequencies;
 import yeswecan.Constants;
 import yeswecan.model.ProbMatrixFactory;
 import yeswecan.model.ProbMatrixGenerator;
-import yeswecan.model.RateMatrix;
+import yeswecan.model.matrices.RateMatrix;
 import yeswecan.model.hky.HKYModel;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.States;
