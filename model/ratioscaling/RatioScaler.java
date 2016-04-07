@@ -4,14 +4,14 @@
  * and open the template in the editor.
  */
 
-package yeswecan.model;
+package yeswecan.model.ratioscaling;
 
 /**
  *
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>
  */
-public class RatioScalerFactory {
-     public static RatioScaler getRatioScaler(){
-        return new ProportionScaler();
-     }
+public interface RatioScaler {
+    
+    public double get(double ratio, int siteType, int frame);
+    
 }

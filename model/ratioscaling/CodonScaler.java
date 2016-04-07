@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package yeswecan.model;
+package yeswecan.model.ratioscaling;
 
 import pal.datatype.Codons;
 import yeswecan.Constants;

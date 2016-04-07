@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package yeswecan.model;
+package yeswecan.model.ratioscaling;
 
 import yeswecan.Constants;
 import yeswecan.utils.ArrayPrinter;

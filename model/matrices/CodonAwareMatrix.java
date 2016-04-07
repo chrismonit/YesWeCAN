@@ -8,7 +8,7 @@ package yeswecan.model.matrices;
 import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Omega;
-import yeswecan.model.RatioScaler;
+import yeswecan.model.ratioscaling.RatioScaler;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 
 /**
