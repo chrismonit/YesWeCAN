@@ -27,25 +27,63 @@ public class CodonSum {
         { 0, 1 }  //2
     }; // given some int i between 0 and 2 inclusive, access the other two ints between 0 and 2 inclusive
     
-    private double[][] computedSums;
+    private double[][] computedSumCodons;
+    
+    private double[][][][] computedSumCodonProducts;
     
     public double getCodonSum(int codonPosition, int nucState){
-        return this.computedSums[codonPosition][nucState];
+        return this.computedSumCodons[codonPosition][nucState];
     }
     
-    public CodonSum(CodonFrequencies codonFrequencies){
-        this.codonFrequencies = codonFrequencies;
-        this.computedSums = new double[3][4];
+    public double getCodonProductSum(int codonPosition, int iNucState, int jNucState, boolean wantSynonymous){
+        return this.computedSumCodonProducts[codonPosition][iNucState][jNucState][wantSynonymousInt(wantSynonymous)];
+    }
+    
+    private boolean wantSynonymousBoolean(int wantSynonymousInt){ // 0 means false (you want nonsyn), 1 means true (you want syn)
+        return (wantSynonymousInt == 0) ? false : true;
+    }
+    
+    private int wantSynonymousInt(boolean wantSynonymousBoolean){
+        return (wantSynonymousBoolean) ? 1 : 0;
+    }
+    
+    public CodonSum(CodonFrequencies codonFrequencies, CodonTable codonTable){
+        int CODON_POSITIONS = 3;
+        int SYN_NONSYN_STATES = 2;
         
-        for (int iCodonPosition = 0; iCodonPosition < 3; iCodonPosition++) {
+        this.codonFrequencies = codonFrequencies;
+
+        // summing over individual codons
+        
+        this.computedSumCodons = new double[CODON_POSITIONS][States.NT_STATES];
+        
+        for (int iCodonPosition = 0; iCodonPosition < CODON_POSITIONS; iCodonPosition++) {
             
             for (int iNucState = 0; iNucState < States.NT_STATES; iNucState++) {
-                this.computedSums[iCodonPosition][iNucState] = sumCodon(iCodonPosition, iNucState, this.codonFrequencies);
+                this.computedSumCodons[iCodonPosition][iNucState] = sumCodon(iCodonPosition, iNucState, this.codonFrequencies);
             }
         }
         
+        // summing over codon product pairs, dependent on whether pair is synonymous or not
+        
+        this.computedSumCodonProducts = new double[CODON_POSITIONS][States.NT_STATES][States.NT_STATES][SYN_NONSYN_STATES];
+        
+        // need to check thoroughly the boolean part for syn/nonsyn works properly
+        for (int iCodonPosition = 0; iCodonPosition < CODON_POSITIONS; iCodonPosition++) {
+            
+            for (int iNucState = 0; iNucState < States.NT_STATES; iNucState++) {
+                
+                for (int jNucState = 0; jNucState < States.NT_STATES; jNucState++){
+                    
+                    for (int iSynonymous = 0; iSynonymous < SYN_NONSYN_STATES; iSynonymous++) {
+                        this.computedSumCodonProducts[iCodonPosition][iNucState][jNucState][iSynonymous] =
+                                sumCodonProducts(iCodonPosition, iNucState, jNucState, this.codonFrequencies, codonTable, wantSynonymousBoolean(iSynonymous));
+                    }// syn/nonsyn                    
+                }// j
+            }// i
+        }// codon position
+        
     }// constructor
-    
     
     private static double sumCodon(int positionInCodon, int nucState, CodonFrequencies codonFrequencies){
         int[] codonArray = new int[3];
@@ -122,7 +160,9 @@ public class CodonSum {
     
     public static void main(String[] args){
         CodonFrequencies codonFrequencies = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/hiv.csv");
-        CodonSum codonSum = new CodonSum(codonFrequencies);
+        CodonTable codonTable = codonTable = CodonTableFactory.createUniversalTranslator();
+
+        CodonSum codonSum = new CodonSum(codonFrequencies, codonTable);
         int positionInCodon = 2;
         int nucState = 2;
         //System.out.println("sumCodon "+codonSum.sumCodon(positionInCodon, nucState, codonFrequencies));
@@ -132,7 +172,6 @@ public class CodonSum {
         int jNucState = 1;
         boolean wantSynonymous = false;
         
-        CodonTable codonTable = codonTable = CodonTableFactory.createUniversalTranslator();
         
         System.out.println("sumCodonProducts sum "+codonSum.sumCodonProducts(positionInCodon, iNucState, jNucState, codonFrequencies, codonTable, wantSynonymous));
         
