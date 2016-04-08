@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package yeswecan.model.ratioscaling;
+package yeswecan.model.codonawareness;
 
 /**
  *

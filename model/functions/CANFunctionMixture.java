@@ -16,7 +16,7 @@ import yeswecan.model.matrices.CodonAwareMatrix;
 import yeswecan.model.likelihood.LikelihoodCalculator;
 import yeswecan.model.likelihood.ProbMatrixFactory;
 import yeswecan.model.likelihood.ProbMatrixGenerator;
-import yeswecan.model.ratioscaling.ProportionScaler;
+import yeswecan.model.codonawareness.ProportionScaler;
 import yeswecan.model.submodels.CANModelMixture;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.GeneticStructure;

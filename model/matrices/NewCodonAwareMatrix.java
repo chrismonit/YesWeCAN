@@ -14,7 +14,7 @@ import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Omega;
 import yeswecan.Constants;
-import yeswecan.model.ratioscaling.ProportionScaler;
+import yeswecan.model.codonawareness.ProportionScaler;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.ReorderFrequencies;

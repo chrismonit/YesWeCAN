@@ -4,10 +4,10 @@
  * and open the template in the editor.
  */
 
-package yeswecan.model.ratioscaling;
+package yeswecan.model.codonawareness;
 
-import yeswecan.model.ratioscaling.RatioScaler;
-import yeswecan.model.ratioscaling.ProportionScaler;
+import yeswecan.model.codonawareness.RatioScaler;
+import yeswecan.model.codonawareness.ProportionScaler;
 
 /**
  *
