@@ -35,7 +35,7 @@ public class CodonSum {
     }
     
     public double getCodonProductSum(int codonPosition, int iNucState, int jNucState, boolean wantSynonymous){
-        return this.computedSumCodonProducts[codonPosition][iNucState][jNucState][wantSynonymousInt(wantSynonymous)];
+        return this.computedSumCodonProducts[wantSynonymousInt(wantSynonymous)][codonPosition][iNucState][jNucState];
     }
     
     private boolean wantSynonymousBoolean(int wantSynonymousInt){ // 0 means false (you want nonsyn), 1 means true (you want syn)

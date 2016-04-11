@@ -14,6 +14,7 @@ import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Omega;
 import yeswecan.Constants;
+import yeswecan.model.codonawareness.CodonSum;
 import yeswecan.model.codonawareness.ProportionScaler;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.CodonFrequencies;
@@ -28,6 +29,9 @@ import yeswecan.utils.MatrixPrinter;
  */
 public class NewCodonAwareMatrix extends RateMatrix {
     
+    private CodonSum codonSum;
+    private BranchScaling scaling;
+    
     private static int[][] codonPositions = new int[][]{
         // a frame, b frame, c frame
         { 0, 2, 1 }, // alpha site
@@ -35,47 +39,80 @@ public class NewCodonAwareMatrix extends RateMatrix {
         { 2, 1, 0 }  // gamma site
     };
     
-    private static int[][] otherCodonPositions = new int[][]{
-        { 1, 2 }, //0
-        { 0, 2 }, //1
-        { 0, 1 }  //2
-    }; // given some int i between 0 and 2 inclusive, access the other two ints between 0 and 2 inclusive
+//    private static int[][] otherCodonPositions = new int[][]{
+//        { 1, 2 }, //0
+//        { 0, 2 }, //1
+//        { 0, 1 }  //2
+//    }; // given some int i between 0 and 2 inclusive, access the other two ints between 0 and 2 inclusive
     
     
     
     
     public NewCodonAwareMatrix(TsTvRatioAdvanced kappa, int siteType,
-        Omega w_A, Omega w_B, Omega w_C, BranchScaling scaling, CodonFrequencies codonFrequencies, CodonTable codonTable){
+        Omega w_A, Omega w_B, Omega w_C, BranchScaling scaling, CodonFrequencies codonFrequencies, CodonSum codonSum){
         
         super(kappa, false); // we want to build on an unscaled K80 matrix
+               
+        this.codonSum = codonSum;
+        this.scaling = scaling;
         
-        double[][] matrixData = this.getData();
-       
         Omega[] omegas = new Omega[]{w_A, w_B, w_C}; // this ought to be done in function class, outside of value method, to avoid overhead
         
-        for (int iState = 0; iState < States.NT_STATES; iState++) {
-            for (int jState = 0; jState < States.NT_STATES; jState++) {
-                if (iState != jState){
-                    matrixData[iState][jState] *= getTermProducts(iState, jState, siteType, codonFrequencies, omegas, codonTable) * scaling.get();
+        // do q_ij
+        
+        MatrixPrinter.PrintMatrix(this.getData(), "matrix data before doing anything");
+
+        
+        for (int iNucState = 0; iNucState < States.NT_STATES; iNucState++) {
+            for (int jNucState = 0; jNucState < States.NT_STATES; jNucState++) {
+                if (iNucState != jNucState){
+                    
+                    double q_ij = getQij(iNucState, jNucState, siteType, this.getKappa(), scaling, omegas);
+                    this.setEntry(iNucState, jNucState, q_ij);
                 }
             }
         }
-        super.setSubMatrix(matrixData, 0, 0); // replace data with new values
-
-        //MatrixPrinter.PrintMatrix(matrixData, "matrix data after multiplying by new rates");
+        
+        
+        MatrixPrinter.PrintMatrix(this.getData(), "matrix data after setting q_ij");
                 
         super.populateDiagonals();
         
-        double[] piValues = new double[States.NT_STATES];
-        for (int i = 0; i < piValues.length; i++) {
-            piValues[i] = computePi(i, siteType, codonFrequencies);
-        }
-        super.setPi(new BaseFrequencies(piValues));
+        MatrixPrinter.PrintMatrix(this.getData(), "matrix data after setting diagonals");
+
+        
+        // set pi values
         
         super.scale(); // needs pi values to be set first
+        MatrixPrinter.PrintMatrix(this.getData(), "matrix data after scaling");
+
     }// constructor
     
  
+    
+    private double getQij(int iNucState, int jNucState, int siteType, 
+            TsTvRatioAdvanced kappa, BranchScaling scaling, Omega[] omegas){
+        double product = 1.0;
+        
+        product *= kappa.getKappaIfTransition(iNucState, jNucState);
+        product *= scaling.get();
+        
+        for (int iFrame = 0; iFrame < 3; iFrame++) {
+        
+            int positionOfInterest = this.codonPositions[siteType][iFrame];
+            
+            double nonsynSum = this.codonSum.getCodonProductSum(positionOfInterest, iNucState, jNucState, false);
+            double synSum = this.codonSum.getCodonProductSum(positionOfInterest, iNucState, jNucState, true);
+            
+            double numerator = (omegas[iFrame].get() * nonsynSum) + synSum;
+            double denominator = this.codonSum.getCodonSum(positionOfInterest, iNucState);
+            
+            product *= (numerator/denominator);
+            
+        }// for iFrame
+        
+        return product;
+    }
     
      
     public static void main(String[] args){
@@ -92,21 +129,17 @@ public class NewCodonAwareMatrix extends RateMatrix {
         CodonFrequencies codonFrequencies = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/hiv.csv");
         
         CodonTable table = CodonTableFactory.createUniversalTranslator();;
-        NewCodonAwareMatrix can = new NewCodonAwareMatrix(kappa, siteType, w_A, w_B, w_C, scaling, codonFrequencies, table);
+        
+        CodonSum codonSum = new CodonSum(codonFrequencies, table);
+        NewCodonAwareMatrix can = new NewCodonAwareMatrix(kappa, siteType, w_A, w_B, w_C, scaling, codonFrequencies, codonSum);
+        
+        System.exit(1);
         
         int iNucState = 0;
         int jNucState = 2;
         //int siteType2 = 0;
         //int frame = 0;
                 
-        //double term = can.getTerm( iNucState,  jNucState,  siteType2,  frame, codonFrequencies, w_A);
-        //System.out.println("can.getTerm "+term);
-        
-        Omega[] omegas = new Omega[]{ w_A, w_B, w_C };
-
-        //double termProducts = can.getTermProducts(iNucState, jNucState, siteType, codonFrequencies, omegas, table);
-        //.out.println("termProducts "+termProducts);
-
         
         System.out.println("\ntesting original CAN\n");
         
