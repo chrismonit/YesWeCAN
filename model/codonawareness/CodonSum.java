@@ -89,7 +89,7 @@ public class CodonSum {
         int[] codonArray = new int[3];
         
         double sum = 0.0;
-            
+        //System.out.println("codon pos\t"+positionInCodon);
         for (int nBase = 0; nBase < States.NT_STATES; nBase++) { // nBase and mBase are the bases in the other two positions in the codon
             for (int mBase = 0; mBase < States.NT_STATES; mBase++) {
 

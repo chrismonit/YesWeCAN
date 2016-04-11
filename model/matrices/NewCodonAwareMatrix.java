@@ -39,14 +39,6 @@ public class NewCodonAwareMatrix extends RateMatrix {
         { 2, 1, 0 }  // gamma site
     };
     
-//    private static int[][] otherCodonPositions = new int[][]{
-//        { 1, 2 }, //0
-//        { 0, 2 }, //1
-//        { 0, 1 }  //2
-//    }; // given some int i between 0 and 2 inclusive, access the other two ints between 0 and 2 inclusive
-    
-    
-    
     
     public NewCodonAwareMatrix(TsTvRatioAdvanced kappa, int siteType,
         Omega w_A, Omega w_B, Omega w_C, BranchScaling scaling, CodonFrequencies codonFrequencies, CodonSum codonSum){
@@ -57,10 +49,8 @@ public class NewCodonAwareMatrix extends RateMatrix {
         this.scaling = scaling;
         
         Omega[] omegas = new Omega[]{w_A, w_B, w_C}; // this ought to be done in function class, outside of value method, to avoid overhead
-        
-        // do q_ij
-        
-        MatrixPrinter.PrintMatrix(this.getData(), "matrix data before doing anything");
+                
+        //MatrixPrinter.PrintMatrix(this.getData(), "matrix data before doing anything");
 
         
         for (int iNucState = 0; iNucState < States.NT_STATES; iNucState++) {
@@ -74,17 +64,18 @@ public class NewCodonAwareMatrix extends RateMatrix {
         }
         
         
-        MatrixPrinter.PrintMatrix(this.getData(), "matrix data after setting q_ij");
+        //MatrixPrinter.PrintMatrix(this.getData(), "matrix data after setting q_ij");
                 
         super.populateDiagonals();
         
-        MatrixPrinter.PrintMatrix(this.getData(), "matrix data after setting diagonals");
+        //MatrixPrinter.PrintMatrix(this.getData(), "matrix data after setting diagonals");
 
+
+        double[] pi = getNormalisedPiValues(codonSum);
+        super.setPi(new BaseFrequencies(pi));
         
-        // set pi values
-        
-        super.scale(); // needs pi values to be set first
-        MatrixPrinter.PrintMatrix(this.getData(), "matrix data after scaling");
+        super.scale(); // needs pi values to be set first, as scaling depends on eq freqs
+        //MatrixPrinter.PrintMatrix(this.getData(), "matrix data after scaling");
 
     }// constructor
     
@@ -92,6 +83,7 @@ public class NewCodonAwareMatrix extends RateMatrix {
     
     private double getQij(int iNucState, int jNucState, int siteType, 
             TsTvRatioAdvanced kappa, BranchScaling scaling, Omega[] omegas){
+        
         double product = 1.0;
         
         product *= kappa.getKappaIfTransition(iNucState, jNucState);
@@ -114,7 +106,33 @@ public class NewCodonAwareMatrix extends RateMatrix {
         return product;
     }
     
-     
+    
+    private static double[] getNormalisedPiValues(CodonSum codonSum){
+        double[] piValues = new double[States.NT_STATES];
+        double sum = 0.0;
+        for (int iNucState = 0; iNucState < piValues.length; iNucState++) {
+            double pi = computeRawPi(iNucState, codonSum);
+            piValues[iNucState] = pi;
+            sum += pi;
+        }
+        
+        for (int iNucState = 0; iNucState < piValues.length; iNucState++) {
+            piValues[iNucState] /= sum;
+        }
+        
+        return piValues;
+    }
+    
+    private static double computeRawPi(int nucState, CodonSum codonSum){ // pi values before normalising
+        
+        double product = 1.0;
+        for (int iCodonPosition = 0; iCodonPosition < 3; iCodonPosition++) {
+            product *= codonSum.getCodonSum(iCodonPosition, nucState);
+        }
+        return product;
+    }
+    
+    
     public static void main(String[] args){
         System.out.println("hello world");
         TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(2.0);
@@ -133,18 +151,12 @@ public class NewCodonAwareMatrix extends RateMatrix {
         CodonSum codonSum = new CodonSum(codonFrequencies, table);
         NewCodonAwareMatrix can = new NewCodonAwareMatrix(kappa, siteType, w_A, w_B, w_C, scaling, codonFrequencies, codonSum);
         
-        System.exit(1);
-        
-        int iNucState = 0;
-        int jNucState = 2;
-        //int siteType2 = 0;
-        //int frame = 0;
-                
-        
-        System.out.println("\ntesting original CAN\n");
-        
-        CodonAwareMatrix origCan = new CodonAwareMatrix(kappa, pi, new ProportionScaler(), siteType, w_A, w_B, w_C, scaling);
-        MatrixPrinter.PrintMatrix(origCan.getData(), "original CAN matrix");
+        //System.out.println("pi:");
+        //ArrayPrinter.print(can.getBaseFrequencies().get(), "\t");
+
+//        System.out.println("\ntesting original CAN\n");
+//        CodonAwareMatrix origCan = new CodonAwareMatrix(kappa, pi, new ProportionScaler(), siteType, w_A, w_B, w_C, scaling);
+//        MatrixPrinter.PrintMatrix(origCan.getData(), "original CAN matrix");
         
         System.out.println("\nfin");
     }
