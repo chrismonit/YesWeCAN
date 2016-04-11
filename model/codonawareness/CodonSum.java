@@ -19,7 +19,6 @@ import yeswecan.utils.ArrayPrinter; // only needed for testing
  */
 public class CodonSum {
     
-    private CodonFrequencies codonFrequencies;
     
     private static int[][] otherCodonPositions = new int[][]{
         { 1, 2 }, //0
@@ -51,8 +50,6 @@ public class CodonSum {
         int CODON_POSITIONS = 3;
         int SYN_NONSYN_STATES = 2;
         
-        this.codonFrequencies = codonFrequencies;
-
         // 1) summing over individual codons
         
         this.computedSumCodons = new double[CODON_POSITIONS][States.NT_STATES];
@@ -60,7 +57,7 @@ public class CodonSum {
         for (int iCodonPosition = 0; iCodonPosition < CODON_POSITIONS; iCodonPosition++) {
             
             for (int iNucState = 0; iNucState < States.NT_STATES; iNucState++) {
-                this.computedSumCodons[iCodonPosition][iNucState] = sumCodon(iCodonPosition, iNucState, this.codonFrequencies);
+                this.computedSumCodons[iCodonPosition][iNucState] = sumCodon(iCodonPosition, iNucState, codonFrequencies);
             }
         }
         
@@ -77,7 +74,7 @@ public class CodonSum {
                     for (int jNucState = 0; jNucState < States.NT_STATES; jNucState++){
                         
                         if (iNucState != jNucState){
-                            double sum = sumCodonProducts(iCodonPosition, iNucState, jNucState, this.codonFrequencies, codonTable, wantSynonymousBoolean(iSynonymous));
+                            double sum = sumCodonProducts(iCodonPosition, iNucState, jNucState, codonFrequencies, codonTable, wantSynonymousBoolean(iSynonymous));
                             this.computedSumCodonProducts[iSynonymous][iCodonPosition][iNucState][jNucState] = sum;
                             //System.out.println("\t\t"+"\tiSynonymous\t"+iSynonymous+"\tiCodonPosition\t"+iCodonPosition+"\tiNucState\t"+iNucState+"\tjNucState\t"+jNucState+"\tsum\t"+sum);
                         }
