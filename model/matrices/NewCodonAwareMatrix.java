@@ -5,22 +5,15 @@
  */
 package yeswecan.model.matrices;
 
-import yeswecan.model.matrices.RateMatrix;
-import yeswecan.model.matrices.CodonAwareMatrix;
 import pal.datatype.CodonTable;
 import pal.datatype.CodonTableFactory;
-import pal.datatype.Codons;
 import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Omega;
-import yeswecan.Constants;
 import yeswecan.model.codonawareness.CodonSum;
-import yeswecan.model.codonawareness.ProportionScaler;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.CodonFrequencies;
-import yeswecan.phylo.ReorderFrequencies;
 import yeswecan.phylo.States;
-import yeswecan.utils.ArrayPrinter;
 import yeswecan.utils.MatrixPrinter;
 
 /**
@@ -29,10 +22,9 @@ import yeswecan.utils.MatrixPrinter;
  */
 public class NewCodonAwareMatrix extends RateMatrix {
     
-    private CodonSum codonSum;
-    private BranchScaling scaling;
+    private final CodonSum codonSum;
     
-    private static int[][] codonPositions = new int[][]{
+    private final static int[][] codonPositions = new int[][]{
         // a frame, b frame, c frame
         { 0, 2, 1 }, // alpha site
         { 1, 0, 2 }, // beta site
@@ -46,13 +38,9 @@ public class NewCodonAwareMatrix extends RateMatrix {
         super(kappa, false); // we want to build on an unscaled K80 matrix
                
         this.codonSum = codonSum;
-        this.scaling = scaling;
         
-        Omega[] omegas = new Omega[]{w_A, w_B, w_C}; // this ought to be done in function class, outside of value method, to avoid overhead
+        Omega[] omegas = new Omega[]{w_A, w_B, w_C}; // TODO this ought to be done in function class, outside of value method, to avoid overhead
                 
-        //MatrixPrinter.PrintMatrix(this.getData(), "matrix data before doing anything");
-
-        
         for (int iNucState = 0; iNucState < States.NT_STATES; iNucState++) {
             for (int jNucState = 0; jNucState < States.NT_STATES; jNucState++) {
                 if (iNucState != jNucState){
@@ -63,19 +51,14 @@ public class NewCodonAwareMatrix extends RateMatrix {
             }
         }
         
-        
-        //MatrixPrinter.PrintMatrix(this.getData(), "matrix data after setting q_ij");
-                
+        MatrixPrinter.PrintMatrix(this.getData(), "unscaled diagonals only");
         super.populateDiagonals();
         
-        //MatrixPrinter.PrintMatrix(this.getData(), "matrix data after setting diagonals");
-
 
         double[] pi = getNormalisedPiValues(codonSum);
         super.setPi(new BaseFrequencies(pi));
         
         super.scale(); // needs pi values to be set first, as scaling depends on eq freqs
-        //MatrixPrinter.PrintMatrix(this.getData(), "matrix data after scaling");
 
     }// constructor
     
@@ -88,7 +71,7 @@ public class NewCodonAwareMatrix extends RateMatrix {
         
         product *= kappa.getKappaIfTransition(iNucState, jNucState);
         product *= scaling.get();
-        
+        System.out.println("iNucState\t"+iNucState+"\tjNucState\t"+jNucState);
         for (int iFrame = 0; iFrame < 3; iFrame++) {
         
             int positionOfInterest = this.codonPositions[siteType][iFrame];
@@ -99,10 +82,12 @@ public class NewCodonAwareMatrix extends RateMatrix {
             double numerator = (omegas[iFrame].get() * nonsynSum) + synSum;
             double denominator = this.codonSum.getCodonSum(positionOfInterest, iNucState);
             
+            System.out.println("iFrame\t"+iFrame+"\tposition\t"+positionOfInterest+"\tnonsynSum\t"+nonsynSum+"\tsynSum\t"+synSum+"\tnumerator\t"+numerator+"\tdenominator\t"+denominator+"\tratio\t"+numerator/denominator);
+            
             product *= (numerator/denominator);
             
         }// for iFrame
-        
+        System.out.println("");
         return product;
     }
     
@@ -151,12 +136,8 @@ public class NewCodonAwareMatrix extends RateMatrix {
         CodonSum codonSum = new CodonSum(codonFrequencies, table);
         NewCodonAwareMatrix can = new NewCodonAwareMatrix(kappa, siteType, w_A, w_B, w_C, scaling, codonFrequencies, codonSum);
         
-        //System.out.println("pi:");
-        //ArrayPrinter.print(can.getBaseFrequencies().get(), "\t");
-
-//        System.out.println("\ntesting original CAN\n");
-//        CodonAwareMatrix origCan = new CodonAwareMatrix(kappa, pi, new ProportionScaler(), siteType, w_A, w_B, w_C, scaling);
-//        MatrixPrinter.PrintMatrix(origCan.getData(), "original CAN matrix");
+        MatrixPrinter.PrintMatrix(can.getData(), "Q");
+        
         
         System.out.println("\nfin");
     }
