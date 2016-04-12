@@ -78,10 +78,12 @@ public class RunCANSum extends RunModel {
         
         RunCANSum run = new RunCANSum(alignment, tree, comArgs);
         
-        System.out.println(String.join(Constants.DEL, run.getHeader()));
-        System.out.println(ArrayPrinter.toString(run.getInitialValues(), Constants.DEL));
+        System.out.println("header\t"+String.join(Constants.DEL, run.getHeader()));
+        System.out.println("initial\t"+ArrayPrinter.toString(run.getInitialValues(), Constants.DEL));
+        System.out.println("calc\t"+ArrayPrinter.toString(run.calculate(), Constants.DEL));
         
-        System.out.println(ArrayPrinter.toString(run.calculate(), Constants.DEL));
+        System.out.println("fit\t"+ArrayPrinter.toString(run.fit(), Constants.DEL));
+    
     }// test main
     
 
@@ -94,10 +96,12 @@ public class RunCANSum extends RunModel {
         this.alignment = alignment;
         this.tree = tree;
         
-        this.genStruct = new GeneticStructure(this.comArgs.aFrame(),
-                                                            this.comArgs.bFrame(),
-                                                            this.comArgs.cFrame(),
-                                                            this.comArgs.lengths());
+        this.genStruct = new GeneticStructure(
+                this.comArgs.aFrame(),
+                this.comArgs.bFrame(),
+                this.comArgs.cFrame(),
+                this.comArgs.lengths()
+        );
         
         this.codonSum = new CodonSum(
                 new CodonFrequencies(input.getCodonFrequencyPath()), 
