@@ -19,6 +19,8 @@ import yeswecan.model.parameters.TsTvRatioAdvanced;
  * which comprise the model in question. The classes from swmutsel's Parameters
  * package require that such a class exists.
  * 
+ * 
+ * TODO this class can inherit from K80 model
  */
 public class HKYModel extends SubstitutionModel {
     
