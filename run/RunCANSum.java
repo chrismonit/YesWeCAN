@@ -81,7 +81,7 @@ public class RunCANSum extends RunModel {
         System.out.println(String.join(Constants.DEL, run.getHeader()));
         System.out.println(ArrayPrinter.toString(run.getInitialValues(), Constants.DEL));
         
-        
+        System.out.println(ArrayPrinter.toString(run.calculate(), Constants.DEL));
     }// test main
     
 

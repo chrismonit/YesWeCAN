@@ -14,6 +14,7 @@ import yeswecan.model.codonawareness.CodonSum;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.States;
+import yeswecan.utils.ArrayPrinter;
 import yeswecan.utils.MatrixPrinter;
 
 /**
@@ -56,7 +57,9 @@ public class NewCodonAwareMatrix extends RateMatrix {
         
 
         double[] pi = getNormalisedPiValues(codonSum);
-        super.setPi(new BaseFrequencies(pi));
+        BaseFrequencies baseFreq = new BaseFrequencies();
+        baseFreq.set(pi);
+        super.setPi(baseFreq);
         
         super.scale(); // needs pi values to be set first, as scaling depends on eq freqs
 
