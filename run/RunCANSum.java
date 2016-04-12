@@ -8,14 +8,20 @@ package yeswecan.run;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import pal.datatype.CodonTableFactory;
 import pal.tree.Tree;
 import swmutsel.model.parameters.BranchScaling;
+import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
 import yeswecan.Constants;
 import yeswecan.cli.CommandArgs;
+import yeswecan.model.codonawareness.CodonSum;
+import yeswecan.model.functions.CANFunctionSum;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
+import yeswecan.model.submodels.CANModel;
 import yeswecan.model.submodels.CANModelSum;
 import yeswecan.phylo.AdvancedAlignment;
+import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.GeneticStructure;
 import static yeswecan.run.RunCAN.makeCAN;
 
@@ -29,7 +35,9 @@ public class RunCANSum extends RunModel {
     private AdvancedAlignment alignment;
     private Tree tree;
     
-    protected GeneticStructure genStruct;
+    private GeneticStructure genStruct;
+    
+    private CodonSum codonSum;
     
     public RunCANSum(AdvancedAlignment alignment, Tree tree, CommandArgs input){
         
@@ -41,6 +49,11 @@ public class RunCANSum extends RunModel {
                                                             this.comArgs.bFrame(),
                                                             this.comArgs.cFrame(),
                                                             this.comArgs.lengths());
+        
+        this.codonSum = new CodonSum(
+                new CodonFrequencies(input.getCodonFrequencyPath()), 
+                CodonTableFactory.createUniversalTranslator()
+        );
     }
     
     
@@ -67,6 +80,31 @@ public class RunCANSum extends RunModel {
         }
         return resultArray;
     }
+    
+    @Override
+    public double[] calculate(){
+        CANModelSum canSum = makeCANSum(this.comArgs);
+        double[] optimisableParams = Mapper.getOptimisable(canSum.getParameters()); // map parameters to optimisation space, so FunctionHKY.value can use them
+        CANFunctionSum calculator = new CANFunctionSum(
+                this.alignment, this.tree, this.genStruct, 
+                canSum, this.codonSum
+        );
+        
+        ArrayList<Double> values = RunModel.getParameterValues(canSum.getParameters());
+        double lnL = calculator.value(optimisableParams);
+        values.add(0, lnL);
+        
+        double[] resultArray = new double[values.size()+1];
+        resultArray[0] = Constants.CAN_SUM_IDENTIFIER;
+        
+        for (int i = 0; i < values.size(); i++) {
+            resultArray[i+1] = values.get(i);
+        }
+        return resultArray;
+    }
+    
+    
+
     
     protected static CANModelSum makeCANSum(CommandArgs comArgs){
     
