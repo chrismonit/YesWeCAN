@@ -16,10 +16,12 @@ import swmutsel.model.parameters.Omega;
 import yeswecan.Constants;
 import yeswecan.cli.CommandArgs;
 import yeswecan.model.codonawareness.CodonSum;
+import yeswecan.model.functions.CANFunction;
 import yeswecan.model.functions.CANFunctionSum;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.model.submodels.CANModel;
 import yeswecan.model.submodels.CANModelSum;
+import yeswecan.optim.Optimise;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.GeneticStructure;
@@ -103,6 +105,27 @@ public class RunCANSum extends RunModel {
         return resultArray;
     }
     
+    @Override 
+    public double[] fit(){
+  
+        CANModelSum canSum = makeCANSum(this.comArgs);
+        CANFunctionSum optFunction = new CANFunctionSum(
+                this.alignment, this.tree, genStruct, canSum, 
+                this.codonSum
+        );
+        Optimise opt = new Optimise();
+        CANModelSum result = (CANModelSum)opt.optNMS(optFunction, canSum);
+        
+        ArrayList<Double> values = RunModel.getParameterValues(result.getParameters());
+        values.add(0, result.getLnL()); // prepend
+        double[] resultArray = new double[values.size()+1];
+        resultArray[0] = Constants.CAN_SUM_IDENTIFIER;
+        for (int i = 0; i < values.size(); i++) {
+            resultArray[i+1] = values.get(i);
+        }
+        return resultArray;
+ 
+    }
     
 
     

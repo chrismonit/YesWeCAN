@@ -136,7 +136,7 @@ public class RunCAN extends RunModel {
     }
     
     
-    @Override
+    @Override 
     public double[] fit(){
   
         CANModel can = makeCAN(this.comArgs);
