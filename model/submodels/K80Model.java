@@ -5,7 +5,6 @@
  */
 package yeswecan.model.submodels;
 
-import swmutsel.model.parameters.BaseFrequencies;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 
 /**
