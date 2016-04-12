@@ -31,6 +31,7 @@ public class Constants {
     public static final int M1_IDENTIFIER = 1;
     public static final int M2_IDENTIFIER = 2;
     public static final int CODON_FREQ_IDENTIFIER = 3;
+    public static final int CAN_SUM_IDENTIFIER = 4;
 
     public static final int PROPORTION_SCALER_IDENTIFIER = 0;
     public static final int CODON_SCALER_IDENTIFIER = 1;

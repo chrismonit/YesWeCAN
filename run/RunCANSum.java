@@ -6,6 +6,7 @@
 package yeswecan.run;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import pal.tree.Tree;
 import swmutsel.model.parameters.BranchScaling;
@@ -16,6 +17,7 @@ import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.model.submodels.CANModelSum;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.GeneticStructure;
+import static yeswecan.run.RunCAN.makeCAN;
 
 /**
  *
@@ -42,6 +44,30 @@ public class RunCANSum extends RunModel {
     }
     
     
+    @Override
+    public String[] getHeader(){
+        ArrayList<String> columns = new ArrayList<String>();
+        Collections.addAll(columns, "model", "lnL", "kappa", "sc", "0_w");
+        for (int i = 0; i < this.comArgs.getGeneNumber(); i++) {
+            columns.add(Integer.toString(i+1) + "_" +Constants.OMEGA_STRING); // +1 for zero based correction
+        }
+        return columns.toArray(new String[columns.size()]);
+    }
+    
+    
+    @Override
+    public double[] getInitialValues(){ // NB first element does not contain lnL
+        ArrayList<Double> values = RunModel.getParameterValues(makeCANSum(this.comArgs).getParameters());
+        double[] resultArray = new double[values.size()+2];
+        resultArray[0] = Constants.CAN0_IDENTIFIER;
+        resultArray[1] = Double.NaN;
+        
+        for (int i = 0; i < values.size(); i++) {
+            resultArray[i+2] = values.get(i);
+        }
+        return resultArray;
+    }
+    
     protected static CANModelSum makeCANSum(CommandArgs comArgs){
     
         TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(comArgs.kappa());
@@ -54,7 +80,7 @@ public class RunCANSum extends RunModel {
             scaling.setOptimisable(false);
         }
         
-                List<Omega> omegas = new ArrayList<Omega>();
+        List<Omega> omegas = new ArrayList<Omega>();
         
         Omega neutralOmega = new Omega(1.0); // for frames where there is no gene
         neutralOmega.setOptimisable(false); // never want this to change in optimisation
@@ -70,7 +96,7 @@ public class RunCANSum extends RunModel {
             omegas.add(w);
         }
         
-        //return new CANModelSum(kappa, )
+        return new CANModelSum(kappa, scaling, omegas );
     }
     
 }
