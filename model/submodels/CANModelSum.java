@@ -17,24 +17,21 @@ import yeswecan.model.parameters.TsTvRatioAdvanced;
  */
 public class CANModelSum extends K80Model {
     
-    private BaseFrequencies pi;
     private List<Omega> omegas;
     private BranchScaling scaling;
 
     
     public CANModelSum(
-            TsTvRatioAdvanced kappa, BaseFrequencies pi, 
+            TsTvRatioAdvanced kappa,
             BranchScaling scaling, List<Omega> omegas
     ){
         // NB the 0th omega has to be an unoptimisible 1.0 value
         
         super(kappa);
         
-        this.pi = pi;
         this.omegas = omegas;
         this.scaling = scaling;
         
-        super.addParameters(pi);
         super.addParameters(this.scaling);
         
         for (Omega w : this.omegas){
@@ -43,9 +40,7 @@ public class CANModelSum extends K80Model {
 
     }
     
-    public BaseFrequencies getPi() {
-        return pi;
-    }
+
     
     public BranchScaling getScaling() {
         return this.scaling;
