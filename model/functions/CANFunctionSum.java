@@ -75,13 +75,12 @@ public class CANFunctionSum implements MultivariateFunction {
                     this.canModelSum.getKappa(),
                     siteType,
                     aOmega, bOmega, cOmega,
-                    this.canModelSum.getScaling()
+                    this.canModelSum.getScaling(),
+                    this.codonSum
             );
             
             //MatrixPrinter.PrintMatrix(Q.getData(), "Q", "");
             //System.out.println("w1: " + this.canModelSum.getOmegas().get(1).toString());
-            
-            
             
             ProbMatrixGenerator P;
             try{
