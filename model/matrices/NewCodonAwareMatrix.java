@@ -51,7 +51,7 @@ public class NewCodonAwareMatrix extends RateMatrix {
             }
         }
         
-        MatrixPrinter.PrintMatrix(this.getData(), "unscaled diagonals only");
+        //MatrixPrinter.PrintMatrix(this.getData(), "unscaled diagonals only");
         super.populateDiagonals();
         
 
@@ -71,7 +71,8 @@ public class NewCodonAwareMatrix extends RateMatrix {
         
         product *= kappa.getKappaIfTransition(iNucState, jNucState);
         product *= scaling.get();
-        System.out.println("iNucState\t"+iNucState+"\tjNucState\t"+jNucState);
+        //System.out.println("kappa_if\t"+kappa.getKappaIfTransition(iNucState, jNucState)+"\tscaling\t"+scaling.get());
+        //System.out.println("iNucState\t"+iNucState+"\tjNucState\t"+jNucState);
         for (int iFrame = 0; iFrame < 3; iFrame++) {
         
             int positionOfInterest = this.codonPositions[siteType][iFrame];
@@ -82,12 +83,12 @@ public class NewCodonAwareMatrix extends RateMatrix {
             double numerator = (omegas[iFrame].get() * nonsynSum) + synSum;
             double denominator = this.codonSum.getCodonSum(positionOfInterest, iNucState);
             
-            System.out.println("iFrame\t"+iFrame+"\tposition\t"+positionOfInterest+"\tnonsynSum\t"+nonsynSum+"\tsynSum\t"+synSum+"\tnumerator\t"+numerator+"\tdenominator\t"+denominator+"\tratio\t"+numerator/denominator);
+            //System.out.println("iFrame\t"+iFrame+"\tposition\t"+positionOfInterest+"\tnonsynSum\t"+nonsynSum+"\tsynSum\t"+synSum+"\tomega\t"+omegas[iFrame].get()+"\tnumerator\t"+numerator+"\tdenominator\t"+denominator+"\tratio\t"+numerator/denominator);
             
             product *= (numerator/denominator);
             
         }// for iFrame
-        System.out.println("");
+        //System.out.println("");
         return product;
     }
     
@@ -119,16 +120,16 @@ public class NewCodonAwareMatrix extends RateMatrix {
     
     
     public static void main(String[] args){
-        System.out.println("hello world");
+        System.out.println("new can class");
         TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(2.0);
         //double[] frequencies = new double[]{.1,.2,.3,.4};
         double[] frequencies = BaseFrequencies.getDefault();
         BaseFrequencies pi = new BaseFrequencies(frequencies);
-        int siteType = 2;
+        int siteType = 1;
         Omega w_A = new Omega(2.0);
         Omega w_B = new Omega(3.0);
         Omega w_C = new Omega(4.0);
-        BranchScaling scaling = new BranchScaling(1.0);
+        BranchScaling scaling = new BranchScaling(3.0);
         CodonFrequencies codonFrequencies = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/hiv.csv");
         
         CodonTable table = CodonTableFactory.createUniversalTranslator();;

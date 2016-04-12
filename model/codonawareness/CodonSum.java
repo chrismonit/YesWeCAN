@@ -76,7 +76,7 @@ public class CodonSum {
                         if (iNucState != jNucState){
                             double sum = sumCodonProducts(iCodonPosition, iNucState, jNucState, codonFrequencies, codonTable, wantSynonymousBoolean(iSynonymous));
                             this.computedSumCodonProducts[iSynonymous][iCodonPosition][iNucState][jNucState] = sum;
-                            System.out.println("\tiSynonymous\t"+iSynonymous+"\tiCodonPosition\t"+iCodonPosition+"\tiNucState\t"+iNucState+"\tjNucState\t"+jNucState+"\tsum\t"+sum);
+                            //System.out.println("\tiSynonymous\t"+iSynonymous+"\tiCodonPosition\t"+iCodonPosition+"\tiNucState\t"+iNucState+"\tjNucState\t"+jNucState+"\tsum\t"+sum);
                         }
 
                     }// j
