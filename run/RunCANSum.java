@@ -5,10 +5,20 @@
  */
 package yeswecan.run;
 
+//testing only
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
+import java.io.FileReader;
+
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import pal.alignment.AlignmentReaders;
+import pal.alignment.SimpleAlignment;
 import pal.datatype.CodonTableFactory;
+import pal.datatype.Nucleotides;
+import pal.tree.ReadTree;
 import pal.tree.Tree;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Mapper;
@@ -16,16 +26,14 @@ import swmutsel.model.parameters.Omega;
 import yeswecan.Constants;
 import yeswecan.cli.CommandArgs;
 import yeswecan.model.codonawareness.CodonSum;
-import yeswecan.model.functions.CANFunction;
 import yeswecan.model.functions.CANFunctionSum;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
-import yeswecan.model.submodels.CANModel;
 import yeswecan.model.submodels.CANModelSum;
 import yeswecan.optim.Optimise;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.GeneticStructure;
-import static yeswecan.run.RunCAN.makeCAN;
+import yeswecan.utils.ArrayPrinter;
 
 /**
  *
@@ -40,6 +48,45 @@ public class RunCANSum extends RunModel {
     private GeneticStructure genStruct;
     
     private CodonSum codonSum;
+    
+    public static void main(String[] args){
+        CommandArgs comArgs = new CommandArgs();
+        JCommander jcom = new JCommander(comArgs);
+        
+        try{
+            jcom.parse(args);
+        }
+        catch(ParameterException ex){
+            System.out.println(ex.getMessage());
+        }
+        
+        AdvancedAlignment alignment;
+        Tree tree;
+        try{
+            SimpleAlignment simple;
+            simple = new SimpleAlignment(AlignmentReaders.readFastaSequences(new FileReader(comArgs.alignment()), new Nucleotides()));
+            alignment = new AdvancedAlignment(simple);
+            tree = new ReadTree(comArgs.tree());
+        }
+        catch(Exception e){
+            System.out.println(Constants.ERROR_PREFIX + "Unable to load alignment or tree file(s)");
+            alignment = null;
+            tree = null;
+            e.printStackTrace();
+            System.exit(1);
+        }
+        
+        RunCANSum run = new RunCANSum(alignment, tree, comArgs);
+        
+        System.out.println(String.join(Constants.DEL, run.getHeader()));
+        System.out.println(ArrayPrinter.toString(run.getInitialValues(), Constants.DEL));
+        
+        
+    }// test main
+    
+
+    
+    
     
     public RunCANSum(AdvancedAlignment alignment, Tree tree, CommandArgs input){
         
@@ -74,7 +121,7 @@ public class RunCANSum extends RunModel {
     public double[] getInitialValues(){ // NB first element does not contain lnL
         ArrayList<Double> values = RunModel.getParameterValues(makeCANSum(this.comArgs).getParameters());
         double[] resultArray = new double[values.size()+2];
-        resultArray[0] = Constants.CAN0_IDENTIFIER;
+        resultArray[0] = Constants.CAN_SUM_IDENTIFIER;
         resultArray[1] = Double.NaN;
         
         for (int i = 0; i < values.size(); i++) {
