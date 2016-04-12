@@ -33,7 +33,7 @@ public class NewCodonAwareMatrix extends RateMatrix {
     
     
     public NewCodonAwareMatrix(TsTvRatioAdvanced kappa, int siteType,
-        Omega w_A, Omega w_B, Omega w_C, BranchScaling scaling, CodonFrequencies codonFrequencies, CodonSum codonSum){
+        Omega w_A, Omega w_B, Omega w_C, BranchScaling scaling, CodonSum codonSum){
         
         super(kappa, false); // we want to build on an unscaled K80 matrix
                
@@ -135,7 +135,7 @@ public class NewCodonAwareMatrix extends RateMatrix {
         CodonTable table = CodonTableFactory.createUniversalTranslator();;
         
         CodonSum codonSum = new CodonSum(codonFrequencies, table);
-        NewCodonAwareMatrix can = new NewCodonAwareMatrix(kappa, siteType, w_A, w_B, w_C, scaling, codonFrequencies, codonSum);
+        NewCodonAwareMatrix can = new NewCodonAwareMatrix(kappa, siteType, w_A, w_B, w_C, scaling, codonSum);
         
         MatrixPrinter.PrintMatrix(can.getData(), "Q");
         
