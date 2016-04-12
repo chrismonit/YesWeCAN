@@ -5,10 +5,26 @@
  */
 package yeswecan.model.submodels;
 
+import swmutsel.model.parameters.BaseFrequencies;
+import yeswecan.model.parameters.TsTvRatioAdvanced;
+
 /**
  *
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>
  */
-public class K80Model {
+public class K80Model extends SubstitutionModel {
+    
+    protected TsTvRatioAdvanced kappa;
+    
+    public K80Model(TsTvRatioAdvanced kappa){
+        this.kappa = kappa;
+
+        super.clearParameters();
+        super.addParameters(kappa);
+    }
+    
+    public TsTvRatioAdvanced getKappa() {
+        return kappa;
+    }
     
 }
