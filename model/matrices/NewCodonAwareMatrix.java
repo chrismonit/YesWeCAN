@@ -45,9 +45,10 @@ public class NewCodonAwareMatrix extends RateMatrix {
         for (int iNucState = 0; iNucState < States.NT_STATES; iNucState++) {
             for (int jNucState = 0; jNucState < States.NT_STATES; jNucState++) {
                 if (iNucState != jNucState){
-                    
+                    //System.out.println("iNucState\t"+iNucState+"\tjNucState\t"+jNucState);
                     double q_ij = getQij(iNucState, jNucState, siteType, this.getKappa(), scaling, omegas);
                     this.setEntry(iNucState, jNucState, q_ij);
+                    //System.out.println("");
                 }
             }
         }
@@ -86,7 +87,7 @@ public class NewCodonAwareMatrix extends RateMatrix {
             double numerator = (omegas[iFrame].get() * nonsynSum) + synSum;
             double denominator = this.codonSum.getCodonSum(positionOfInterest, iNucState);
             
-            //System.out.println("iFrame\t"+iFrame+"\tposition\t"+positionOfInterest+"\tnonsynSum\t"+nonsynSum+"\tsynSum\t"+synSum+"\tomega\t"+omegas[iFrame].get()+"\tnumerator\t"+numerator+"\tdenominator\t"+denominator+"\tratio\t"+numerator/denominator);
+            //System.out.println("siteType\t"+siteType+"\tiFrame\t"+iFrame+"\tposition\t"+positionOfInterest+"\tnonsynSum\t"+nonsynSum+"\tsynSum\t"+synSum+"\tomega\t"+omegas[iFrame].get()+"\tnumerator\t"+numerator+"\tdenominator\t"+denominator+"\tratio\t"+numerator/denominator);
             
             product *= (numerator/denominator);
             
