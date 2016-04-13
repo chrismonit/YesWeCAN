@@ -43,12 +43,12 @@ public class SimCANSum extends SimModel {
     
     private CodonSum codonSum;
     
-    public SimCANSum(Tree tree, Random rand, CANModelSum can, GeneticStructure genStruct, boolean printSubCounts, CodonSum codonSum){
+    public SimCANSum(Tree tree, Random rand, CANModelSum canModelSum, GeneticStructure genStruct, boolean printSubCounts, CodonSum codonSum){
       
         this.tree = tree;
         this.genStruct = genStruct;
         this.rand = rand;
-        this.canSum = can;
+        this.canSum = canModelSum;
         this.printSubCounts = printSubCounts;
         
         this.codonSum = codonSum;
