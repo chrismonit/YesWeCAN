@@ -15,6 +15,7 @@ import pal.tree.Node;
 import pal.tree.Tree;
 import swmutsel.model.parameters.Omega;
 import yeswecan.Constants;
+import yeswecan.model.codonawareness.CodonSum;
 import yeswecan.model.matrices.CodonAwareMatrix;
 import yeswecan.model.likelihood.ProbMatrixFactory;
 import yeswecan.model.likelihood.ProbMatrixGenerator;
@@ -39,15 +40,18 @@ public class SimCANSum extends SimModel {
     private Random rand;
     private AlignmentBuilder siteStates;
     private boolean printSubCounts;
-
     
-    public SimCANSum(Tree tree, Random rand, CANModelSum can, GeneticStructure genStruct, boolean printSubCounts){
+    private CodonSum codonSum;
+    
+    public SimCANSum(Tree tree, Random rand, CANModelSum can, GeneticStructure genStruct, boolean printSubCounts, CodonSum codonSum){
       
         this.tree = tree;
         this.genStruct = genStruct;
         this.rand = rand;
         this.canSum = can;
         this.printSubCounts = printSubCounts;
+        
+        this.codonSum = codonSum;
 
     }
     
@@ -72,12 +76,9 @@ public class SimCANSum extends SimModel {
                         
             // make model
             
-            RatioScaler ratioScaler = RatioScalerFactory.getRatioScaler();
-            CANMatrixSum canQ = new CANMatrixSum(this.canSum.getKappa(), siteType, aOmega, bOmega, cOmega, this.canSum.getScaling());            
-            //MatrixPrinter.PrintMatrix(canQ.getData(), "Q sim canSum", "");
+            CANMatrixSum canQ = new CANMatrixSum(this.canSum.getKappa(), siteType, aOmega, bOmega, cOmega, this.canSum.getScaling(), this.codonSum);            
 
             ProbMatrixGenerator Pgen = ProbMatrixFactory.getPGenerator(canQ);
-            //MatrixPrinter.PrintMatrix(Pgen.getP(0.2).getData(), "P(0.2)");
             // simulate according to process
                         
             int rootState = States.draw(canQ.getBaseFrequencies().get(), rand.nextDouble());
