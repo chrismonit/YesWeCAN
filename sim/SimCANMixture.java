@@ -105,5 +105,5 @@ public class SimCANMixture extends SimModel {
         Alignment allSites = new ConcatenatedAlignment(sites);
         return allSites;
     }
-    
+     
 }
