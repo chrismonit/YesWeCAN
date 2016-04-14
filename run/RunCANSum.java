@@ -130,7 +130,7 @@ public class RunCANSum extends RunModel {
     
 
     
-    protected static CANModelSum makeCANSum(CommandArgs comArgs){
+    public static CANModelSum makeCANSum(CommandArgs comArgs){
     
         TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(comArgs.kappa());
         if (comArgs.fix().contains(Constants.FIX_KAPPA)) {

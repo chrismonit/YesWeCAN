@@ -14,18 +14,24 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import java.util.Random;
 import pal.alignment.Alignment;
+import pal.datatype.CodonTableFactory;
 import pal.tree.ReadTree;
 import pal.tree.Tree;
 import swmutsel.model.parameters.BaseFrequencies;
 import yeswecan.cli.CommandArgs;
+import yeswecan.model.codonawareness.CodonSum;
 import yeswecan.model.submodels.CANModel;
 import yeswecan.model.submodels.CANModelMixture;
 import yeswecan.model.submodels.HKYModel;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
+import yeswecan.model.submodels.CANModelSum;
+import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.FastaWriter;
 import yeswecan.phylo.GeneticStructure;
+import yeswecan.run.RunCANSum;
 import yeswecan.sim.SimCAN;
 import yeswecan.sim.SimCANMixture;
+import yeswecan.sim.SimCANSum;
 import yeswecan.sim.SimFreqs;
 import yeswecan.sim.SimHKY;
 import yeswecan.utils.ArrayPrinter;
@@ -108,6 +114,22 @@ public class Simulate {
             result = simFreqs.simulate();
             
             System.out.println(Constants.NU + Constants.DEL + simFreqs.getMeanNu()); // NB this must be called after simulate method
+        }
+        else if (this.comArgs.getModel() == Constants.CAN_SUM_IDENTIFIER){
+            CANModelSum canSum = RunCANSum.makeCANSum(this.comArgs);
+            
+            CodonSum codonSum = new CodonSum(
+                new CodonFrequencies(this.comArgs.getCodonFrequencyPath()), 
+                CodonTableFactory.createUniversalTranslator()
+            );
+            
+            SimCANSum simSum = new SimCANSum(
+                    this.tree, rand, canSum, makeGenStruct(this.comArgs), 
+                    this.comArgs.verbose(), codonSum
+            );
+            
+            printReport(new RunCANSum(null, null, this.comArgs));
+            result = simSum.simulate();
         }
         else{
             throw new RuntimeException(Constants.ERROR_PREFIX + "Invalid model argument (-m)");
