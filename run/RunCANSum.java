@@ -56,6 +56,7 @@ public class RunCANSum extends RunModel {
                 new CodonFrequencies(input.getCodonFrequencyPath()), 
                 CodonTableFactory.createUniversalTranslator()
         );
+        System.out.println(Constants.CODON_FREQ_PATH+Constants.DEL+input.getCodonFrequencyPath());
     }
     
     
