@@ -46,7 +46,7 @@ public class NewCodonAwareMatrix extends RateMatrix {
             for (int jNucState = 0; jNucState < States.NT_STATES; jNucState++) {
                 if (iNucState != jNucState){
                     //System.out.println("iNucState\t"+iNucState+"\tjNucState\t"+jNucState);
-                    double q_ij = getQij(iNucState, jNucState, siteType, this.getKappa(), scaling, omegas);
+                    double q_ij = getQij(iNucState, jNucState, siteType, this.getKappa(), omegas);
                     this.setEntry(iNucState, jNucState, q_ij);
                     //System.out.println("");
                 }
@@ -62,19 +62,28 @@ public class NewCodonAwareMatrix extends RateMatrix {
         baseFreq.set(pi);
         super.setPi(baseFreq);
         
-        super.scale(); // needs pi values to be set first, as scaling depends on eq freqs
+        super.scale(); // scaling with nu, such that mean sub rate is 1. Needs pi values to be set first, as scaling depends on eq freqs
+                
+        // multiply by BranchScaling to adjust for estimating branch lengths from standard nucleotide models
+        for (int iNucState = 0; iNucState < States.NT_STATES; iNucState++) {
+            for (int jNucState = 0; jNucState < States.NT_STATES; jNucState++) {
+                this.multiplyEntry(iNucState, jNucState, scaling.get());                
+            }
+        }
 
+        
     }// constructor
     
  
     
     private double getQij(int iNucState, int jNucState, int siteType, 
-            TsTvRatioAdvanced kappa, BranchScaling scaling, Omega[] omegas){
+            TsTvRatioAdvanced kappa, Omega[] omegas){
         
         double product = 1.0;
         
         product *= kappa.getKappaIfTransition(iNucState, jNucState);
-        product *= scaling.get();
+        //product *= scaling.get(); // need to scale by BranchScaling AFTER scaling with nu, or will cancel
+        
         //System.out.println("kappa_if\t"+kappa.getKappaIfTransition(iNucState, jNucState)+"\tscaling\t"+scaling.get());
         //System.out.println("iNucState\t"+iNucState+"\tjNucState\t"+jNucState);
         for (int iFrame = 0; iFrame < 3; iFrame++) {
