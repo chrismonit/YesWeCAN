@@ -15,7 +15,7 @@ import yeswecan.model.codonawareness.CodonSum;
 import yeswecan.model.likelihood.LikelihoodCalculator;
 import yeswecan.model.likelihood.ProbMatrixFactory;
 import yeswecan.model.likelihood.ProbMatrixGenerator;
-import yeswecan.model.matrices.NewCodonAwareMatrix;
+import yeswecan.model.matrices.CANMatrixSum;
 import yeswecan.model.submodels.CANModelSum;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.GeneticStructure;
@@ -71,7 +71,7 @@ public class CANFunctionSum implements MultivariateFunction {
             
             // make rate matrix, make p matrix, compute lnL for site
             
-            NewCodonAwareMatrix Q = new NewCodonAwareMatrix(
+            CANMatrixSum Q = new CANMatrixSum(
                     this.canModelSum.getKappa(),
                     siteType,
                     aOmega, bOmega, cOmega,
