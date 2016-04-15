@@ -77,7 +77,7 @@ public class SimCANSum extends SimModel {
             // make model
             
             CANMatrixSum canQ = new CANMatrixSum(this.canSum.getKappa(), siteType, aOmega, bOmega, cOmega, this.canSum.getScaling(), this.codonSum);            
-
+            
             ProbMatrixGenerator Pgen = ProbMatrixFactory.getPGenerator(canQ);
             // simulate according to process
                         
