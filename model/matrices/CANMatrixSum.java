@@ -55,7 +55,7 @@ public class CANMatrixSum extends RateMatrix {
         
         //MatrixPrinter.PrintMatrix(this.getData(), "unscaled diagonals only");
         super.populateDiagonals();
-        MatrixPrinter.PrintMatrix(this.getData(), "canQ before scaling with nu or C");
+        //MatrixPrinter.PrintMatrix(this.getData(), "canQ before scaling with nu or C");
 
 
         double[] pi = getNormalisedPiValues(codonSum);
@@ -65,8 +65,8 @@ public class CANMatrixSum extends RateMatrix {
         
 
         
-        super.scale(); // scaling with nu, such that mean sub rate is 1. Needs pi values to be set first, as scaling depends on eq freqs
-        MatrixPrinter.PrintMatrix(this.getData(), "canQ after scaling with nu, before scaling with C");
+        //super.scale(); // scaling with nu, such that mean sub rate is 1. Needs pi values to be set first, as scaling depends on eq freqs
+        //MatrixPrinter.PrintMatrix(this.getData(), "canQ after scaling with nu, before scaling with C");
 
         // multiply by BranchScaling to adjust for estimating branch lengths from standard nucleotide models
         for (int iNucState = 0; iNucState < States.NT_STATES; iNucState++) {
@@ -75,7 +75,7 @@ public class CANMatrixSum extends RateMatrix {
             }
         }
         
-        MatrixPrinter.PrintMatrix(this.getData(), "canQ after scaling with nu, after scaling with C");
+        //MatrixPrinter.PrintMatrix(this.getData(), "canQ after scaling with nu, after scaling with C");
 
 
     }// constructor

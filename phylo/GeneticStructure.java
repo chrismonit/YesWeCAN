@@ -263,7 +263,7 @@ public class GeneticStructure {
         System.out.println(structure.toString());
         
         //MatrixPrinter.PrintMatrix(structure.siteTypeCounts, "site class counts (rows are partitions)");
-       
+        
     }
     
     
