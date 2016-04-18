@@ -13,7 +13,6 @@ import pal.alignment.ConcatenatedAlignment;
 import pal.datatype.Nucleotides;
 import pal.tree.Node;
 import pal.tree.Tree;
-import swmutsel.model.parameters.Omega;
 import yeswecan.Constants;
 import yeswecan.model.codonawareness.CodonSum;
 import yeswecan.model.functions.CANFunctionSum;
@@ -23,7 +22,6 @@ import yeswecan.model.matrices.CANMatrixSum;
 import yeswecan.model.submodels.CANModelSum;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.phylo.States;
-import yeswecan.utils.MatrixPrinter;
 
 /**
  *
@@ -76,7 +74,7 @@ public class SimCANSum extends SimModel {
             
             CANMatrixSum Q = Q_matrices[partition][siteType];
             
-            MatrixPrinter.PrintMatrix(Q.getData(), "Q site "+iSite);
+            //MatrixPrinter.PrintMatrix(Q.getData(), "scaled Q site "+iSite);
             
             ProbMatrixGenerator Pgen = ProbMatrixFactory.getPGenerator(Q);
             // simulate according to process
