@@ -49,6 +49,7 @@ public class Constants {
     public static final String ARGS_DELIMITER = ",";
     
     public static final char[] FRAMES = {'A', 'B', 'C'};
+    public static final String[] SITE_TYPES = {"ALPHA", "BETA", "GAMMA"};
     
     // for output text
     public static final String DEL = "\t";

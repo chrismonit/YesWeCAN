@@ -7,6 +7,7 @@
 package yeswecan.phylo;
 
 import yeswecan.Constants;
+import yeswecan.utils.MatrixPrinter;
 
 /**
  *
@@ -17,6 +18,8 @@ public class GeneticStructure {
     private Partition[] partitions;
     private int totalLength; // i.e. length of alignment
     private int numberOfGenes;
+    
+    private int[][] siteTypeCounts; // e.g. counts for the different types of site. e.g. 38 alpha sites in partition 4
     
     // version of constructore which takes strings, as if from command args
     public GeneticStructure(String aLayout, String bLayout, String cLayout,
@@ -88,6 +91,12 @@ public class GeneticStructure {
             this.partitions[iPartition] = new Partition(genes, partitionFirstSite, partitionLastSite);
             partitionFirstSite = (partitionFirstSite+partitionLengths[iPartition]); // for the next iteration
         }
+        
+        this.siteTypeCounts = new int[numPartitions][3];
+        for (int iSite = 0; iSite < this.totalLength; iSite++) {
+            this.siteTypeCounts[getPartitionIndex(iSite)][iSite%3]++;
+        }
+        
     }
     
     public int getNumberOfGenes(){
@@ -156,10 +165,9 @@ public class GeneticStructure {
     
     @Override
     public String toString(){
-        String d = "\t"; // column delimiter
-        StringBuilder builder = new StringBuilder(Constants.LAYOUT + d + "Sites");
+        StringBuilder builder = new StringBuilder(Constants.LAYOUT + Constants.DEL + "Sites");
         for (int i = 0; i < this.partitions.length; i++) {
-            builder.append(d);
+            builder.append(Constants.DEL);
             String first = Integer.toString(this.partitions[i].firstSite+1);// +1 to correct for zero-based
             String last = Integer.toString(this.partitions[i].lastSite+1);
             builder.append(first+"-"+last);
@@ -167,11 +175,23 @@ public class GeneticStructure {
         
         for (int i = 0; i < 3; i++) {
             builder.append(System.lineSeparator());
-            builder.append(Constants.LAYOUT + d);
-            builder.append(Constants.FRAMES[i] + d);
+            builder.append(Constants.LAYOUT + Constants.DEL);
+            builder.append(Constants.FRAMES[i] + Constants.DEL);
             for (int j = 0; j < this.partitions.length; j++) {
                 
-                builder.append(partitions[j].genes[i] + d);
+                builder.append(partitions[j].genes[i] + Constants.DEL);
+            }
+            //builder.append(System.lineSeparator());
+        }
+        
+        // print counts for site types
+        for (int i = 0; i < 3; i++) {
+            builder.append(System.lineSeparator());
+            builder.append(Constants.LAYOUT + Constants.DEL);
+            builder.append(Constants.SITE_TYPES[i] + Constants.DEL);
+            for (int j = 0; j < this.partitions.length; j++) {
+                
+                builder.append(this.siteTypeCounts[j][i] + Constants.DEL);
             }
             //builder.append(System.lineSeparator());
         }
@@ -222,15 +242,24 @@ public class GeneticStructure {
         };
         //int[] lengths = { 10, 20, 30, 40, 50 };
         
-        String a = "0,1,1,1,2";
-        String b = "2,2,0,0,0";
-        String c = "3,3,3,3,0";
-        String lengths = "70,20,30,40,50";
+//        String a = "0,1,1,1,2";
+//        String b = "2,2,0,0,0";
+//        String c = "3,3,3,3,0";
+//        String lengths = "70,20,30,40,50";
+        
+        
+        String a = "1,0,0,0";
+        String b = "0,2,0,0";
+        String c = "0,0,3,0";
+        String lengths = "12,8,11,1";
         
         //GeneticStructure structure = new GeneticStructure(genePositions, lengths);
         GeneticStructure structure = new GeneticStructure(a,b,c,lengths,",");
         
         System.out.println(structure.toString());
+        
+        //MatrixPrinter.PrintMatrix(structure.siteTypeCounts, "site class counts (rows are partitions)");
+        
     }
     
     
