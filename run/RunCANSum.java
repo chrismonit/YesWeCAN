@@ -57,6 +57,11 @@ public class RunCANSum extends RunModel {
                 CodonTableFactory.createUniversalTranslator()
         );
         System.out.println(Constants.CODON_FREQ_PATH+Constants.DEL+input.getCodonFrequencyPath());
+        
+        if (this.alignment.getLength() != this.genStruct.getTotalLength()){
+            throw new RuntimeException("Sum of partition lengths (-l) and alignment length differ! Please check that partition lengths are correct.");
+        }
+        
     }
     
     
