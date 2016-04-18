@@ -163,6 +163,10 @@ public class GeneticStructure {
         return false;
     }
     
+    public int getSiteTypeCount(int partitionIndex, int siteType){
+        return this.siteTypeCounts[partitionIndex][siteType];
+    }
+    
     @Override
     public String toString(){
         StringBuilder builder = new StringBuilder(Constants.LAYOUT + Constants.DEL + "Sites");
@@ -259,7 +263,7 @@ public class GeneticStructure {
         System.out.println(structure.toString());
         
         //MatrixPrinter.PrintMatrix(structure.siteTypeCounts, "site class counts (rows are partitions)");
-        
+       
     }
     
     
