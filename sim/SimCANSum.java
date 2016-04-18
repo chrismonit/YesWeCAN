@@ -16,6 +16,7 @@ import pal.tree.Tree;
 import swmutsel.model.parameters.Omega;
 import yeswecan.Constants;
 import yeswecan.model.codonawareness.CodonSum;
+import yeswecan.model.functions.CANFunctionSum;
 import yeswecan.model.likelihood.ProbMatrixFactory;
 import yeswecan.model.likelihood.ProbMatrixGenerator;
 import yeswecan.model.matrices.CANMatrixSum;
@@ -52,8 +53,9 @@ public class SimCANSum extends SimModel {
         
         this.codonSum = codonSum;
         
-        this.Q_matrices = new CANMatrixSum[this.genStruct.getNumberOfPartitions()][3];
-
+        this.Q_matrices = CANFunctionSum.createUnscaledMatrices(genStruct, canModelSum, codonSum);
+        double nu = CANFunctionSum.computeNu(this.genStruct, this.Q_matrices);
+        CANFunctionSum.scaleMatrices(this.genStruct, this.Q_matrices, nu);
     }
     
     public Alignment simulate(){
@@ -69,20 +71,17 @@ public class SimCANSum extends SimModel {
         for (int iSite = 0; iSite < this.genStruct.getTotalLength(); iSite++) {
             // determine evolutionary process (from site type and partition)
             
+            int partition = this.genStruct.getPartitionIndex(iSite);
             int siteType = iSite % 3;
-            int[] genes = genStruct.getGenes(iSite); // the genes present in the three frames in this partition
-            Omega aOmega = this.canSum.getOmega(genes[0]); // genes[0] is the gene present in frame A
-            Omega bOmega = this.canSum.getOmega(genes[1]);  
-            Omega cOmega = this.canSum.getOmega(genes[2]);  
-                        
-            // make model
             
-            CANMatrixSum canQ = new CANMatrixSum(this.canSum.getKappa(), siteType, aOmega, bOmega, cOmega, this.canSum.getScaling(), this.codonSum);            
+            CANMatrixSum Q = Q_matrices[partition][siteType];
             
-            ProbMatrixGenerator Pgen = ProbMatrixFactory.getPGenerator(canQ);
+            MatrixPrinter.PrintMatrix(Q.getData(), "Q site "+iSite);
+            
+            ProbMatrixGenerator Pgen = ProbMatrixFactory.getPGenerator(Q);
             // simulate according to process
                         
-            int rootState = States.draw(canQ.getBaseFrequencies().get(), rand.nextDouble());
+            int rootState = States.draw(Q.getBaseFrequencies().get(), rand.nextDouble());
 
             this.siteStates = new AlignmentBuilder(this.tree.getExternalNodeCount()); // an 'alignment' for a single site, which will be populated with states by downTree.
             

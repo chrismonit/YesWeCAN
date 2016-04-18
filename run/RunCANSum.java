@@ -58,9 +58,12 @@ public class RunCANSum extends RunModel {
         );
         System.out.println(Constants.CODON_FREQ_PATH+Constants.DEL+input.getCodonFrequencyPath());
         
-        if (this.alignment.getLength() != this.genStruct.getTotalLength()){
-            throw new RuntimeException("Sum of partition lengths (-l) and alignment length differ! Please check that partition lengths are correct.");
+        if (alignment != null) { // in Simulate class, I make instances of this class but pass in null alignment and tree
+            if (this.alignment.getLength() != this.genStruct.getTotalLength()){
+                throw new RuntimeException("Sum of partition lengths (-l) and alignment length differ! Please check that partition lengths are correct.");
+            }
         }
+        
         
     }
     
