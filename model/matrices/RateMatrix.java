@@ -106,8 +106,9 @@ public class RateMatrix extends Array2DRowRealMatrix {
         super.setSubMatrix(this.scalarMultiply(nu).getData(), 0, 0);
     }
     
-    public double getTotalRate(){
+    public final double getTotalRate(){
         // total rate = - \sum_{i} \pi_{i} q_{ii} = \sum_{i} \sum_{j \neq i} \pi_{i} q_{ij}
+        // we compute it anew each time in case the matrix data have been changed using public, inherited RealMatrix methods
         double totalRate = 0.0;
         
         for (int i = 0; i < this.numStates; i++) {
