@@ -34,7 +34,7 @@ public class CANFunctionSum implements MultivariateFunction {
     private CANModelSum canModelSum;
     private CodonSum codonSum;
     
-    private CANMatrixSum[][] Q_matrices;
+    
     
     public CANFunctionSum(
             AdvancedAlignment alignment, Tree tree, 
@@ -48,33 +48,39 @@ public class CANFunctionSum implements MultivariateFunction {
         this.codonSum = codonSum;
         // NB 0th omega is fixed to 1.0 for neutral evolution
         
-        this.Q_matrices = new CANMatrixSum[this.genStruct.getNumberOfPartitions()][3];
+        
     }
     
     
-    private void createUnscaledMatrices(){
+    public static CANMatrixSum[][] createUnscaledMatrices(
+        GeneticStructure genStruct, CANModelSum canModelSum, CodonSum codonSum){
         
-        for (int iPartition = 0; iPartition < this.genStruct.getNumberOfPartitions(); iPartition++) {
+        CANMatrixSum[][] Q_matrices = new CANMatrixSum[genStruct.getNumberOfPartitions()][3];
+        
+        for (int iPartition = 0; iPartition < genStruct.getNumberOfPartitions(); iPartition++) {
             for (int iSiteType = 0; iSiteType < 3; iSiteType++) {
                 // create unscaled Q matrix ( Q_{0} )
-                int[] genes = this.genStruct.getGenesByPartition(iPartition);
-                Omega aOmega = this.canModelSum.getOmegas().get(genes[0]);
-                Omega bOmega = this.canModelSum.getOmegas().get(genes[1]);
-                Omega cOmega = this.canModelSum.getOmegas().get(genes[2]);
+                int[] genes = genStruct.getGenesByPartition(iPartition);
+                Omega aOmega = canModelSum.getOmegas().get(genes[0]);
+                Omega bOmega = canModelSum.getOmegas().get(genes[1]);
+                Omega cOmega = canModelSum.getOmegas().get(genes[2]);
                 
-                this.Q_matrices[iPartition][iSiteType] = new CANMatrixSum(
-                    this.canModelSum.getKappa(),
+                Q_matrices[iPartition][iSiteType] = new CANMatrixSum(
+                    canModelSum.getKappa(),
                     iSiteType,
                     aOmega, bOmega, cOmega,
-                    this.canModelSum.getScaling(),
-                    this.codonSum
+                    canModelSum.getScaling(),
+                    codonSum
                 );
                 
             }// for iSiteType
         }// for iPartition
+        return Q_matrices;
     }
     
-    private static double computeNu(GeneticStructure genStruct, CANMatrixSum[][] Q_matrices_unscaled){
+    
+    
+    public static double computeNu(GeneticStructure genStruct, CANMatrixSum[][] Q_matrices_unscaled){
         /* \nu = 
             frac{n_{\el}}{ sum_{z} \sum_{k} n_{z,k} r_{z,k} }
             where $z$ represents partition, $k$ site type and $n_{\el}$ is the total number of sites in alignment
@@ -93,13 +99,16 @@ public class CANFunctionSum implements MultivariateFunction {
         return (double)genStruct.getTotalLength() / nuDenominator;
     }
     
-    private void scaleMatrices(double nu){
-        for (int iPartition = 0; iPartition < this.genStruct.getNumberOfPartitions(); iPartition++) {
+    public static void scaleMatrices(GeneticStructure genStruct, CANMatrixSum[][] Q_matrices, double nu){
+        // scales matrices 'in place', i.e. without creating new array
+        
+        for (int iPartition = 0; iPartition < genStruct.getNumberOfPartitions(); iPartition++) {
             for (int iSiteType = 0; iSiteType < 3; iSiteType++) {
                 
                 for (int i = 0; i < States.NT_STATES; i++) {
                     for (int j = 0; j < States.NT_STATES; j++) {
-                        this.Q_matrices[iPartition][iSiteType].multiplyEntry(i, j, nu);
+                        Q_matrices[iPartition][iSiteType].multiplyEntry(i, j, nu);
+                        
                     }// column j
                 }// row i
                 
@@ -114,11 +123,11 @@ public class CANFunctionSum implements MultivariateFunction {
         
         Mapper.setOptimisable(this.canModelSum.getParameters(), point);
 
-        createUnscaledMatrices();
+        CANMatrixSum[][] Q_matrices = createUnscaledMatrices(this.genStruct, this.canModelSum, this.codonSum);
         
-        double nu = computeNu(this.genStruct, this.Q_matrices);
+        double nu = computeNu(this.genStruct, Q_matrices);
 
-        scaleMatrices(nu);
+        scaleMatrices(this.genStruct, Q_matrices, nu);
         
         double lnL = 0.0;
         
@@ -126,7 +135,7 @@ public class CANFunctionSum implements MultivariateFunction {
             int partition = this.genStruct.getPartitionIndex(iSite);
             int siteType = iSite % 3;
             
-            CANMatrixSum Q = this.Q_matrices[partition][siteType];
+            CANMatrixSum Q = Q_matrices[partition][siteType];
             
             ProbMatrixGenerator P;
             try{

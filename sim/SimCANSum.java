@@ -16,11 +16,8 @@ import pal.tree.Tree;
 import swmutsel.model.parameters.Omega;
 import yeswecan.Constants;
 import yeswecan.model.codonawareness.CodonSum;
-import yeswecan.model.matrices.CodonAwareMatrix;
 import yeswecan.model.likelihood.ProbMatrixFactory;
 import yeswecan.model.likelihood.ProbMatrixGenerator;
-import yeswecan.model.codonawareness.RatioScaler;
-import yeswecan.model.codonawareness.RatioScalerFactory;
 import yeswecan.model.matrices.CANMatrixSum;
 import yeswecan.model.submodels.CANModelSum;
 import yeswecan.phylo.GeneticStructure;
@@ -42,6 +39,8 @@ public class SimCANSum extends SimModel {
     private boolean printSubCounts;
     
     private CodonSum codonSum;
+    private CANMatrixSum[][] Q_matrices;
+
     
     public SimCANSum(Tree tree, Random rand, CANModelSum canModelSum, GeneticStructure genStruct, boolean printSubCounts, CodonSum codonSum){
       
@@ -52,6 +51,8 @@ public class SimCANSum extends SimModel {
         this.printSubCounts = printSubCounts;
         
         this.codonSum = codonSum;
+        
+        this.Q_matrices = new CANMatrixSum[this.genStruct.getNumberOfPartitions()][3];
 
     }
     
