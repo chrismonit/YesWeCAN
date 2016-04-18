@@ -92,17 +92,29 @@ public class RateMatrix extends Array2DRowRealMatrix {
         // scale matrix such that average substitution rate is 1
         // compute nu
         
-        double nuDenominator = 0.0;
+//        double nuDenominator = 0.0;
+//        
+//        for (int i = 0; i < this.numStates; i++) {
+//            nuDenominator += this.pi.get()[i] * this.getEntry(i, i);
+//        }
+//        double nu = 1.0 / -nuDenominator;
         
-        for (int i = 0; i < this.numStates; i++) {
-            nuDenominator += this.pi.get()[i] * this.getEntry(i, i);
-        }
-        double nu = 1.0 / -nuDenominator;
+        double totalRate = getTotalRate();
+        double nu = 1.0 / totalRate;
         
         // apply the scaling
         super.setSubMatrix(this.scalarMultiply(nu).getData(), 0, 0);
     }
-
+    
+    public double getTotalRate(){
+        // total rate = - \sum_{i} \pi_{i} q_{ii} = \sum_{i} \sum_{j \neq i} \pi_{i} q_{ij}
+        double totalRate = 0.0;
+        
+        for (int i = 0; i < this.numStates; i++) {
+            totalRate += this.pi.get()[i] * this.getEntry(i, i);
+        }
+        return -totalRate;
+    }
     
 
 }//class
