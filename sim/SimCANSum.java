@@ -54,6 +54,8 @@ public class SimCANSum extends SimModel {
         this.Q_matrices = CANFunctionSum.createUnscaledMatrices(genStruct, canModelSum, codonSum);
         double nu = CANFunctionSum.computeNu(this.genStruct, this.Q_matrices);
         CANFunctionSum.scaleMatrices(this.genStruct, this.Q_matrices, nu);
+        CANFunctionSum.scaleMatrices(this.genStruct, this.Q_matrices, this.canSum.getScaling().get());
+        
     }
     
     public Alignment simulate(){
