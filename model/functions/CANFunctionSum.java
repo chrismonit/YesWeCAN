@@ -129,6 +129,13 @@ public class CANFunctionSum implements MultivariateFunction {
 
         scaleMatrices(this.genStruct, Q_matrices, nu);
         
+        //MatrixPrinter.PrintMatrix(Q_matrices[0][0].getData(), "after nu scaling");
+        
+        scaleMatrices(this.genStruct, Q_matrices, this.canModelSum.getScaling().get());
+        
+        //MatrixPrinter.PrintMatrix(Q_matrices[0][0].getData(), "after sc scaling");
+
+        
         double lnL = 0.0;
         
         for (int iSite = 0; iSite < this.alignment.getLength(); iSite++) {
