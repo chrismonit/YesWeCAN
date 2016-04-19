@@ -69,11 +69,11 @@ public class CANMatrixSum extends RateMatrix {
         //MatrixPrinter.PrintMatrix(this.getData(), "canQ after scaling with nu, before scaling with C");
 
         // multiply by BranchScaling to adjust for estimating branch lengths from standard nucleotide models
-        for (int iNucState = 0; iNucState < States.NT_STATES; iNucState++) {
-            for (int jNucState = 0; jNucState < States.NT_STATES; jNucState++) {
-                this.multiplyEntry(iNucState, jNucState, scaling.get());                
-            }
-        }
+//        for (int iNucState = 0; iNucState < States.NT_STATES; iNucState++) {
+//            for (int jNucState = 0; jNucState < States.NT_STATES; jNucState++) {
+//                this.multiplyEntry(iNucState, jNucState, scaling.get());                
+//            }
+//        }
         
         //MatrixPrinter.PrintMatrix(this.getData(), "canQ after scaling with nu, after scaling with C");
 
