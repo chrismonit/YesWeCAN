@@ -97,7 +97,7 @@ public class CANMatrixFreqProducts extends RateMatrix {
                                 );
                                 System.out.print("\t");
                                 
-                                product *= codonFrequenciesArray[iFrame].getFrequency(codonI);
+                                product *= codonFrequenciesArray[iFrame].getFrequency(ReorderFrequencies.alphaToPaml(codonI));
                                 //System.out.println("iCodon freq "+ArrayPrinter.toString(codonI, ",")+"\t"+codonFrequenciesArray[iFrame].getFrequency(ReorderFrequencies.alphaToPaml(codonI)));
 
                             }// iFrame
