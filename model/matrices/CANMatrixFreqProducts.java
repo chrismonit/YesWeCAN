@@ -88,17 +88,14 @@ public class CANMatrixFreqProducts extends RateMatrix {
                         for (int xp2 = 0; xp2 < States.NT_STATES; xp2++) {
 
                             int[] pentamerI = new int[]{ xm2, xm1, iState, xp1, xp2 };
-                            ArrayPrinter.print(pentamerI, ",");
                             double product = 1.0;
                             for (int iFrame = 0; iFrame < 3; iFrame++) {
                                 int[] codonI = Arrays.copyOfRange(
                                         pentamerI, codonStarts[siteType][iFrame], 
                                         codonStarts[siteType][iFrame]+3
                                 );
-                                System.out.print("\t");
                                 
                                 product *= codonFrequenciesArray[iFrame].getFrequency(ReorderFrequencies.alphaToPaml(codonI));
-                                //System.out.println("iCodon freq "+ArrayPrinter.toString(codonI, ",")+"\t"+codonFrequenciesArray[iFrame].getFrequency(ReorderFrequencies.alphaToPaml(codonI)));
 
                             }// iFrame
                             
@@ -152,7 +149,7 @@ public class CANMatrixFreqProducts extends RateMatrix {
                             product *= this.codonFrequenciesArray[iFrame].getFrequency(ReorderFrequencies.alphaToPaml(codonJ));
 
                         }// iFrame
-                    numerator += product;
+                        numerator += product;
 
                     }//xp2
                 }// xp1
@@ -173,11 +170,13 @@ public class CANMatrixFreqProducts extends RateMatrix {
         Omega w_B = new Omega(3.0);
         Omega w_C = new Omega(4.0);
         BranchScaling scaling = new BranchScaling(3.0);
-        CodonFrequencies codonFrequencies = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/hiv.csv");
+        CodonFrequencies codonFrequenciesHIV = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/hiv.csv");
+        CodonFrequencies codonFrequencies64 = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/64.csv");
+        CodonFrequencies codonFrequencies61 = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/61.csv");
         
         CodonTable table = CodonTableFactory.createUniversalTranslator();;
         
-        CodonFrequencies[] codonFrequenciesArray = { codonFrequencies, codonFrequencies, codonFrequencies };
+        CodonFrequencies[] codonFrequenciesArray = { codonFrequenciesHIV, codonFrequencies64, codonFrequencies64 };
         
 //        CANMatrixFreqProducts can = new CANMatrixFreqProducts(
 //                kappa, siteType, w_A, w_B, w_C, scaling, codonFrequenciesArray, table
