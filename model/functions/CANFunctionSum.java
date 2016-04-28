@@ -69,7 +69,7 @@ public class CANFunctionSum implements MultivariateFunction {
                     canModelSum.getKappa(),
                     iSiteType,
                     aOmega, bOmega, cOmega,
-                    canModelSum.getScaling(),
+                    canModelSum.getScaling(), // TODO branch scaling parameter not needed here!!
                     codonSum
                 );
                 
