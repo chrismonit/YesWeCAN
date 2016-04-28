@@ -18,6 +18,7 @@ import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.ReorderFrequencies;
 import yeswecan.phylo.States;
 import yeswecan.utils.ArrayPrinter;
+import yeswecan.utils.MatrixPrinter;
 
 /**
  *
@@ -33,41 +34,45 @@ public class CANMatrixFreqProducts extends RateMatrix {
         { 0, 1, 2 }  // gamma site
     };
     
-    //private CodonFrequencies[] codonFrequenciesArray;
-    //private CodonTable codonTable;
-    
     public CANMatrixFreqProducts(TsTvRatioAdvanced kappa, int siteType,
         Omega w_A, Omega w_B, Omega w_C, BranchScaling scaling, 
         CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable){
         
         super(kappa, false); // we want to build on an unscaled K80 matrix
         
-        //this.codonFrequenciesArray = codonFrequenciesArray;
-        //this.codonTable = codonTable;
+        MatrixPrinter.PrintMatrix(this.getData(), "A");
         
         // TODO this ought to be done in function class, outside of value method
-        Omega[] omegas = new Omega[]{w_A, w_B, w_C}; 
+        Omega[] omegaArray = new Omega[]{w_A, w_B, w_C}; 
                 
-        double[] pi = getRawBaseFrequencyValues(siteType, codonFrequenciesArray);
+        double[] piNotNormalised = getRawBaseFrequencyValues(siteType, codonFrequenciesArray);
+        
+        System.out.println("piNotNormalised "+ArrayPrinter.toString(piNotNormalised, ","));
         BaseFrequencies baseFreq = new BaseFrequencies();
-        baseFreq.set(pi);
+        baseFreq.set(piNotNormalised); // will normalise base frequencies
         super.setPi(baseFreq);
+        
+        double[] piNormalised = baseFreq.get();
+        System.out.println("piNormalised "+ArrayPrinter.toString(piNormalised, ","));
+        System.out.println("PI "+this.getBaseFrequencies().toString());
         
         for (int iNucState = 0; iNucState < States.NT_STATES; iNucState++) {
             for (int jNucState = 0; jNucState < States.NT_STATES; jNucState++) {
                 if (iNucState != jNucState){
                     //System.out.println("iNucState\t"+iNucState+"\tjNucState\t"+jNucState);
-                    double q_ij = getQij(
-                            iNucState, jNucState, siteType, this.getKappa(), 
-                            omegas, pi[iNucState], codonFrequenciesArray, codonTable
+                    double q_ij = getQij(iNucState, jNucState, siteType, this.getKappa(), 
+                            omegaArray, piNormalised[iNucState], codonFrequenciesArray, codonTable
                     );
                     
                     this.setEntry(iNucState, jNucState, q_ij);
                 }
             }
         }
-        
+        MatrixPrinter.PrintMatrix(this.getData(), "B");
+
         super.populateDiagonals();
+        
+        MatrixPrinter.PrintMatrix(this.getData(), "C");
 
     }// constructor
     
@@ -194,7 +199,15 @@ public class CANMatrixFreqProducts extends RateMatrix {
                 codonFrequenciesArray, table
         );
         
-        System.out.println("qij "+qij);
+        //System.out.println("qij "+qij);
+        
+        
+        CANMatrixFreqProducts can = new CANMatrixFreqProducts(kappa, siteType,
+        w_A, w_B, w_C, scaling, 
+        codonFrequenciesArray, table);
+        
+        
+        
         
     }// main
     
