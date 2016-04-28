@@ -177,8 +177,8 @@ public class CANFunctionFreqProducts implements MultivariateFunction {
         
     }
     
-    
-    
+        
+
     
     
     
