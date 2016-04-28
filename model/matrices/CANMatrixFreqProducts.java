@@ -15,6 +15,7 @@ import swmutsel.model.parameters.Omega;
 import yeswecan.model.codonawareness.CodonSum;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.CodonFrequencies;
+import yeswecan.phylo.ReorderFrequencies;
 import yeswecan.phylo.States;
 import yeswecan.utils.ArrayPrinter;
 
@@ -95,8 +96,10 @@ public class CANMatrixFreqProducts extends RateMatrix {
                                         codonStarts[siteType][iFrame]+3
                                 );
                                 System.out.print("\t");
-                                ArrayPrinter.print(codonI, ",");
+                                
                                 product *= codonFrequenciesArray[iFrame].getFrequency(codonI);
+                                //System.out.println("iCodon freq "+ArrayPrinter.toString(codonI, ",")+"\t"+codonFrequenciesArray[iFrame].getFrequency(ReorderFrequencies.alphaToPaml(codonI)));
+
                             }// iFrame
                             
                             sum += product;
@@ -147,7 +150,6 @@ public class CANMatrixFreqProducts extends RateMatrix {
                             }
                             product *= this.codonFrequenciesArray[iFrame].getFrequency(codonI);
                             product *= this.codonFrequenciesArray[iFrame].getFrequency(codonJ);
-
 
                         }// iFrame
                     numerator += product;
