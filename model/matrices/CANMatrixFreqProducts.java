@@ -39,22 +39,17 @@ public class CANMatrixFreqProducts extends RateMatrix {
         CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable){
         
         super(kappa, false); // we want to build on an unscaled K80 matrix
-        
-        MatrixPrinter.PrintMatrix(this.getData(), "A");
-        
+                
         // TODO this ought to be done in function class, outside of value method
         Omega[] omegaArray = new Omega[]{w_A, w_B, w_C}; 
                 
         double[] piNotNormalised = getRawBaseFrequencyValues(siteType, codonFrequenciesArray);
         
-        System.out.println("piNotNormalised "+ArrayPrinter.toString(piNotNormalised, ","));
         BaseFrequencies baseFreq = new BaseFrequencies();
         baseFreq.set(piNotNormalised); // will normalise base frequencies
         super.setPi(baseFreq);
         
         double[] piNormalised = baseFreq.get();
-        System.out.println("piNormalised "+ArrayPrinter.toString(piNormalised, ","));
-        System.out.println("PI "+this.getBaseFrequencies().toString());
         
         for (int iNucState = 0; iNucState < States.NT_STATES; iNucState++) {
             for (int jNucState = 0; jNucState < States.NT_STATES; jNucState++) {
@@ -68,12 +63,9 @@ public class CANMatrixFreqProducts extends RateMatrix {
                 }
             }
         }
-        MatrixPrinter.PrintMatrix(this.getData(), "B");
 
         super.populateDiagonals();
         
-        MatrixPrinter.PrintMatrix(this.getData(), "C");
-
     }// constructor
     
     
