@@ -32,7 +32,7 @@ public class CANMatrixSum extends RateMatrix {
         { 2, 1, 0 }  // gamma site
     };
     
-    
+    // TODO branch scaling parameter not needed here!!
     public CANMatrixSum(TsTvRatioAdvanced kappa, int siteType,
         Omega w_A, Omega w_B, Omega w_C, BranchScaling scaling, CodonSum codonSum){
         

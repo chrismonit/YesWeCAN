@@ -16,7 +16,7 @@ import yeswecan.model.likelihood.LikelihoodCalculator;
 import yeswecan.model.likelihood.ProbMatrixFactory;
 import yeswecan.model.likelihood.ProbMatrixGenerator;
 import yeswecan.model.matrices.CANMatrixSum;
-import yeswecan.model.submodels.CANModelSum;
+import yeswecan.model.submodels.CANModelFrequencies;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.phylo.States;
@@ -31,14 +31,14 @@ public class CANFunctionSum implements MultivariateFunction {
     private AdvancedAlignment alignment;
     private Tree tree;
     private GeneticStructure genStruct;
-    private CANModelSum canModelSum;
+    private CANModelFrequencies canModelSum;
     private CodonSum codonSum;
     
     
     
     public CANFunctionSum(
             AdvancedAlignment alignment, Tree tree, 
-            GeneticStructure genStruct, CANModelSum canModelSum, 
+            GeneticStructure genStruct, CANModelFrequencies canModelSum, 
             CodonSum codonSum){
         this.alignment = alignment;
         this.tree = tree;
@@ -53,7 +53,7 @@ public class CANFunctionSum implements MultivariateFunction {
     
     
     public static CANMatrixSum[][] createUnscaledMatrices(
-        GeneticStructure genStruct, CANModelSum canModelSum, CodonSum codonSum){
+        GeneticStructure genStruct, CANModelFrequencies canModelSum, CodonSum codonSum){
         
         CANMatrixSum[][] Q_matrices = new CANMatrixSum[genStruct.getNumberOfPartitions()][3];
         

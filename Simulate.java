@@ -24,7 +24,7 @@ import yeswecan.model.submodels.CANModel;
 import yeswecan.model.submodels.CANModelMixture;
 import yeswecan.model.submodels.HKYModel;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
-import yeswecan.model.submodels.CANModelSum;
+import yeswecan.model.submodels.CANModelFrequencies;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.FastaWriter;
 import yeswecan.phylo.GeneticStructure;
@@ -116,7 +116,7 @@ public class Simulate {
             System.out.println(Constants.NU + Constants.DEL + simFreqs.getMeanNu()); // NB this must be called after simulate method
         }
         else if (this.comArgs.getModel() == Constants.CAN_SUM_IDENTIFIER){
-            CANModelSum canSum = RunCANSum.makeCANSum(this.comArgs);
+            CANModelFrequencies canSum = RunCANSum.makeCANSum(this.comArgs);
             
             CodonSum codonSum = new CodonSum(
                 new CodonFrequencies(this.comArgs.getCodonFrequencyPath()), 

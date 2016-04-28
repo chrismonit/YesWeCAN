@@ -5,10 +5,27 @@
  */
 package yeswecan.model.functions;
 
+import pal.tree.Tree;
+import yeswecan.model.codonawareness.CodonSum;
+import yeswecan.model.submodels.CANModelFrequencies;
+import yeswecan.phylo.AdvancedAlignment;
+import yeswecan.phylo.GeneticStructure;
+
 /**
  *
  * @author cmonit1
  */
 public class CANFunctionFreqProducts {
+    
+    public CANFunctionFreqProducts(
+            AdvancedAlignment alignment, Tree tree, 
+            GeneticStructure genStruct, CANModelFrequencies canModelSum
+            
+    ){
+    
+    
+    
+    }
+    
     
 }

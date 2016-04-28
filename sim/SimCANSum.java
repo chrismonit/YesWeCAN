@@ -19,7 +19,7 @@ import yeswecan.model.functions.CANFunctionSum;
 import yeswecan.model.likelihood.ProbMatrixFactory;
 import yeswecan.model.likelihood.ProbMatrixGenerator;
 import yeswecan.model.matrices.CANMatrixSum;
-import yeswecan.model.submodels.CANModelSum;
+import yeswecan.model.submodels.CANModelFrequencies;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.phylo.States;
 
@@ -32,7 +32,7 @@ public class SimCANSum extends SimModel {
     
     private Tree tree;
     private GeneticStructure genStruct;
-    private CANModelSum canSum;        
+    private CANModelFrequencies canSum;        
     private Random rand;
     private AlignmentBuilder siteStates;
     private boolean printSubCounts;
@@ -41,7 +41,7 @@ public class SimCANSum extends SimModel {
     private CANMatrixSum[][] Q_matrices;
 
     
-    public SimCANSum(Tree tree, Random rand, CANModelSum canModelSum, GeneticStructure genStruct, boolean printSubCounts, CodonSum codonSum){
+    public SimCANSum(Tree tree, Random rand, CANModelFrequencies canModelSum, GeneticStructure genStruct, boolean printSubCounts, CodonSum codonSum){
       
         this.tree = tree;
         this.genStruct = genStruct;

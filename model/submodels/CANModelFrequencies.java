@@ -6,7 +6,6 @@
 package yeswecan.model.submodels;
 
 import java.util.List;
-import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Omega;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
@@ -15,13 +14,13 @@ import yeswecan.model.parameters.TsTvRatioAdvanced;
  *
  * @author Christopher Monit <c.monit.12@ucl.ac.uk>
  */
-public class CANModelSum extends K80Model {
+public class CANModelFrequencies extends K80Model {
     
     private List<Omega> omegas;
     private BranchScaling scaling;
 
     
-    public CANModelSum(
+    public CANModelFrequencies(
             TsTvRatioAdvanced kappa,
             BranchScaling scaling, List<Omega> omegas
     ){

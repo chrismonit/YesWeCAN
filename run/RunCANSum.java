@@ -19,7 +19,7 @@ import yeswecan.cli.CommandArgs;
 import yeswecan.model.codonawareness.CodonSum;
 import yeswecan.model.functions.CANFunctionSum;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
-import yeswecan.model.submodels.CANModelSum;
+import yeswecan.model.submodels.CANModelFrequencies;
 import yeswecan.optim.Optimise;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.CodonFrequencies;
@@ -94,7 +94,7 @@ public class RunCANSum extends RunModel {
     
     @Override
     public double[] calculate(){
-        CANModelSum canSum = makeCANSum(this.comArgs);
+        CANModelFrequencies canSum = makeCANSum(this.comArgs);
         double[] optimisableParams = Mapper.getOptimisable(canSum.getParameters()); // map parameters to optimisation space, so FunctionHKY.value can use them
         CANFunctionSum calculator = new CANFunctionSum(
                 this.alignment, this.tree, this.genStruct, 
@@ -117,13 +117,13 @@ public class RunCANSum extends RunModel {
     @Override 
     public double[] fit(){
   
-        CANModelSum canSum = makeCANSum(this.comArgs);
+        CANModelFrequencies canSum = makeCANSum(this.comArgs);
         CANFunctionSum optFunction = new CANFunctionSum(
                 this.alignment, this.tree, genStruct, canSum, 
                 this.codonSum
         );
         Optimise opt = new Optimise();
-        CANModelSum result = (CANModelSum)opt.optNMS(optFunction, canSum);
+        CANModelFrequencies result = (CANModelFrequencies)opt.optNMS(optFunction, canSum);
         
         ArrayList<Double> values = RunModel.getParameterValues(result.getParameters());
         values.add(0, result.getLnL()); // prepend
@@ -138,7 +138,7 @@ public class RunCANSum extends RunModel {
     
 
     
-    public static CANModelSum makeCANSum(CommandArgs comArgs){
+    public static CANModelFrequencies makeCANSum(CommandArgs comArgs){
     
         TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(comArgs.kappa());
         if (comArgs.fix().contains(Constants.FIX_KAPPA)) {
@@ -166,7 +166,7 @@ public class RunCANSum extends RunModel {
             omegas.add(w);
         }
         
-        return new CANModelSum(kappa, scaling, omegas );
+        return new CANModelFrequencies(kappa, scaling, omegas );
     }
     
 }
