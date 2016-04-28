@@ -148,8 +148,8 @@ public class CANMatrixFreqProducts extends RateMatrix {
                             if (codonTable.isSynonymous(codonI_int, codonJ_int)){
                                 product *= omegas[iFrame].get();
                             }
-                            product *= this.codonFrequenciesArray[iFrame].getFrequency(codonI);
-                            product *= this.codonFrequenciesArray[iFrame].getFrequency(codonJ);
+                            product *= this.codonFrequenciesArray[iFrame].getFrequency(ReorderFrequencies.alphaToPaml(codonI));
+                            product *= this.codonFrequenciesArray[iFrame].getFrequency(ReorderFrequencies.alphaToPaml(codonJ));
 
                         }// iFrame
                     numerator += product;
