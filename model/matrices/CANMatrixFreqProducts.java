@@ -33,8 +33,8 @@ public class CANMatrixFreqProducts extends RateMatrix {
         { 0, 1, 2 }  // gamma site
     };
     
-    private CodonFrequencies[] codonFrequenciesArray;
-    private CodonTable codonTable;
+    //private CodonFrequencies[] codonFrequenciesArray;
+    //private CodonTable codonTable;
     
     public CANMatrixFreqProducts(TsTvRatioAdvanced kappa, int siteType,
         Omega w_A, Omega w_B, Omega w_C, BranchScaling scaling, 
@@ -42,8 +42,8 @@ public class CANMatrixFreqProducts extends RateMatrix {
         
         super(kappa, false); // we want to build on an unscaled K80 matrix
         
-        this.codonFrequenciesArray = codonFrequenciesArray;
-        this.codonTable = codonTable;
+        //this.codonFrequenciesArray = codonFrequenciesArray;
+        //this.codonTable = codonTable;
         
         // TODO this ought to be done in function class, outside of value method
         Omega[] omegas = new Omega[]{w_A, w_B, w_C}; 
@@ -59,7 +59,7 @@ public class CANMatrixFreqProducts extends RateMatrix {
                     //System.out.println("iNucState\t"+iNucState+"\tjNucState\t"+jNucState);
                     double q_ij = getQij(
                             iNucState, jNucState, siteType, this.getKappa(), 
-                            omegas, pi[iNucState]
+                            omegas, pi[iNucState], codonFrequenciesArray, codonTable
                     );
                     
                     this.setEntry(iNucState, jNucState, q_ij);
@@ -111,8 +111,9 @@ public class CANMatrixFreqProducts extends RateMatrix {
     
     
     // TODO can probably make more efficient by separating sums of codon freqs from omegas
-    private double getQij(int iNucState, int jNucState, int siteType, 
-        TsTvRatioAdvanced kappa, Omega[] omegas, double iBaseFreq){
+    private static double getQij(int iNucState, int jNucState, int siteType, 
+        TsTvRatioAdvanced kappa, Omega[] omegas, double iBaseFreq, 
+        CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable){
 
         double numerator = 0.0;
 
@@ -123,9 +124,12 @@ public class CANMatrixFreqProducts extends RateMatrix {
                     for (int xp2 = 0; xp2 < States.NT_STATES; xp2++) {
 
                         double product = kappa.getKappaIfTransition(iNucState, jNucState);
-
+                        //System.out.println("A product "+product);
                         int[] pentamerI = new int[]{ xm2, xm1, iNucState, xp1, xp2 };
                         int[] pentamerJ = new int[]{ xm2, xm1, jNucState, xp1, xp2 };
+                        
+                        //System.out.println("pentamerI "+ArrayPrinter.toString(pentamerI, ","));
+                        //System.out.println("pentamerJ "+ArrayPrinter.toString(pentamerJ, ","));
                         
                         for (int iFrame = 0; iFrame < 3; iFrame++) {
 
@@ -137,25 +141,31 @@ public class CANMatrixFreqProducts extends RateMatrix {
                                     pentamerJ, codonStarts[siteType][iFrame], 
                                     codonStarts[siteType][iFrame]+3
                             );
-
+                            
                             int codonI_int = Codons.getCodonIndexFromNucleotideStates(codonI);
                             int codonJ_int = Codons.getCodonIndexFromNucleotideStates(codonJ);
 
                             
-                            if (codonTable.isSynonymous(codonI_int, codonJ_int)){
+                            if (!codonTable.isSynonymous(codonI_int, codonJ_int)){
+                                //System.out.println("omega "+omegas[iFrame].get());
                                 product *= omegas[iFrame].get();
                             }
-                            product *= this.codonFrequenciesArray[iFrame].getFrequency(ReorderFrequencies.alphaToPaml(codonI));
-                            product *= this.codonFrequenciesArray[iFrame].getFrequency(ReorderFrequencies.alphaToPaml(codonJ));
+                            product *= codonFrequenciesArray[iFrame].getFrequency(ReorderFrequencies.alphaToPaml(codonI));
+                            product *= codonFrequenciesArray[iFrame].getFrequency(ReorderFrequencies.alphaToPaml(codonJ));
 
+                            //System.out.println("\tcodonI "+ArrayPrinter.toString(codonI, ",")+"\t"+ codonFrequenciesArray[iFrame].getFrequency(ReorderFrequencies.alphaToPaml(codonI)));
+                            //System.out.println("\tcodonJ "+ArrayPrinter.toString(codonJ, ",")+"\t"+codonFrequenciesArray[iFrame].getFrequency(ReorderFrequencies.alphaToPaml(codonJ)));
+                            
+                            
                         }// iFrame
+                        //System.out.println("product "+product);
                         numerator += product;
 
                     }//xp2
                 }// xp1
             }// xm1
         }// xm2
-
+        
         return numerator/iBaseFreq;
   
     }// getQij
@@ -169,6 +179,7 @@ public class CANMatrixFreqProducts extends RateMatrix {
         Omega w_A = new Omega(2.0);
         Omega w_B = new Omega(3.0);
         Omega w_C = new Omega(4.0);
+        Omega[] omegas = new Omega[]{ w_A, w_B, w_C };
         BranchScaling scaling = new BranchScaling(3.0);
         CodonFrequencies codonFrequenciesHIV = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/hiv.csv");
         CodonFrequencies codonFrequencies64 = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/64.csv");
@@ -176,15 +187,22 @@ public class CANMatrixFreqProducts extends RateMatrix {
         
         CodonTable table = CodonTableFactory.createUniversalTranslator();;
         
-        CodonFrequencies[] codonFrequenciesArray = { codonFrequenciesHIV, codonFrequencies64, codonFrequencies64 };
+        CodonFrequencies[] codonFrequenciesArray = { codonFrequenciesHIV, codonFrequenciesHIV, codonFrequenciesHIV };
         
 //        CANMatrixFreqProducts can = new CANMatrixFreqProducts(
 //                kappa, siteType, w_A, w_B, w_C, scaling, codonFrequenciesArray, table
 //        );
         
+        int i = 0;
+        int j = 1;
+        double[] baseFrequencies = BaseFrequencies.getDefault();
         
-        double[] pi = CANMatrixFreqProducts.getRawBaseFrequencyValues(siteType, codonFrequenciesArray);
-        System.out.println(""+ArrayPrinter.toString(pi, ","));
+        double qij = CANMatrixFreqProducts.getQij(
+                i, j, siteType, kappa, omegas, baseFrequencies[i], 
+                codonFrequenciesArray, table
+        );
+        
+        System.out.println("qij "+qij);
         
     }// main
     
