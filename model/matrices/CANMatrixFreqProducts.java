@@ -158,47 +158,44 @@ public class CANMatrixFreqProducts extends RateMatrix {
     
     
     
-    public static void main(String[] args){
-        TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(2.0);
-
-        int siteType = 0;
-        Omega w_A = new Omega(2.0);
-        Omega w_B = new Omega(3.0);
-        Omega w_C = new Omega(4.0);
-        Omega[] omegas = new Omega[]{ w_A, w_B, w_C };
-        BranchScaling scaling = new BranchScaling(3.0);
-        CodonFrequencies codonFrequenciesHIV = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/hiv.csv");
-        CodonFrequencies codonFrequencies64 = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/64.csv");
-        CodonFrequencies codonFrequencies61 = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/61.csv");
-        
-        CodonTable table = CodonTableFactory.createUniversalTranslator();;
-        
-        CodonFrequencies[] codonFrequenciesArray = { codonFrequenciesHIV, codonFrequenciesHIV, codonFrequenciesHIV };
-        
-//        CANMatrixFreqProducts can = new CANMatrixFreqProducts(
-//                kappa, siteType, w_A, w_B, w_C, scaling, codonFrequenciesArray, table
+//    public static void main(String[] args){
+//        TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(2.0);
+//
+//        int siteType = 0;
+//        Omega w_A = new Omega(2.0);
+//        Omega w_B = new Omega(3.0);
+//        Omega w_C = new Omega(4.0);
+//        Omega[] omegas = new Omega[]{ w_A, w_B, w_C };
+//        BranchScaling scaling = new BranchScaling(3.0);
+//        CodonFrequencies codonFrequenciesHIV = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/hiv.csv");
+//        CodonFrequencies codonFrequencies64 = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/64.csv");
+//        CodonFrequencies codonFrequencies61 = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/61.csv");
+//        
+//        CodonTable table = CodonTableFactory.createUniversalTranslator();;
+//        
+//        CodonFrequencies[] codonFrequenciesArray = { codonFrequenciesHIV, codonFrequenciesHIV, codonFrequenciesHIV };
+//        
+////        CANMatrixFreqProducts can = new CANMatrixFreqProducts(
+////                kappa, siteType, w_A, w_B, w_C, scaling, codonFrequenciesArray, table
+////        );
+//        
+//        int i = 0;
+//        int j = 1;
+//        double[] baseFrequencies = BaseFrequencies.getDefault();
+//        
+//        double qij = CANMatrixFreqProducts.getQij(
+//                i, j, siteType, kappa, omegas, baseFrequencies[i], 
+//                codonFrequenciesArray, table
 //        );
-        
-        int i = 0;
-        int j = 1;
-        double[] baseFrequencies = BaseFrequencies.getDefault();
-        
-        double qij = CANMatrixFreqProducts.getQij(
-                i, j, siteType, kappa, omegas, baseFrequencies[i], 
-                codonFrequenciesArray, table
-        );
-        
-        //System.out.println("qij "+qij);
-        
-        
-        CANMatrixFreqProducts can = new CANMatrixFreqProducts(kappa, siteType,
-        w_A, w_B, w_C, scaling, 
-        codonFrequenciesArray, table);
-        
-        
-        
-        
-    }// main
-    
+//        
+//        //System.out.println("qij "+qij);
+//        
+//        
+//        CANMatrixFreqProducts can = new CANMatrixFreqProducts(kappa, siteType,
+//        omegas,
+//        codonFrequenciesArray, table);
+//
+//    }// main
+//    
     
 }
