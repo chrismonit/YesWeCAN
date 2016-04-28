@@ -32,13 +32,13 @@ public class CANMatrixFreqProducts extends RateMatrix {
     };
     
     public CANMatrixFreqProducts(TsTvRatioAdvanced kappa, int siteType,
-        Omega w_A, Omega w_B, Omega w_C, BranchScaling scaling, 
+        Omega[] omegaArray, 
         CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable){
         
         super(kappa, false); // we want to build on an unscaled K80 matrix
                 
         // TODO this ought to be done in function class, outside of value method
-        Omega[] omegaArray = new Omega[]{w_A, w_B, w_C}; 
+        //Omega[] omegaArray = new Omega[]{w_A, w_B, w_C}; 
                 
         double[] piNotNormalised = getRawBaseFrequencyValues(siteType, codonFrequenciesArray);
         
