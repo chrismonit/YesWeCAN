@@ -124,13 +124,10 @@ public class CANMatrixFreqProducts extends RateMatrix {
                     for (int xp2 = 0; xp2 < States.NT_STATES; xp2++) {
 
                         double product = kappa.getKappaIfTransition(iNucState, jNucState);
-                        //System.out.println("A product "+product);
+
                         int[] pentamerI = new int[]{ xm2, xm1, iNucState, xp1, xp2 };
                         int[] pentamerJ = new int[]{ xm2, xm1, jNucState, xp1, xp2 };
-                        
-                        //System.out.println("pentamerI "+ArrayPrinter.toString(pentamerI, ","));
-                        //System.out.println("pentamerJ "+ArrayPrinter.toString(pentamerJ, ","));
-                        
+                                                
                         for (int iFrame = 0; iFrame < 3; iFrame++) {
 
                             int[] codonI = Arrays.copyOfRange(
@@ -147,18 +144,13 @@ public class CANMatrixFreqProducts extends RateMatrix {
 
                             
                             if (!codonTable.isSynonymous(codonI_int, codonJ_int)){
-                                //System.out.println("omega "+omegas[iFrame].get());
                                 product *= omegas[iFrame].get();
                             }
                             product *= codonFrequenciesArray[iFrame].getFrequency(ReorderFrequencies.alphaToPaml(codonI));
                             product *= codonFrequenciesArray[iFrame].getFrequency(ReorderFrequencies.alphaToPaml(codonJ));
-
-                            //System.out.println("\tcodonI "+ArrayPrinter.toString(codonI, ",")+"\t"+ codonFrequenciesArray[iFrame].getFrequency(ReorderFrequencies.alphaToPaml(codonI)));
-                            //System.out.println("\tcodonJ "+ArrayPrinter.toString(codonJ, ",")+"\t"+codonFrequenciesArray[iFrame].getFrequency(ReorderFrequencies.alphaToPaml(codonJ)));
-                            
                             
                         }// iFrame
-                        //System.out.println("product "+product);
+                        
                         numerator += product;
 
                     }//xp2
