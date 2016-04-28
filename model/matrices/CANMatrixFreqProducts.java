@@ -12,13 +12,10 @@ import pal.datatype.Codons;
 import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Omega;
-import yeswecan.model.codonawareness.CodonSum;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.ReorderFrequencies;
 import yeswecan.phylo.States;
-import yeswecan.utils.ArrayPrinter;
-import yeswecan.utils.MatrixPrinter;
 
 /**
  *
