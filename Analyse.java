@@ -20,6 +20,7 @@ import pal.tree.ReadTree;
 import pal.tree.Tree;
 import yeswecan.cli.CommandArgs;
 import yeswecan.phylo.AdvancedAlignment;
+import yeswecan.run.RunCANFreqProducts;
 import yeswecan.run.RunCANSum;
 import yeswecan.utils.ArrayPrinter;
 
@@ -58,6 +59,8 @@ public class Analyse {
             case Constants.CAN0_IDENTIFIER: run = new RunCAN(alignment, tree, this.comArgs);
                 break;
             case Constants.CAN_SUM_IDENTIFIER: run = new RunCANSum(alignment, tree, this.comArgs);
+                break;
+            case Constants.CAN_FREQ_IDENTIFIER: run = new RunCANFreqProducts(alignment, tree, this.comArgs);
                 break;
             case Constants.M1_IDENTIFIER: run = new RunCANMixture(alignment, tree, this.comArgs, Constants.M1_IDENTIFIER);
                 break;

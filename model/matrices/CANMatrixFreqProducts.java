@@ -16,6 +16,8 @@ import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.ReorderFrequencies;
 import yeswecan.phylo.States;
+import yeswecan.utils.ArrayPrinter;
+import yeswecan.utils.MatrixPrinter;
 
 /**
  *
@@ -39,7 +41,8 @@ public class CANMatrixFreqProducts extends RateMatrix {
                 
         // TODO this ought to be done in function class, outside of value method
         //Omega[] omegaArray = new Omega[]{w_A, w_B, w_C}; 
-                
+        
+        // NB the unnormalised versions of these pi values are required for computing q_ij
         double[] piNotNormalised = getRawBaseFrequencyValues(siteType, codonFrequenciesArray);
         
         BaseFrequencies baseFreq = new BaseFrequencies();
@@ -53,7 +56,7 @@ public class CANMatrixFreqProducts extends RateMatrix {
                 if (iNucState != jNucState){
                     //System.out.println("iNucState\t"+iNucState+"\tjNucState\t"+jNucState);
                     double q_ij = getQij(iNucState, jNucState, siteType, this.getKappa(), 
-                            omegaArray, piNormalised[iNucState], codonFrequenciesArray, codonTable
+                            omegaArray, piNotNormalised[iNucState], codonFrequenciesArray, codonTable
                     );
                     
                     this.setEntry(iNucState, jNucState, q_ij);
@@ -62,7 +65,7 @@ public class CANMatrixFreqProducts extends RateMatrix {
         }
 
         super.populateDiagonals();
-        
+          
     }// constructor
     
     
@@ -118,10 +121,10 @@ public class CANMatrixFreqProducts extends RateMatrix {
                     for (int xp2 = 0; xp2 < States.NT_STATES; xp2++) {
 
                         double product = kappa.getKappaIfTransition(iNucState, jNucState);
-
+                        
                         int[] pentamerI = new int[]{ xm2, xm1, iNucState, xp1, xp2 };
                         int[] pentamerJ = new int[]{ xm2, xm1, jNucState, xp1, xp2 };
-                                                
+                                            
                         for (int iFrame = 0; iFrame < 3; iFrame++) {
 
                             int[] codonI = Arrays.copyOfRange(
@@ -144,7 +147,7 @@ public class CANMatrixFreqProducts extends RateMatrix {
                             product *= codonFrequenciesArray[iFrame].getFrequency(ReorderFrequencies.alphaToPaml(codonJ));
                             
                         }// iFrame
-                        
+
                         numerator += product;
 
                     }//xp2
