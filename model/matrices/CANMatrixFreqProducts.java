@@ -43,20 +43,30 @@ public class CANMatrixFreqProducts extends RateMatrix {
         //Omega[] omegaArray = new Omega[]{w_A, w_B, w_C}; 
         
         // NB the unnormalised versions of these pi values are required for computing q_ij
-        double[] piNotNormalised = getRawBaseFrequencyValues(siteType, codonFrequenciesArray);
+        double[] unnormalisedContextProbSums = getUnnormalisedContextProbsSums(siteType, codonFrequenciesArray);
+        double sumContextProbs = 0.0; // Z. Sum of all products of codon frequencies
+        for (int iNucState = 0; iNucState < States.NT_STATES; iNucState++) {
+            sumContextProbs += unnormalisedContextProbSums[iNucState];
+        }
+        
+        double[] normalisedBaseProbs = new double[States.NT_STATES];
+        for (int iNucState = 0; iNucState < States.NT_STATES; iNucState++) {
+            normalisedBaseProbs[iNucState] = unnormalisedContextProbSums[iNucState]/sumContextProbs;
+        }
         
         BaseFrequencies baseFreq = new BaseFrequencies();
-        baseFreq.set(piNotNormalised); // will normalise base frequencies
+
+        baseFreq.set(normalisedBaseProbs); // will normalise base frequencies
         super.setPi(baseFreq);
         
-        double[] piNormalised = baseFreq.get();
+        //double[] piNormalised = baseFreq.get();
         
         for (int iNucState = 0; iNucState < States.NT_STATES; iNucState++) {
             for (int jNucState = 0; jNucState < States.NT_STATES; jNucState++) {
                 if (iNucState != jNucState){
                     //System.out.println("iNucState\t"+iNucState+"\tjNucState\t"+jNucState);
                     double q_ij = getQij(iNucState, jNucState, siteType, this.getKappa(), 
-                            omegaArray, piNotNormalised[iNucState], codonFrequenciesArray, codonTable
+                            omegaArray, unnormalisedContextProbSums[iNucState], sumContextProbs, codonFrequenciesArray, codonTable
                     );
                     
                     this.setEntry(iNucState, jNucState, q_ij);
@@ -70,12 +80,13 @@ public class CANMatrixFreqProducts extends RateMatrix {
     
     
     // raw because not normalised
-    public static double[] getRawBaseFrequencyValues(
-            int siteType, CodonFrequencies[] codonFrequenciesArray){
+    // sum_{x_{-2}} \sum_{x_{-1}} \sum_{x_{1}} \sum_{x_{2}} F_{xxi} F_{xix} F_{ixx}
+    public static double[] getUnnormalisedContextProbsSums(
+        int siteType, CodonFrequencies[] codonFrequenciesArray){
         
-        double[] baseFrequencies = new double[States.NT_STATES];
+        double[] unnormalisedContextProbs = new double[States.NT_STATES];
         
-        for (int iState = 0; iState < baseFrequencies.length; iState++) {
+        for (int iState = 0; iState < unnormalisedContextProbs.length; iState++) {
             
             double sum = 0.0;
             
@@ -101,15 +112,15 @@ public class CANMatrixFreqProducts extends RateMatrix {
                     }//xp1
                 }//xm1
             }//xm2
-            baseFrequencies[iState] = sum;
+            unnormalisedContextProbs[iState] = sum;
         }// iState
-        return baseFrequencies;
+        return unnormalisedContextProbs;
     }// getBaseFrequencyValues
     
     
     // TODO can probably make more efficient by separating sums of codon freqs from omegas
     private static double getQij(int iNucState, int jNucState, int siteType, 
-        TsTvRatioAdvanced kappa, Omega[] omegas, double iBaseFreq, 
+        TsTvRatioAdvanced kappa, Omega[] omegas, double iSumUnnormalisedContextProb, double sumContextProbs,
         CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable){
 
         double numerator = 0.0;
@@ -155,50 +166,50 @@ public class CANMatrixFreqProducts extends RateMatrix {
             }// xm1
         }// xm2
         
-        return numerator/iBaseFreq;
+        return numerator/(sumContextProbs * iSumUnnormalisedContextProb);
   
     }// getQij
     
     
     
-//    public static void main(String[] args){
-//        TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(2.0);
-//
-//        int siteType = 0;
-//        Omega w_A = new Omega(2.0);
-//        Omega w_B = new Omega(3.0);
-//        Omega w_C = new Omega(4.0);
-//        Omega[] omegas = new Omega[]{ w_A, w_B, w_C };
-//        BranchScaling scaling = new BranchScaling(3.0);
-//        CodonFrequencies codonFrequenciesHIV = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/hiv.csv");
-//        CodonFrequencies codonFrequencies64 = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/64.csv");
-//        CodonFrequencies codonFrequencies61 = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/61.csv");
-//        
-//        CodonTable table = CodonTableFactory.createUniversalTranslator();;
-//        
-//        CodonFrequencies[] codonFrequenciesArray = { codonFrequenciesHIV, codonFrequenciesHIV, codonFrequenciesHIV };
-//        
-////        CANMatrixFreqProducts can = new CANMatrixFreqProducts(
-////                kappa, siteType, w_A, w_B, w_C, scaling, codonFrequenciesArray, table
-////        );
-//        
-//        int i = 0;
-//        int j = 1;
-//        double[] baseFrequencies = BaseFrequencies.getDefault();
-//        
-//        double qij = CANMatrixFreqProducts.getQij(
-//                i, j, siteType, kappa, omegas, baseFrequencies[i], 
-//                codonFrequenciesArray, table
-//        );
-//        
-//        //System.out.println("qij "+qij);
-//        
-//        
-//        CANMatrixFreqProducts can = new CANMatrixFreqProducts(kappa, siteType,
-//        omegas,
-//        codonFrequenciesArray, table);
-//
-//    }// main
-//    
+    public static void main(String[] args){
+        TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(2.0);
+
+        int siteType = 0;
+        Omega w_A = new Omega(1.0);
+        Omega w_B = new Omega(1.0);
+        Omega w_C = new Omega(1.0);
+        Omega[] omegas = new Omega[]{ w_A, w_B, w_C };
+        BranchScaling scaling = new BranchScaling(3.0);
+        CodonFrequencies codonFrequenciesHIV = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/hiv.csv");
+        CodonFrequencies codonFrequencies64 = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/64.csv");
+        CodonFrequencies codonFrequencies61 = new CodonFrequencies("/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/61.csv");
+        
+        CodonTable table = CodonTableFactory.createUniversalTranslator();;
+        
+        CodonFrequencies[] codonFrequenciesArray = { codonFrequencies61, codonFrequencies61, codonFrequencies61 };
+
+        CANMatrixFreqProducts can = new CANMatrixFreqProducts(kappa, siteType,
+        omegas,
+        codonFrequenciesArray, table);
+
+        MatrixPrinter.PrintMatrix(can.getData(), "can data");
+        
+        System.out.println(can.getBaseFrequencies().toString());
+        
+        System.out.println("\n~ Fin ~");
+        System.exit(1);
+        
+//        double[] rawBaseFreqs = CANMatrixFreqProducts.getUnnormalisedContextProbsSums(siteType, codonFrequenciesArray);
+//        System.out.println("rawBaseFreqs\t"+ArrayPrinter.toString(rawBaseFreqs, ","));
+//        double sum = 0.0;
+//        for (int k = 0; k < rawBaseFreqs.length; k++) {
+//            sum += rawBaseFreqs[k];
+//        }
+//        System.out.println("sum (Z) "+sum);
+                
+        
+    }// main
+    
     
 }
