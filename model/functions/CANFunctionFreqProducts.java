@@ -64,17 +64,18 @@ public class CANFunctionFreqProducts implements MultivariateFunction {
 
         CANMatrixFreqProducts[][] Q_matrices = new CANMatrixFreqProducts[genStruct.getNumberOfPartitions()][3];
         for (int iPartition = 0; iPartition < genStruct.getNumberOfPartitions(); iPartition++) {
-            for (int iSiteType = 0; iSiteType < 3; iSiteType++) {
-                
+            
                 // create unscaled Q matrix ( Q_{0} )                
                 int[] genes = genStruct.getGenesByPartition(iPartition);
                 Omega[] omegas = new Omega[3];
                 CodonFrequencies[] geneCodonFrequenciesArray = new CodonFrequencies[3];
-                
+                                
                 for (int iFrame = 0; iFrame < 3; iFrame++) {
                     omegas[iFrame] = canModel.getOmegas().get(genes[iFrame]);
                     geneCodonFrequenciesArray[iFrame] = codonFrequenciesArray[genes[iFrame]];
                 }
+
+            for (int iSiteType = 0; iSiteType < 3; iSiteType++) {
                 
                 Q_matrices[iPartition][iSiteType] = new CANMatrixFreqProducts(
                     canModel.getKappa(), iSiteType, omegas,
@@ -135,17 +136,11 @@ public class CANFunctionFreqProducts implements MultivariateFunction {
         CANMatrixFreqProducts[][] Q_matrices = createUnscaledMatrices(this.genStruct, 
                 this.canModel, this.codonFrequenciesArray, this.codonTable);
         
-        MatrixPrinter.PrintMatrix(Q_matrices[0][0].getData(), "unscaled matrix");
-
         double nu = computeNu(this.genStruct, Q_matrices);
-        System.out.println("nu "+nu);
+        
         scaleMatrices(this.genStruct, Q_matrices, nu);
-        MatrixPrinter.PrintMatrix(Q_matrices[0][0].getData(), "after nu scaling");
         
         scaleMatrices(this.genStruct, Q_matrices, this.canModel.getScaling().get());
-        
-        MatrixPrinter.PrintMatrix(Q_matrices[0][0].getData(), "after sc scaling");
-
         
         double lnL = 0.0;
         

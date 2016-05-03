@@ -60,7 +60,7 @@ public class CANMatrixFreqProducts extends RateMatrix {
         super.setPi(baseFreq);
         
         //double[] piNormalised = baseFreq.get();
-        
+               
         for (int iNucState = 0; iNucState < States.NT_STATES; iNucState++) {
             for (int jNucState = 0; jNucState < States.NT_STATES; jNucState++) {
                 if (iNucState != jNucState){
