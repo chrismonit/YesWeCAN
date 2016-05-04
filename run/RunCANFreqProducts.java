@@ -14,13 +14,12 @@ import pal.tree.Tree;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
-import yeswecan.run.RunModel;
 import yeswecan.Constants;
 import yeswecan.cli.CommandArgs;
 import yeswecan.model.functions.CANFunctionFreqProducts;
-import yeswecan.model.functions.CANFunctionSum;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.model.submodels.CANModelFrequencies;
+import yeswecan.optim.Optimise;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.GeneticStructure;
@@ -158,10 +157,25 @@ public class RunCANFreqProducts extends RunModel {
     
     
     
-    // TODO
     @Override 
     public double[] fit(){
-        return new double[3];
+  
+        CANModelFrequencies canModel = makeCAN(this.comArgs);
+        CANFunctionFreqProducts optFunction = new CANFunctionFreqProducts(
+                this.alignment, this.tree, genStruct, canModel, 
+                this.codonFrequenciesArray, this.codonTable
+        );
+        Optimise opt = new Optimise();
+        CANModelFrequencies result = (CANModelFrequencies)opt.optNMS(optFunction, canModel);
+        
+        ArrayList<Double> values = RunModel.getParameterValues(result.getParameters());
+        values.add(0, result.getLnL()); // prepend
+        double[] resultArray = new double[values.size()+1];
+        resultArray[0] = Constants.CAN_FREQ_IDENTIFIER;
+        for (int i = 0; i < values.size(); i++) {
+            resultArray[i+1] = values.get(i);
+        }
+        return resultArray;
+ 
     }
-    
 }
