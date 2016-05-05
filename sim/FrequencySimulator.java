@@ -424,7 +424,7 @@ public class FrequencySimulator {
         siteType is siteIndex%3 (and obviously not quint[2]%3)
     */
     
-    private static int[] getCodon(int[] quint, int centralState, int frame, int siteType){
+    protected static int[] getCodon(int[] quint, int centralState, int frame, int siteType){
         int[] quintCopy = new int[quint.length]; // we create a copy so we can change the central state if needed
         System.arraycopy(quint, 0, quintCopy, 0, quint.length);
         quintCopy[2] = centralState; // if centralState == quint[2], then quintCopy == quint

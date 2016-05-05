@@ -7,12 +7,14 @@ package yeswecan.sim;
 
 import java.util.List;
 import java.util.Random;
+import pal.datatype.Codons;
 import pal.tree.Tree;
 import swmutsel.model.parameters.Omega;
 import swmutsel.model.parameters.Probabilities;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.GeneticStructure;
+import yeswecan.phylo.ReorderFrequencies;
 import yeswecan.phylo.States;
 
 /**
@@ -44,15 +46,36 @@ public class FrequencySimulatorMix extends FrequencySimulator {
         // print the matrix so we know the true classes at each site
     }
     
-//    @Override
-//    public double computeRate(int[] quintStates, int j, int site, double nu){
-//        int[] genes = super.genStruct.getGenes(site);
-//        double product = 1.0; // multiplicative identity
-//                
-//        product *= this.kappa.getKappaIfTransition(quintStates[2], j);
-//        
-//        
-//    }
+    @Override
+    public double computeRate(int[] quintStates, int j, int site, double nu){
+        int[] genes = this.genStruct.getGenes(site);
+        double product = 1.0; // multiplicative identity
+                
+        product *= this.kappa.getKappaIfTransition(quintStates[2], j);
+        for (int iFrame = 0; iFrame < 3; iFrame++) {
+            int[] codonI_array = getCodon(quintStates, quintStates[2], iFrame, site%3);
+            int codonI = Codons.getCodonIndexFromNucleotideStates(codonI_array);
+            
+            int[] codonJ_array = getCodon(quintStates, j, iFrame, site%3);
+
+            int codonJ = Codons.getCodonIndexFromNucleotideStates(codonJ_array);
+
+            if (!this.codonTable.isSynonymous(codonI, codonJ)) { 
+                product *= this.omegas.get(genes[iFrame]).get();
+            }
+
+            CodonFrequencies geneCodonFreq = this.codonFrequencies.get(genes[iFrame]);
+            int[] mappedToPaml = ReorderFrequencies.alphaToPaml(codonJ_array); // expecting codons will be ordered TCAG in codonFrequencies instances
+            double pi_J = geneCodonFreq.getFrequency(mappedToPaml); 
+            product *= pi_J;
+            
+        }// iFrame
+        
+        product *= nu;
+        
+        return product;
+        
+    }
     
     public static int[][] assignGeneSiteClasses(int numSites, int numGenes, 
             Random rand, List<Probabilities> probabilities){
