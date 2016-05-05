@@ -59,9 +59,14 @@ public class FrequencySimulatorMix extends FrequencySimulator {
             int[] codonJ_array = getCodon(quintStates, j, iFrame, site%3);
 
             int codonJ = Codons.getCodonIndexFromNucleotideStates(codonJ_array);
-
+               
             if (!this.codonTable.isSynonymous(codonI, codonJ)) { 
-                product *= this.omegas.get(genes[iFrame]).get();
+                int gene = genes[iFrame];
+                int siteClass = this.geneSiteClasses[site][gene];
+                
+                int omegaIndex = (gene * this.numSiteClasses) + siteClass;
+                
+                product *= this.omegas.get(omegaIndex).get();
             }
 
             CodonFrequencies geneCodonFreq = this.codonFrequencies.get(genes[iFrame]);
