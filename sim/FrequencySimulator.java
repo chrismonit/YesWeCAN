@@ -35,15 +35,15 @@ import yeswecan.utils.ArrayPrinter;
  */
 public class FrequencySimulator {
     
-    private Tree tree;
-    private Random rand;
-    private GeneticStructure genStruct;
-    private List<Omega> omegas;
-    private TsTvRatioAdvanced kappa;
-    private List<CodonFrequencies> codonFrequencies;
-    private CodonTable codonTable;
+    protected Tree tree;
+    protected Random rand;
+    protected GeneticStructure genStruct;
+    protected List<Omega> omegas;
+    protected TsTvRatioAdvanced kappa;
+    protected List<CodonFrequencies> codonFrequencies;
+    protected CodonTable codonTable;
     
-    private int nTERMINAL_SITES_IGNORED = 2;
+    protected int nTERMINAL_SITES_IGNORED = 2;
     
     
     public FrequencySimulator(Tree tree, Random rand, GeneticStructure genStruct,
