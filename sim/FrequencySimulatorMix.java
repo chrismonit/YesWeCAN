@@ -40,7 +40,7 @@ public class FrequencySimulatorMix extends FrequencySimulator {
         this.numSiteClasses = numSiteClasses; // do we need this?
         
         this.geneSiteClasses = assignGeneSiteClasses(
-                genStruct.getTotalLength(), genStruct.getNumberOfGenes(), 
+                genStruct.getTotalLength(), genStruct.getNumberOfGenes()+1, 
                 rand, probabilities);
         
         // print the matrix so we know the true classes at each site
