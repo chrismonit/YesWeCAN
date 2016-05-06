@@ -53,7 +53,7 @@ public class RunCANMixture extends RunModel {
         
     }// constructor
     
-    private static int numberSiteClasses(int mixtureModel){
+    public static int numberSiteClasses(int mixtureModel){
         int numSiteClasses = -1;
 
         if (mixtureModel == Constants.M2_IDENTIFIER)
