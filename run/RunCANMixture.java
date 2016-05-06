@@ -64,7 +64,7 @@ public class RunCANMixture extends RunModel {
     }
     
 //    public void fixed(){
-//        CANModelMixture canMixInitial = makeMixture(this.comArgs, this.comArgs.getModel());
+//        CANModelMixture canMixInitial = makeMixture(this.comArgs, this.comArgs.getModel()); // NB will need to add complexModelIdentifier argument
 //        for (Parameter p : canMixInitial.getParameters()){
 //            System.out.print(p.toString());
 //            System.out.print(" ");
@@ -127,11 +127,11 @@ public class RunCANMixture extends RunModel {
     
     @Override
     public  double[] getInitialValues(){ // NB first element does not contain lnL
-        return getValueArray( makeMixture(this.comArgs, this.comArgs.getModel()) );
+        return getValueArray( makeMixture(this.comArgs, this.comArgs.getModel(), Constants.M2_IDENTIFIER) );
     }
     
     
-    public static CANModelMixture makeMixture(CommandArgs comArgs, int mixtureModel){
+    public static CANModelMixture makeMixture(CommandArgs comArgs, int mixtureModel, int complexModelIdentifier){
         
         HKYModel hky = RunHKY.makeHKY(comArgs);
         
@@ -155,7 +155,7 @@ public class RunCANMixture extends RunModel {
         neutralW_1.setOptimisable(false);
         omegas.add(neutralW_1);
         
-        if (mixtureModel == Constants.M2_IDENTIFIER){
+        if (mixtureModel == complexModelIdentifier){
             OmegaPositive neutralW_2 = new OmegaPositive(1.0); 
             neutralW_2.setOptimisable(false);
             omegas.add(neutralW_2);
@@ -211,7 +211,7 @@ public class RunCANMixture extends RunModel {
     @Override
     public double[] fit(){
         
-        CANModelMixture canMix = makeMixture(this.comArgs, this.comArgs.getModel());
+        CANModelMixture canMix = makeMixture(this.comArgs, this.comArgs.getModel(), Constants.M2_IDENTIFIER);
         CANFunctionMixture optFunction = 
                 new CANFunctionMixture(this.alignment, this.tree, genStruct, canMix, 
                         this.numSiteClasses
@@ -228,7 +228,7 @@ public class RunCANMixture extends RunModel {
     @Override
     public double[] calculate(){
                 
-        CANModelMixture canMix = makeMixture(this.comArgs, this.comArgs.getModel());
+        CANModelMixture canMix = makeMixture(this.comArgs, this.comArgs.getModel(), Constants.M2_IDENTIFIER);
         double[] optimisableParams = Mapper.getOptimisable(canMix.getParameters()); // map parameters to optimisation space, so FunctionHKY.value canMix use them
         CANFunctionMixture calculator = 
                 new CANFunctionMixture(this.alignment, this.tree, this.genStruct, 

@@ -96,7 +96,7 @@ public class Simulate {
             
         }
         else if (this.comArgs.getModel() == Constants.M1_IDENTIFIER || this.comArgs.getModel() == Constants.M2_IDENTIFIER ){
-            CANModelMixture canMix = RunCANMixture.makeMixture(this.comArgs, this.comArgs.getModel());
+            CANModelMixture canMix = RunCANMixture.makeMixture(this.comArgs, this.comArgs.getModel(), Constants.M2_IDENTIFIER);
             SimCANMixture simMix = new SimCANMixture(
                     this.tree, rand, canMix, makeGenStruct(this.comArgs), this.comArgs.verbose()
             );

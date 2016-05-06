@@ -34,12 +34,12 @@ public class SimFreqsMix extends SimFreqs {
             
             */          
             
-            this.canMix = RunCANMixture.makeMixture(comArgs, comArgs.getModel());
+            this.canMix = RunCANMixture.makeMixture(comArgs, comArgs.getModel(), Constants.CODON_FREQ_MIX2_IDENTIFIER);
             this.omegas = canMix.getOmegas(); // probably redundant, for completeness
             this.comArgs = comArgs;
             
             numSiteClasses = numberSiteClasses(comArgs.getModel());
-            
+
             this.simulator = new FrequencySimulatorMix(
                     tree, rand, genStruct, kappa, this.canMix.getOmegas(),
                     this.codonFrequencies, this.canMix.getProbabilities(),
