@@ -18,7 +18,7 @@ import yeswecan.run.RunCANMixture;
  */
 public class SimFreqsMix extends SimFreqs {
         
-        
+        protected CANModelMixture canMix;
     
         public SimFreqsMix(Tree tree, Random rand, GeneticStructure genStruct, 
             CommandArgs comArgs){
@@ -29,13 +29,15 @@ public class SimFreqsMix extends SimFreqs {
             
             */          
             
-            CANModelMixture canMix = RunCANMixture.makeMixture(comArgs, comArgs.getModel());
+            this.canMix = RunCANMixture.makeMixture(comArgs, comArgs.getModel());
+            this.omegas = canMix.getOmegas(); // probably redundant, for completeness
             
+//            this.simulator = new FrequencySimulatorMix(
+//                    tree, rand, genStruct, kappa, this.canMix.getOmegas()
+//                    this.codonFrequencies, this.canMix.
+//            );
             
-            
-            // assing omegas
-            // assign probabiltiies
-            
+                       
             // construct freqsimmix instance
             
             // override header method
