@@ -119,7 +119,7 @@ public class Simulate {
         else if (this.comArgs.getModel() == Constants.CODON_FREQ_MIX1_IDENTIFIER || 
                 this.comArgs.getModel() == Constants.CODON_FREQ_MIX2_IDENTIFIER
                 ){
-            
+            // HERE!
             System.out.println(Constants.CODON_FREQ_PATH + Constants.DEL + comArgs.getCodonFrequencyPath());
             SimFreqsMix simFreqsMix = new SimFreqsMix(this.tree, rand, makeGenStruct(this.comArgs), this.comArgs);
             

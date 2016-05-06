@@ -38,7 +38,7 @@ public class SimFreqsMix extends SimFreqs {
             this.omegas = canMix.getOmegas(); // probably redundant, for completeness
             this.comArgs = comArgs;
             
-            numSiteClasses = RunCANMixture.numberSiteClasses(comArgs.getModel());
+            numSiteClasses = numberSiteClasses(comArgs.getModel());
             
             this.simulator = new FrequencySimulatorMix(
                     tree, rand, genStruct, kappa, this.canMix.getOmegas(),
@@ -80,7 +80,15 @@ public class SimFreqsMix extends SimFreqs {
 
         }
         
-        
+        public static int numberSiteClasses(int mixtureModel){ // based on near identical method in RunCANMixture
+        int numSiteClasses = -1;
+
+        if (mixtureModel == Constants.CODON_FREQ_MIX2_IDENTIFIER)
+            numSiteClasses = Constants.NUM_M2_SITE_CLASSES;
+        else
+            numSiteClasses = Constants.NUM_M1_SITE_CLASSES;
+        return numSiteClasses;
+    }
         
                 
 }
