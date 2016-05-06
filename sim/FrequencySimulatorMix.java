@@ -43,8 +43,12 @@ public class FrequencySimulatorMix extends FrequencySimulator {
                 genStruct.getTotalLength(), genStruct.getNumberOfGenes()+1, 
                 rand, probabilities);
         
-        // print the matrix so we know the true classes at each site
     }
+    
+    public int[][] getGenSiteClasses(){
+        return this.geneSiteClasses;
+    }
+    
     
     @Override
     public double computeRate(int[] quintStates, int j, int site, double nu){
