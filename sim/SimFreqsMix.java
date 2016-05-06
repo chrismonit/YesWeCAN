@@ -36,6 +36,12 @@ public class SimFreqsMix extends SimFreqs {
             
             this.canMix = RunCANMixture.makeMixture(comArgs, comArgs.getModel(), Constants.CODON_FREQ_MIX2_IDENTIFIER);
             this.omegas = canMix.getOmegas(); // probably redundant, for completeness
+            
+            for (swmutsel.model.parameters.Omega w : this.omegas){
+                System.out.println(w);
+            }
+            
+            System.out.println("number omegas "+this.omegas.size());
             this.comArgs = comArgs;
             
             numSiteClasses = numberSiteClasses(comArgs.getModel());

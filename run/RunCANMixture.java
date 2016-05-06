@@ -186,7 +186,7 @@ public class RunCANMixture extends RunModel {
             
             Probabilities geneProbs;
 
-            if (mixtureModel == Constants.M2_IDENTIFIER){
+            if (mixtureModel == complexModelIdentifier){
                 OmegaPositive geneW_2 = new OmegaPositive(comArgs.omega2()[iGene]); 
                 if (comArgs.fix().contains(Integer.toString(iGene+1) + Constants.WITIHIN_FIELD_SEPARATOR + Constants.OMEGA_STRING + Constants.SITE_CLASS_2)) //+1 for zero based
                    geneW_2.setOptimisable(false);
