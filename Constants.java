@@ -31,6 +31,8 @@ public class Constants {
     public static final int M1_IDENTIFIER = 1;
     public static final int M2_IDENTIFIER = 2;
     public static final int CODON_FREQ_IDENTIFIER = 3;
+    public static final int CODON_FREQ_MIX1_IDENTIFIER = 6; // TODO renumber these models!
+    public static final int CODON_FREQ_MIX2_IDENTIFIER = 7;
     public static final int CAN_SUM_IDENTIFIER = 4;
     public static final int CAN_FREQ_IDENTIFIER = 5;
 
