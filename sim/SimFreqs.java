@@ -27,23 +27,23 @@ public class SimFreqs {
     
 
     
-    private Tree tree;
-    private Random rand;
-    private GeneticStructure genStruct;
-    private TsTvRatioAdvanced kappa;
-    private List<Omega> omegas;
-    private List<CodonFrequencies> codonFrequencies;
+    protected Tree tree;
+    protected Random rand;
+    protected GeneticStructure genStruct;
+    protected TsTvRatioAdvanced kappa;
+    protected List<Omega> omegas;
+    protected List<CodonFrequencies> codonFrequencies;
     
-    private int nSubs;
-    private int nRepeats;
-    private double equiBranchLength;
-    private boolean allowStops;
+    protected int nSubs;
+    protected int nRepeats;
+    protected double equiBranchLength;
+    protected boolean allowStops;
     
-    private int geneNumber; // just for get header and param values methods
+    protected int geneNumber; // just for get header and param values methods
     
-    private FrequencySimulator simulator;
+    protected FrequencySimulator simulator;
     
-    private double meanNu; // for purposes of output only
+    protected double meanNu; // for purposes of output only
     
     public SimFreqs(Tree tree, Random rand, GeneticStructure genStruct, 
             CommandArgs comArgs){
