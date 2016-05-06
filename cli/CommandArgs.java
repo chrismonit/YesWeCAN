@@ -264,10 +264,10 @@ public class CommandArgs {
     }
     
     private double[] prob(String argument){
-        if (this.model == Constants.M1_IDENTIFIER){
+        if (this.model == Constants.M1_IDENTIFIER || this.model == Constants.CODON_FREQ_MIX1_IDENTIFIER){
             return geneSpecificParameter(argument, 1.0/(double)Constants.NUM_M1_SITE_CLASSES);
         }
-        else if (this.model == Constants.M2_IDENTIFIER){
+        else if (this.model == Constants.M2_IDENTIFIER || this.model == Constants.CODON_FREQ_MIX2_IDENTIFIER){
             return geneSpecificParameter(argument, 1.0/(double)Constants.NUM_M2_SITE_CLASSES);
         }
         else{

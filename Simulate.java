@@ -33,6 +33,7 @@ import yeswecan.sim.SimCAN;
 import yeswecan.sim.SimCANMixture;
 import yeswecan.sim.SimCANSum;
 import yeswecan.sim.SimFreqs;
+import yeswecan.sim.SimFreqsMix;
 import yeswecan.sim.SimHKY;
 import yeswecan.utils.ArrayPrinter;
 
@@ -114,6 +115,21 @@ public class Simulate {
             result = simFreqs.simulate();
             
             System.out.println(Constants.NU + Constants.DEL + simFreqs.getMeanNu()); // NB this must be called after simulate method
+        }
+        else if (this.comArgs.getModel() == Constants.CODON_FREQ_MIX1_IDENTIFIER || 
+                this.comArgs.getModel() == Constants.CODON_FREQ_MIX2_IDENTIFIER
+                ){
+            
+            System.out.println(Constants.CODON_FREQ_PATH + Constants.DEL + comArgs.getCodonFrequencyPath());
+            SimFreqsMix simFreqsMix = new SimFreqsMix(this.tree, rand, makeGenStruct(this.comArgs), this.comArgs);
+            
+            System.out.println(Constants.HEADER + Constants.DEL + String.join(Constants.DEL, simFreqsMix.getHeader()));
+            System.out.println(Constants.SIMULATION + Constants.DEL + ArrayPrinter.toString(simFreqsMix.getSimParameters(), Constants.DEL));
+            
+            result = simFreqsMix.simulate();
+            
+            System.out.println(Constants.NU + Constants.DEL + simFreqsMix.getMeanNu()); // NB this must be called after simulate method
+            // need to print site classes here?
         }
         else if (this.comArgs.getModel() == Constants.CAN_SUM_IDENTIFIER){
             CANModelFrequencies canSum = RunCANSum.makeCANSum(this.comArgs);
