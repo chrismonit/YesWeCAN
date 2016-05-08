@@ -7,6 +7,7 @@ package yeswecan.sim;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import pal.tree.Tree;
 import yeswecan.Constants;
@@ -36,16 +37,16 @@ public class SimFreqsMix extends SimFreqs {
             
             this.canMix = RunCANMixture.makeMixture(comArgs, comArgs.getModel(), Constants.CODON_FREQ_MIX2_IDENTIFIER);
             this.omegas = canMix.getOmegas(); // probably redundant, for completeness
+            System.out.println("can mix num site classes "+canMix.numSiteClasses);
+
             
-            for (swmutsel.model.parameters.Omega w : this.omegas){
-                System.out.println(w);
-            }
-            
-            System.out.println("number omegas "+this.omegas.size());
+            System.exit(1);
             this.comArgs = comArgs;
             
-            numSiteClasses = numberSiteClasses(comArgs.getModel());
+            this.numSiteClasses = numberSiteClasses(comArgs.getModel());
 
+            System.out.println("num site classes "+numSiteClasses);
+            
             this.simulator = new FrequencySimulatorMix(
                     tree, rand, genStruct, kappa, this.canMix.getOmegas(),
                     this.codonFrequencies, this.canMix.getProbabilities(),
@@ -65,7 +66,7 @@ public class SimFreqsMix extends SimFreqs {
             //TODO?
         }
         
-        // TEST THIS!
+        
         @Override
         public String[] getHeader(){
             ArrayList<String> columns = new ArrayList<String>();
@@ -86,7 +87,49 @@ public class SimFreqsMix extends SimFreqs {
 
         }
         
-        public static int numberSiteClasses(int mixtureModel){ // based on near identical method in RunCANMixture
+    @Override
+    public double[] getSimParameters(){
+        List<Double> resultList = new ArrayList<Double>();
+        
+        resultList.add((double)this.comArgs.getModel());
+        resultList.add(this.kappa.get());
+        resultList.add((double)this.nRepeats);
+        resultList.add((double)this.nSubs);
+        resultList.add(this.equiBranchLength);
+        resultList.add((this.allowStops) ? 1.0 : 0.0);
+        
+        System.out.println("size "+omegas.size());
+        
+        for (int iGene = 1; iGene < this.comArgs.getGeneNumber()+1; iGene++) {
+            System.out.println("iGene "+iGene);
+            for (int jClass = 0; jClass < this.numSiteClasses; jClass++) {
+                resultList.add( canMix.getOmega(iGene, jClass).get() );
+                System.out.println("jClass "+ jClass +" " + canMix.getOmega(iGene, jClass));
+            }
+            
+            for (int jClass = 0; jClass < this.numSiteClasses; jClass++) {
+                resultList.add( canMix.getProbability(iGene, jClass) );
+            }
+            
+            System.out.println("");
+        }
+        
+        double[] resultArray = new double[resultList.size()];
+        for (int i = 0; i < resultList.size(); i++) {
+            resultArray[i] = resultList.get(i).doubleValue();
+        }
+        
+        for (swmutsel.model.parameters.Omega w : canMix.getOmegas()){
+            System.out.println(w);
+            
+        }
+        
+        //System.exit(1);
+        return resultArray;
+    }
+        
+        
+    public static int numberSiteClasses(int mixtureModel){ // based on near identical method in RunCANMixture
         int numSiteClasses = -1;
 
         if (mixtureModel == Constants.CODON_FREQ_MIX2_IDENTIFIER)

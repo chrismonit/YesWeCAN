@@ -119,13 +119,14 @@ public class Simulate {
         else if (this.comArgs.getModel() == Constants.CODON_FREQ_MIX1_IDENTIFIER || 
                 this.comArgs.getModel() == Constants.CODON_FREQ_MIX2_IDENTIFIER
                 ){
-            // HERE!
+            // WORKING ON THIS BIT!
             System.out.println(Constants.CODON_FREQ_PATH + Constants.DEL + comArgs.getCodonFrequencyPath());
+            System.out.println("A");
             SimFreqsMix simFreqsMix = new SimFreqsMix(this.tree, rand, makeGenStruct(this.comArgs), this.comArgs);
-            
+            System.out.println("B");
             System.out.println(Constants.HEADER + Constants.DEL + String.join(Constants.DEL, simFreqsMix.getHeader()));
             System.out.println(Constants.SIMULATION + Constants.DEL + ArrayPrinter.toString(simFreqsMix.getSimParameters(), Constants.DEL));
-            
+            System.out.println("C");
             result = simFreqsMix.simulate();
             
             System.out.println(Constants.NU + Constants.DEL + simFreqsMix.getMeanNu()); // NB this must be called after simulate method

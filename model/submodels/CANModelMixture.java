@@ -45,6 +45,8 @@ public class CANModelMixture extends CANModel {
     // calling that method from this class would give you the wrong omega instance
     public Omega getOmega(int gene, int siteClass){
         int index = gene * this.numSiteClasses + siteClass;
+        System.out.println("getOmega numsiteclasses "+this.numSiteClasses);
+        System.out.println("index "+index);
         return super.getOmegas().get(index);
     }
     
