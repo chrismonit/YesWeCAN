@@ -127,11 +127,15 @@ public class RunCANMixture extends RunModel {
     
     @Override
     public  double[] getInitialValues(){ // NB first element does not contain lnL
-        return getValueArray( makeMixture(this.comArgs, this.comArgs.getModel(), Constants.M2_IDENTIFIER) );
+        return getValueArray( makeMixture(this.comArgs, this.comArgs.getModel(), Constants.M2_IDENTIFIER, numberSiteClasses(this.comArgs.getModel())) );
     }
     
-    
+    // in most casses, using the method in this class will be for M1/M2 mixture models, in which case the numberSiteClasses() method in this class is an appropriate default
     public static CANModelMixture makeMixture(CommandArgs comArgs, int mixtureModel, int complexModelIdentifier){
+        return makeMixture(comArgs, mixtureModel, complexModelIdentifier, numberSiteClasses(comArgs.getModel()));
+    }
+        
+    public static CANModelMixture makeMixture(CommandArgs comArgs, int mixtureModel, int complexModelIdentifier, int numberOfSiteClasses){
         
         HKYModel hky = RunHKY.makeHKY(comArgs);
         
@@ -204,14 +208,14 @@ public class RunCANMixture extends RunModel {
            
         } // for iGene
         
-        return new CANModelMixture(hky, scaling, omegas, probs, numberSiteClasses(mixtureModel)); // need to call numberSiteClasses rather than using numSiteClasses field so this method can be static
+        return new CANModelMixture(hky, scaling, omegas, probs, numberOfSiteClasses); // need to call numberSiteClasses rather than using numSiteClasses field so this method can be static
     }// make mixture
     
     
     @Override
     public double[] fit(){
         
-        CANModelMixture canMix = makeMixture(this.comArgs, this.comArgs.getModel(), Constants.M2_IDENTIFIER);
+        CANModelMixture canMix = makeMixture(this.comArgs, this.comArgs.getModel(), Constants.M2_IDENTIFIER, numberSiteClasses(this.comArgs.getModel()));
         CANFunctionMixture optFunction = 
                 new CANFunctionMixture(this.alignment, this.tree, genStruct, canMix, 
                         this.numSiteClasses
@@ -228,7 +232,7 @@ public class RunCANMixture extends RunModel {
     @Override
     public double[] calculate(){
                 
-        CANModelMixture canMix = makeMixture(this.comArgs, this.comArgs.getModel(), Constants.M2_IDENTIFIER);
+        CANModelMixture canMix = makeMixture(this.comArgs, this.comArgs.getModel(), Constants.M2_IDENTIFIER, numberSiteClasses(this.comArgs.getModel()));
         double[] optimisableParams = Mapper.getOptimisable(canMix.getParameters()); // map parameters to optimisation space, so FunctionHKY.value canMix use them
         CANFunctionMixture calculator = 
                 new CANFunctionMixture(this.alignment, this.tree, this.genStruct, 
