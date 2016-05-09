@@ -70,6 +70,10 @@ public class Constants {
     public static final String NU = "NU";
     public static final String P_N = "P_N";
     
+    // for site class output tables
+    public static final String MAJOR_DELIM = "|";
+    public static final String CLASSES = "CLASSES"; // prefix for table rows for true site classes in mixmodel simulation
+    
     // arguments for -fix option
     // e.g. "-fix kappa pi" will fix kappa and pi parameters, but omegas and scaling will be optimised
     public static final String FIX_ALL = "all"; // compute lnL only
