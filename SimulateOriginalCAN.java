@@ -11,7 +11,7 @@ import com.beust.jcommander.ParameterException;
 import pal.alignment.Alignment;
 import pal.tree.ReadTree;
 import pal.tree.Tree;
-import yeswecan.cli.CommandArgs;
+import yeswecan.io.CommandArgs;
 import yeswecan.phylo.FastaWriter;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.sim.SimulatorOriginal;

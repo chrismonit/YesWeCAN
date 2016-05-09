@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package yeswecan.cli;
+package yeswecan.io;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;

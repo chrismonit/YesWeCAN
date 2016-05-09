@@ -14,7 +14,7 @@ import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
 import yeswecan.Constants;
-import yeswecan.cli.CommandArgs;
+import yeswecan.io.CommandArgs;
 import yeswecan.model.codonawareness.CodonScaler;
 import yeswecan.model.codonawareness.ProportionScaler;
 import yeswecan.model.codonawareness.RatioScaler;

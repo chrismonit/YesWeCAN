@@ -18,7 +18,7 @@ import pal.alignment.SimpleAlignment;
 import pal.datatype.Nucleotides;
 import pal.tree.ReadTree;
 import pal.tree.Tree;
-import yeswecan.cli.CommandArgs;
+import yeswecan.io.CommandArgs;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.run.RunCANFreqProducts;
 import yeswecan.run.RunCANSum;

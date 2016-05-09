@@ -18,7 +18,7 @@ import pal.datatype.CodonTableFactory;
 import pal.tree.ReadTree;
 import pal.tree.Tree;
 import swmutsel.model.parameters.BaseFrequencies;
-import yeswecan.cli.CommandArgs;
+import yeswecan.io.CommandArgs;
 import yeswecan.model.codonawareness.CodonSum;
 import yeswecan.model.submodels.CANModel;
 import yeswecan.model.submodels.CANModelMixture;

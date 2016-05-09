@@ -15,7 +15,7 @@ import pal.alignment.Alignment;
 import pal.tree.Tree;
 import swmutsel.model.parameters.Omega;
 import yeswecan.Constants;
-import yeswecan.cli.CommandArgs;
+import yeswecan.io.CommandArgs;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.phylo.GeneticStructure;
 

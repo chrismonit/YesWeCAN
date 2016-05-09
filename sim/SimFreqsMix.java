@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Random;
 import pal.tree.Tree;
 import yeswecan.Constants;
-import yeswecan.cli.CommandArgs;
+import yeswecan.io.CommandArgs;
 import yeswecan.model.submodels.CANModelMixture;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.run.RunCANMixture;

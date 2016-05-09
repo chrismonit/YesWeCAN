@@ -11,7 +11,7 @@ import pal.tree.Tree;
 import swmutsel.model.parameters.BaseFrequencies;
 import swmutsel.model.parameters.Mapper;
 import yeswecan.Constants;
-import yeswecan.cli.CommandArgs;
+import yeswecan.io.CommandArgs;
 import yeswecan.model.functions.FunctionHKY;
 import yeswecan.model.submodels.HKYModel;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
