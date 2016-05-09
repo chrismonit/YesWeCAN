@@ -29,12 +29,9 @@ public class TrueSiteClassTable extends SiteClassTable {
     
     public TrueSiteClassTable(
             int[][] siteClasses, int numberOfSiteClasses, 
-            String trueString, String falseString,
             String majorDelimiter, String minorDelimiter
     ){
         this(siteClasses, numberOfSiteClasses);
-        this.FALSE_STRING = falseString;
-        this.TRUE_STRING = trueString;
         this.MAJOR_DELIMITER = majorDelimiter;
         this.MINOR_DELIMITER = minorDelimiter;
     }

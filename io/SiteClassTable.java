@@ -20,7 +20,7 @@ public abstract class SiteClassTable {
     
     protected List<List<String>> table;
     protected String MAJOR_DELIMITER = Constants.MAJOR_DELIM;
-    protected String MINOR_DELIMITER = ","; //Constants.DEL;
+    protected String MINOR_DELIMITER = Constants.DEL;
     protected String SITES_HEADER = Constants.SITES;
     
     protected int numberOfSiteClasses; // put in super class?

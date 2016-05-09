@@ -72,7 +72,7 @@ public class ProbSiteClassTable extends SiteClassTable {
         ProbSiteClassTable table = new ProbSiteClassTable(data, n);
         table.print(Constants.CLASSES);
         
-        String dest = "/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/probs.csv";
+        String dest = "/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/YesWeCAN/test/can/netbeans/probs.tsv";
         table.write(dest);
     }
     
