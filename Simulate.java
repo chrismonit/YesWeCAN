@@ -62,8 +62,6 @@ public class Simulate {
         
         this.tree = loadTree(this.comArgs.tree());
         
-        // need to print a report of the params used
-        // and say exactly what model used
         
         System.out.println("Simulation");
         
