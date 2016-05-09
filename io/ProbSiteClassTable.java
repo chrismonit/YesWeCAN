@@ -14,10 +14,8 @@ public class ProbSiteClassTable extends SiteClassTable {
     private double[][] siteClassProbs;
     
     public ProbSiteClassTable(double[][] siteClassProbs, int numberOfSiteClasses){
-        super();
+        super(numberOfSiteClasses, siteClassProbs[0].length);
         this.siteClassProbs = siteClassProbs;
-        this.numberOfSiteClasses = numberOfSiteClasses;
-        this.numberOfGenes = siteClassProbs[0].length;
         // makeTable();
     }
     
@@ -30,7 +28,10 @@ public class ProbSiteClassTable extends SiteClassTable {
         this.MINOR_DELIMITER = minorDelimiter;
     }
 
-    
+    @Override
+    public void makeTable(){
+        //TODO
+    }
     
     
     

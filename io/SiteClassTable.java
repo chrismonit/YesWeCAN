@@ -26,11 +26,13 @@ public abstract class SiteClassTable {
     protected int numberOfSiteClasses; // put in super class?
     protected int numberOfGenes;
     
-    public SiteClassTable(){
+    public SiteClassTable(int numberOfSiteClasses, int numberOfGenes){
         this.table = new ArrayList<List<String>>();
+        this.numberOfSiteClasses = numberOfSiteClasses;
+        this.numberOfGenes = numberOfGenes;
     }
     
-    // pointless?
+    
     public SiteClassTable(List<List<String>> table){
         this.table = table;
     }
@@ -71,13 +73,13 @@ public abstract class SiteClassTable {
     
     protected abstract void makeTable();
     
-    protected void prependHeader(int numberOfSiteClasses, int numberOfGenes){
+    protected void prependHeader(){
         List<String> header = new ArrayList<String>();
         header.add(this.SITES_HEADER); // blank (could name column SITES or something)
         header.add(this.MAJOR_DELIMITER);
-        for (int iGene = 0; iGene < numberOfGenes; iGene++) {
+        for (int iGene = 0; iGene < this.numberOfGenes; iGene++) {
             
-            for (int iSiteClass = 0; iSiteClass < numberOfSiteClasses; iSiteClass++) {
+            for (int iSiteClass = 0; iSiteClass < this.numberOfSiteClasses; iSiteClass++) {
                 header.add(Integer.toString(iGene+1));
             }
             header.add(this.MAJOR_DELIMITER);

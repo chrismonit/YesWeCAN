@@ -22,10 +22,8 @@ public class TrueSiteClassTable extends SiteClassTable {
 
     
     public TrueSiteClassTable(int[][] siteClasses, int numberOfSiteClasses){
-        super();
+        super(numberOfSiteClasses, siteClasses[0].length);
         this.siteClasses = siteClasses;
-        this.numberOfSiteClasses = numberOfSiteClasses;
-        this.numberOfGenes = siteClasses[0].length;
         makeTable();
     }
     
@@ -45,7 +43,7 @@ public class TrueSiteClassTable extends SiteClassTable {
     
     @Override
     protected void makeTable(){
-        super.prependHeader(this.numberOfSiteClasses, this.numberOfGenes);
+        super.prependHeader();
         
         for (int iSite = 0; iSite < this.siteClasses.length; iSite++) {
             
