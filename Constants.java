@@ -77,6 +77,8 @@ public class Constants {
     public static final int DEC_PLACES = 4;
     public static final String FALSE_STRING = "-";
     public static final String TRUE_STRING = "+";
+    public static final double PROB_THRESH = 0.95;
+    public static final String THRESH_MARKER = "_X";
     
     
     // arguments for -fix option
