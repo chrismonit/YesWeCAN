@@ -19,8 +19,12 @@ import yeswecan.Constants;
 public abstract class SiteClassTable {
     
     protected List<List<String>> table;
-    protected String majorDelimiter = Constants.MAJOR_DELIM;
-    protected String minorDelimiter = ","; //Constants.DEL;
+    protected String MAJOR_DELIMITER = Constants.MAJOR_DELIM;
+    protected String MINOR_DELIMITER = ","; //Constants.DEL;
+    protected String SITES_HEADER = Constants.SITES;
+    
+    protected int numberOfSiteClasses; // put in super class?
+    protected int numberOfGenes;
     
     public SiteClassTable(){
         this.table = new ArrayList<List<String>>();
@@ -46,7 +50,8 @@ public abstract class SiteClassTable {
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             
             for (List<String> stringList : this.table){
-                bufferedWriter.write(String.join(this.minorDelimiter, stringList));
+                bufferedWriter.write(String.join(this.MINOR_DELIMITER, stringList));
+                bufferedWriter.newLine();
             }
             
             bufferedWriter.close();
@@ -59,8 +64,8 @@ public abstract class SiteClassTable {
     
     public void print(String lineMarker){
         for (List<String> stringList : this.table){
-            //System.out.println(lineMarker+this.minorDelimiter+String.join(this.minorDelimiter, stringList));
-            System.out.println(String.join(this.minorDelimiter, stringList));
+            System.out.println(lineMarker+this.MINOR_DELIMITER+String.join(this.MINOR_DELIMITER, stringList));
+            //System.out.println(String.join(this.minorDelimiter, stringList));
         }
     }
     
@@ -68,14 +73,14 @@ public abstract class SiteClassTable {
     
     protected void prependHeader(int numberOfSiteClasses, int numberOfGenes){
         List<String> header = new ArrayList<String>();
-        header.add(""); // blank (could name column SITES or something)
-        header.add(this.majorDelimiter);
-        for (int iGene = 1; iGene < numberOfGenes+1; iGene++) {
+        header.add(this.SITES_HEADER); // blank (could name column SITES or something)
+        header.add(this.MAJOR_DELIMITER);
+        for (int iGene = 0; iGene < numberOfGenes; iGene++) {
             
             for (int iSiteClass = 0; iSiteClass < numberOfSiteClasses; iSiteClass++) {
-                header.add(Integer.toString(iGene));
+                header.add(Integer.toString(iGene+1));
             }
-            header.add(this.majorDelimiter);
+            header.add(this.MAJOR_DELIMITER);
         }
         
         this.table.add(0, header);

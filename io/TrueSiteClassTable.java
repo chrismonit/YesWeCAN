@@ -5,6 +5,8 @@
  */
 package yeswecan.io;
 
+import java.util.ArrayList;
+import java.util.List;
 import yeswecan.Constants;
 
 /**
@@ -13,12 +15,11 @@ import yeswecan.Constants;
  */
 public class TrueSiteClassTable extends SiteClassTable {
     
-    private String falseString = "F"; // default values
-    private String trueString = "T";
+    private String FALSE_STRING = "-"; // default values
+    private String TRUE_STRING = "+";
     
     private int[][] siteClasses;
-    private int numberOfSiteClasses; // put in super class?
-    private int numberOfGenes;
+
     
     public TrueSiteClassTable(int[][] siteClasses, int numberOfSiteClasses){
         super();
@@ -34,10 +35,10 @@ public class TrueSiteClassTable extends SiteClassTable {
             String majorDelimiter, String minorDelimiter
     ){
         this(siteClasses, numberOfSiteClasses);
-        this.falseString = falseString;
-        this.trueString = trueString;
-        this.majorDelimiter = majorDelimiter;
-        this.minorDelimiter = minorDelimiter;
+        this.FALSE_STRING = falseString;
+        this.TRUE_STRING = trueString;
+        this.MAJOR_DELIMITER = majorDelimiter;
+        this.MINOR_DELIMITER = minorDelimiter;
     }
     
     
@@ -46,20 +47,42 @@ public class TrueSiteClassTable extends SiteClassTable {
     protected void makeTable(){
         super.prependHeader(this.numberOfSiteClasses, this.numberOfGenes);
         
-        // TODO parse data to string lists etc
+        for (int iSite = 0; iSite < this.siteClasses.length; iSite++) {
+            
+            List<String> row = new ArrayList<String>();
+            row.add(Integer.toString(iSite+1)); 
+            row.add(this.MAJOR_DELIMITER);
+            for (int iGene = 0; iGene < numberOfGenes; iGene++) {
+
+                for (int iSiteClass = 0; iSiteClass < numberOfSiteClasses; iSiteClass++) {
+                    String fieldText;
+                    if (iSiteClass == this.siteClasses[iSite][iGene]) {
+                        fieldText = this.TRUE_STRING;
+                    }else {
+                        fieldText = this.FALSE_STRING;
+                    }
+                    
+                    row.add( fieldText );
+                }
+                row.add(this.MAJOR_DELIMITER);
+            }
+            this.table.add(row);
+        }
         
     }
     
     
+    
+    
     public static void main(String[] args){
-        System.out.println("hello");
+        System.out.println("testing \n");
     
         int[][] data = new int[][]{ // 5 sites and 3 genes
+            {2, 0, 1},
+            {1, 0, 2},
             {1, 0, 1},
-            {1, 0, 1},
-            {1, 0, 1},
-            {1, 0, 1},
-            {1, 0, 1},
+            {1, 0, 2},
+            {1, 0, 0},
         };
         int n = 3; // there are 2 site classes represented
         

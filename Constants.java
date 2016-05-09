@@ -73,6 +73,7 @@ public class Constants {
     // for site class output tables
     public static final String MAJOR_DELIM = "|";
     public static final String CLASSES = "CLASSES"; // prefix for table rows for true site classes in mixmodel simulation
+    public static final String SITES = "SITES";
     
     // arguments for -fix option
     // e.g. "-fix kappa pi" will fix kappa and pi parameters, but omegas and scaling will be optimised
