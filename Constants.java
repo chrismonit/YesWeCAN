@@ -75,6 +75,9 @@ public class Constants {
     public static final String CLASSES = "CLASSES"; // prefix for table rows for true site classes in mixmodel simulation
     public static final String SITES = "SITES";
     public static final int DEC_PLACES = 4;
+    public static final String FALSE_STRING = "-";
+    public static final String TRUE_STRING = "+";
+    
     
     // arguments for -fix option
     // e.g. "-fix kappa pi" will fix kappa and pi parameters, but omegas and scaling will be optimised

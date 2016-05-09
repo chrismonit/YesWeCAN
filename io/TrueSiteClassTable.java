@@ -15,8 +15,8 @@ import yeswecan.Constants;
  */
 public class TrueSiteClassTable extends SiteClassTable {
     
-    private String FALSE_STRING = "-"; // default values
-    private String TRUE_STRING = "+";
+    private String FALSE_STRING = Constants.FALSE_STRING; // default values
+    private String TRUE_STRING = Constants.TRUE_STRING;
     
     private int[][] siteClasses;
 
