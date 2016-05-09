@@ -77,10 +77,10 @@ public abstract class SiteClassTable {
         List<String> header = new ArrayList<String>();
         header.add(this.SITES_HEADER); // blank (could name column SITES or something)
         header.add(this.MAJOR_DELIMITER);
-        for (int iGene = 0; iGene < this.numberOfGenes; iGene++) {
+        for (int iGene = 1; iGene < this.numberOfGenes; iGene++) { // start at 1 to ignore noncoding
             
             for (int iSiteClass = 0; iSiteClass < this.numberOfSiteClasses; iSiteClass++) {
-                header.add(Integer.toString(iGene+1));
+                header.add(Integer.toString(iGene));
             }
             header.add(this.MAJOR_DELIMITER);
         }

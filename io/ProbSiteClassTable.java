@@ -54,7 +54,7 @@ public class ProbSiteClassTable extends SiteClassTable {
             row.add(this.MAJOR_DELIMITER);
             for (int iGene = 0; iGene < numberOfGenes; iGene++) {
 
-                for (int iSiteClass = 0; iSiteClass < numberOfSiteClasses; iSiteClass++) {
+                for (int iSiteClass = 1; iSiteClass < numberOfSiteClasses; iSiteClass++) { // start at 1 to avoid noncoding gene
                     double prob = this.siteClassProbs[iSite][iGene][iSiteClass];
                     
                     double valueToPrint;

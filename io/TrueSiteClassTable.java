@@ -47,7 +47,7 @@ public class TrueSiteClassTable extends SiteClassTable {
             List<String> row = new ArrayList<String>();
             row.add(Integer.toString(iSite+1)); 
             row.add(this.MAJOR_DELIMITER);
-            for (int iGene = 0; iGene < numberOfGenes; iGene++) {
+            for (int iGene = 1; iGene < this.numberOfGenes; iGene++) { // start at 1 to avoid noncoding
 
                 for (int iSiteClass = 0; iSiteClass < numberOfSiteClasses; iSiteClass++) {
                     String fieldText;
