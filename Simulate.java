@@ -119,7 +119,7 @@ public class Simulate {
         else if (this.comArgs.getModel() == Constants.CODON_FREQ_MIX1_IDENTIFIER || 
                 this.comArgs.getModel() == Constants.CODON_FREQ_MIX2_IDENTIFIER
                 ){
-            // WORKING ON THIS BIT!
+            
             System.out.println(Constants.CODON_FREQ_PATH + Constants.DEL + comArgs.getCodonFrequencyPath());
             
             SimFreqsMix simFreqsMix = new SimFreqsMix(this.tree, rand, makeGenStruct(this.comArgs), this.comArgs);
@@ -127,12 +127,10 @@ public class Simulate {
             System.out.println(Constants.HEADER + Constants.DEL + String.join(Constants.DEL, simFreqsMix.getHeader()));
             System.out.println(Constants.SIMULATION + Constants.DEL + ArrayPrinter.toString(simFreqsMix.getSimParameters(), Constants.DEL));
             
-            System.exit(1);
-            System.out.println("Would be about to start simulating now");
             result = simFreqsMix.simulate();
             
             System.out.println(Constants.NU + Constants.DEL + simFreqsMix.getMeanNu()); // NB this must be called after simulate method
-            // need to print site classes here?
+            
         }
         else if (this.comArgs.getModel() == Constants.CAN_SUM_IDENTIFIER){
             CANModelFrequencies canSum = RunCANSum.makeCANSum(this.comArgs);
