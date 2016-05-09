@@ -18,7 +18,7 @@ import yeswecan.model.parameters.TsTvRatioAdvanced;
 public class CANModelFrequenciesMix extends CANModelFrequencies {
     
     private List<Probabilities> probabilities;
-    int numSiteClasses; // used for accessing omegas
+    private int numSiteClasses; // used for accessing omegas
     
     public CANModelFrequenciesMix(
         TsTvRatioAdvanced kappa,
