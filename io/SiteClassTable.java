@@ -22,6 +22,11 @@ public abstract class SiteClassTable {
         
     }
     
+    public SiteClassTable(List<List<String>> table){
+        this.table = table;
+    }
+    
+    
     public void addDelimiterColumn(String delimiter){
         for (List<String> stringList : this.table){
             stringList.add(delimiter);
@@ -47,11 +52,14 @@ public abstract class SiteClassTable {
         
     }
     
-    
     public void print(String lineMarker, String delimiter){
         for (List<String> stringList : this.table){
             System.out.println(lineMarker+delimiter+String.join(delimiter, stringList));
         }
     }
+    
+    public abstract void makeTable();
+    
+    
     
 }
