@@ -14,6 +14,7 @@ import yeswecan.model.submodels.CANModelFrequenciesMix;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.GeneticStructure;
+import yeswecan.phylo.States;
 
 /**
  *
@@ -99,5 +100,23 @@ public class CANFunctionFreqProductsMix { //implements MultivariateFunction { //
     }
     
     
+    
+        // TODO this is copied directly from CANFunctionSum. Should refactor so they share methods
+    public static void scaleMatrices(GeneticStructure genStruct, CANMatrixFreqProducts[][] Q_matrices, double scalar){
+        // scales matrices 'in place', i.e. without creating new array
+        
+        for (int iPartition = 0; iPartition < genStruct.getNumberOfPartitions(); iPartition++) {
+            for (int iSiteType = 0; iSiteType < 3; iSiteType++) {
+                
+                for (int i = 0; i < States.NT_STATES; i++) {
+                    for (int j = 0; j < States.NT_STATES; j++) {
+                        Q_matrices[iPartition][iSiteType].multiplyEntry(i, j, scalar);
+                        
+                    }// column j
+                }// row i
+                
+            }// iSiteType
+        }// iPartition
+    }
     
 }
