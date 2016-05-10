@@ -5,10 +5,12 @@
  */
 package yeswecan.model.functions;
 
+import java.util.List;
 import org.apache.commons.math3.analysis.MultivariateFunction;
 import pal.datatype.CodonTable;
 import pal.tree.Tree;
 import swmutsel.model.parameters.Omega;
+import swmutsel.model.parameters.Probabilities;
 import yeswecan.model.matrices.CANMatrixFreqProducts;
 import yeswecan.model.submodels.CANModelFrequenciesMix;
 import yeswecan.phylo.AdvancedAlignment;
@@ -20,7 +22,7 @@ import yeswecan.phylo.States;
  *
  * @author cmonit1
  */
-public class CANFunctionFreqProductsMix { //implements MultivariateFunction { //TODO
+public class CANFunctionFreqProductsMix implements MultivariateFunction {
     private AdvancedAlignment alignment;
     private Tree tree;
     private GeneticStructure genStruct;
@@ -50,6 +52,7 @@ public class CANFunctionFreqProductsMix { //implements MultivariateFunction { //
         this.codonTable = codonTable;
         
         this.numSiteClasses = numSiteClasses;
+        
     }
     
     
@@ -101,6 +104,42 @@ public class CANFunctionFreqProductsMix { //implements MultivariateFunction { //
     
     
     
+    public static double computeNu(
+            GeneticStructure genStruct, CANMatrixFreqProducts[][][][][] Q_matrices_unscaled,
+            CANModelFrequenciesMix canMix, int numSiteClasses
+    ){
+        
+        double nuDenominator = 0.0;
+        
+        for (int iPartition = 0; iPartition < genStruct.getNumberOfPartitions(); iPartition++) {
+            
+            int[] genes = genStruct.getGenesByPartition(iPartition);
+            for (int iSiteType = 0; iSiteType < 3; iSiteType++) {
+                
+                double rateSum = 0.0;
+                for (int iSiteClassA = 0; iSiteClassA < numSiteClasses; iSiteClassA++){
+                    for (int iSiteClassB = 0; iSiteClassB < numSiteClasses; iSiteClassB++){
+                        for (int iSiteClassC = 0; iSiteClassC < numSiteClasses; iSiteClassC++){
+                            
+                            rateSum += canMix.getProbability(genes[0], iSiteClassA) *
+                                       canMix.getProbability(genes[1], iSiteClassB) *
+                                       canMix.getProbability(genes[2], iSiteClassC) *
+                                       Q_matrices_unscaled[iPartition][iSiteClassA][iSiteClassB][iSiteClassC][iSiteType].getTotalRate();
+                            //System.out.println("iPart "+iPartition+"\ttype "+iSiteType+"\tA "+iSiteClassA+"\tB "+iSiteClassB+"\tC "+iSiteClassC+"\t\t"+Q_matrices_unscaled[iPartition][iSiteClassA][iSiteClassB][iSiteClassC][iSiteType].getTotalRate());
+
+                        }// C
+                    }//  B
+                }// A
+                
+                double numSitesPartType = (double)genStruct.getSiteTypeCount(iPartition, iSiteType); // number of sites of type iSiteType in partition iPartition
+                
+                nuDenominator += numSitesPartType * rateSum;
+            } // iSiteType
+        }// iPartition
+
+        return (double)genStruct.getTotalLength() / nuDenominator;
+    }
+    
         // TODO this is copied directly from CANFunctionSum. Should refactor so they share methods
     public static void scaleMatrices(GeneticStructure genStruct, CANMatrixFreqProducts[][] Q_matrices, double scalar){
         // scales matrices 'in place', i.e. without creating new array
@@ -117,6 +156,11 @@ public class CANFunctionFreqProductsMix { //implements MultivariateFunction { //
                 
             }// iSiteType
         }// iPartition
+    }
+    
+    @Override // TODO
+    public double value(double[] point) {
+        return 0.0;
     }
     
 }
