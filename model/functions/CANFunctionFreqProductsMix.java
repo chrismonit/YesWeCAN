@@ -9,8 +9,12 @@ import java.util.List;
 import org.apache.commons.math3.analysis.MultivariateFunction;
 import pal.datatype.CodonTable;
 import pal.tree.Tree;
+import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
 import swmutsel.model.parameters.Probabilities;
+import static yeswecan.model.functions.CANFunctionFreqProducts.computeNu;
+import static yeswecan.model.functions.CANFunctionFreqProducts.createUnscaledMatrices;
+import static yeswecan.model.functions.CANFunctionFreqProducts.scaleMatrices;
 import yeswecan.model.matrices.CANMatrixFreqProducts;
 import yeswecan.model.submodels.CANModelFrequenciesMix;
 import yeswecan.phylo.AdvancedAlignment;
@@ -140,19 +144,28 @@ public class CANFunctionFreqProductsMix implements MultivariateFunction {
         return (double)genStruct.getTotalLength() / nuDenominator;
     }
     
-        // TODO this is copied directly from CANFunctionSum. Should refactor so they share methods
-    public static void scaleMatrices(GeneticStructure genStruct, CANMatrixFreqProducts[][] Q_matrices, double scalar){
+    
+    public static void scaleMatrices(CANMatrixFreqProducts[][][][][] Q_matrices, int numPartitions,
+            int numSiteClasses, double scalar){
         // scales matrices 'in place', i.e. without creating new array
         
-        for (int iPartition = 0; iPartition < genStruct.getNumberOfPartitions(); iPartition++) {
+        for (int iPartition = 0; iPartition < numPartitions; iPartition++) {
             for (int iSiteType = 0; iSiteType < 3; iSiteType++) {
                 
-                for (int i = 0; i < States.NT_STATES; i++) {
-                    for (int j = 0; j < States.NT_STATES; j++) {
-                        Q_matrices[iPartition][iSiteType].multiplyEntry(i, j, scalar);
-                        
-                    }// column j
-                }// row i
+                for (int iSiteClassA = 0; iSiteClassA < numSiteClasses; iSiteClassA++){
+                    for (int iSiteClassB = 0; iSiteClassB < numSiteClasses; iSiteClassB++){
+                        for (int iSiteClassC = 0; iSiteClassC < numSiteClasses; iSiteClassC++){
+                
+                            for (int i = 0; i < States.NT_STATES; i++) {
+                                for (int j = 0; j < States.NT_STATES; j++) {
+                                    Q_matrices[iPartition][iSiteClassA][iSiteClassB][iSiteClassC][iSiteType].multiplyEntry(i, j, scalar);
+
+                                }// column j
+                            }// row i
+
+                        }// C
+                    }// B
+                }// A
                 
             }// iSiteType
         }// iPartition
@@ -160,6 +173,18 @@ public class CANFunctionFreqProductsMix implements MultivariateFunction {
     
     @Override // TODO
     public double value(double[] point) {
+        
+//        
+//        Mapper.setOptimisable(this.canModel.getParameters(), point);
+//
+//        CANMatrixFreqProducts[][][][][] Q_matrices = createUnscaledMatrices(
+//                this.genStruct, this.canModel, this.codonFrequenciesArray, 
+//                this.codonTable, this.numSiteClasses);
+//        
+//        double nu = computeNu(this.genStruct, Q_matrices, this.canModel, this.numSiteClasses);
+//        scaleMatrices(this.genStruct, Q_matrices, nu);
+//        
+        
         return 0.0;
     }
     
