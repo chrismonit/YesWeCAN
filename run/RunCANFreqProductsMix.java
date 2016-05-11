@@ -5,6 +5,8 @@
  */
 package yeswecan.run;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import pal.datatype.CodonTable;
 import pal.datatype.CodonTableFactory;
 import pal.tree.Tree;
@@ -66,28 +68,39 @@ public class RunCANFreqProductsMix extends RunModel {
         
     }// constructor
     
-    //TODO
+    
     @Override
     public String[] getHeader(){
-        return new String[1];
+        ArrayList<String> columns = new ArrayList<String>();
+        Collections.addAll(columns, "model", "lnL", "kappa", "sc");
+        for (int iGene = 0; iGene < this.comArgs.getGeneNumber(); iGene++) {
+            for (int jClass = 0; jClass < this.numSiteClasses; jClass++) {
+                columns.add(Integer.toString(iGene+1) + Constants.WITIHIN_FIELD_SEPARATOR + Constants.OMEGA_STRING + Integer.toString(jClass));
+            }
+            
+            for (int jClass = 0; jClass < this.numSiteClasses; jClass++) {
+                columns.add(Integer.toString(iGene+1) + Constants.WITIHIN_FIELD_SEPARATOR + Constants.PROB_STRING + Integer.toString(jClass));
+            }
+        }
+        return columns.toArray(new String[columns.size()]);
     }
     
     //TODO
     @Override
     public double[] getInitialValues(){ // NB first element does not contain lnL
-        return new double[1];
+        return new double[]{0.1};
     }
     
     //TODO
     @Override
     public double[] calculate(){
-        return new double[1];
+        return new double[]{.2};
     }
     
     // TODO
     @Override
     public double[] fit(){
-        return new double[1];
+        return new double[]{0.3};
     }
     
     // TODO refactor. Identical method in SimFreqsMix
