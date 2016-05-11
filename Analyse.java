@@ -21,6 +21,7 @@ import pal.tree.Tree;
 import yeswecan.io.CommandArgs;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.run.RunCANFreqProducts;
+import yeswecan.run.RunCANFreqProductsMix;
 import yeswecan.run.RunCANSum;
 import yeswecan.utils.ArrayPrinter;
 
@@ -61,6 +62,10 @@ public class Analyse {
             case Constants.CAN_SUM_IDENTIFIER: run = new RunCANSum(alignment, tree, this.comArgs);
                 break;
             case Constants.CAN_FREQ_IDENTIFIER: run = new RunCANFreqProducts(alignment, tree, this.comArgs);
+                break;
+            case Constants.CODON_FREQ_MIX1_IDENTIFIER: run = new RunCANFreqProductsMix(alignment, tree, this.comArgs, Constants.CODON_FREQ_MIX1_IDENTIFIER);
+                break;
+            case Constants.CODON_FREQ_MIX2_IDENTIFIER: run = new RunCANFreqProductsMix(alignment, tree, this.comArgs, Constants.CODON_FREQ_MIX2_IDENTIFIER);
                 break;
             case Constants.M1_IDENTIFIER: run = new RunCANMixture(alignment, tree, this.comArgs, Constants.M1_IDENTIFIER);
                 break;
