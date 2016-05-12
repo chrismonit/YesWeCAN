@@ -179,6 +179,34 @@ public class RunCANFreqProductsMix extends RunModel {
     }
 
     
+    private double[] getValueArray(CANModelFrequenciesMix canMix){
+        List<Double> resultList = new ArrayList<Double>();
+        resultList.add((double)this.comArgs.getModel());
+        resultList.add(canMix.getLnL()); 
+
+
+        resultList.add(canMix.getKappa().get());
+
+        resultList.add(canMix.getScaling().get());
+        
+        for (int iGene = 1; iGene < this.comArgs.getGeneNumber()+1; iGene++) {
+            for (int jClass = 0; jClass < this.numSiteClasses; jClass++) {
+                resultList.add( canMix.getGeneAndSiteClassOmega(iGene, jClass).get() );
+            }
+            
+            for (int jClass = 0; jClass < this.numSiteClasses; jClass++) {
+                resultList.add( canMix.getProbability(iGene, jClass) );
+            }
+        }
+        
+        double[] resultArray = new double[resultList.size()];
+        for (int i = 0; i < resultList.size(); i++) {
+            resultArray[i] = resultList.get(i).doubleValue();
+        }
+        return resultArray;
+
+    }
+
     //TODO
     @Override
     public double[] getInitialValues(){ // NB first element does not contain lnL
