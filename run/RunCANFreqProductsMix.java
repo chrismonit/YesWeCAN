@@ -12,6 +12,7 @@ import pal.datatype.CodonTable;
 import pal.datatype.CodonTableFactory;
 import pal.tree.Tree;
 import swmutsel.model.parameters.BranchScaling;
+import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
 import swmutsel.model.parameters.Probabilities;
 import yeswecan.Constants;
@@ -42,6 +43,8 @@ public class RunCANFreqProductsMix extends RunModel {
     private CodonFrequencies[] codonFrequenciesArray;
     
     private int numSiteClasses;
+    
+    private int model;
     
     public RunCANFreqProductsMix(AdvancedAlignment alignment, Tree tree, CommandArgs input, int model){
         this.comArgs = input;
@@ -75,7 +78,7 @@ public class RunCANFreqProductsMix extends RunModel {
         }
                 
         this.numSiteClasses = numberSiteClasses(model);
-        
+        this.model = model;
     }// constructor
     
     
@@ -183,7 +186,7 @@ public class RunCANFreqProductsMix extends RunModel {
     
     private double[] getValueArray(CANModelFrequenciesMix canMix){
         List<Double> resultList = new ArrayList<Double>();
-        resultList.add((double)this.comArgs.getModel());
+        resultList.add((double)this.model);
         resultList.add(canMix.getLnL()); 
 
 
@@ -211,14 +214,28 @@ public class RunCANFreqProductsMix extends RunModel {
 
     @Override
     public  double[] getInitialValues(){ // NB first element does not contain lnL
-        return getValueArray( makeCAN(this.comArgs, this.comArgs.getModel(), Constants.CODON_FREQ_MIX2_IDENTIFIER, numberSiteClasses(this.comArgs.getModel())) );
+        return getValueArray( makeCAN(this.comArgs, this.model, Constants.CODON_FREQ_MIX2_IDENTIFIER, numberSiteClasses(this.model)) );
     }
     
-    //TODO
-    @Override
-    public double[] calculate(){
-        return new double[]{.2};
-    }
+//   @Override
+//    public double[] calculate(){
+//                
+//        CANModelFrequenciesMix canMix = makeCAN(this.comArgs, this.comArgs.model, Constants.CODON_FREQ_MIX2_IDENTIFIER, numberSiteClasses(this.comArgs.model));
+//        double[] optimisableParams = Mapper.getOptimisable(canMix.getParameters()); // map parameters to optimisation space, so FunctionHKY.value canMix use them
+//        CANFunctionMixture calculator = 
+//                new CANFunctionMixture(this.alignment, this.tree, this.genStruct, 
+//                        canMix, this.numSiteClasses
+//                );
+//        
+//        
+//        double[] resultArray = getInitialValues();
+//        long start = System.currentTimeMillis();
+//        resultArray[1] = calculator.value(optimisableParams);
+//        long time = System.currentTimeMillis() - start;
+//        System.out.println("overall time (s): "+ time/1000.0);
+//
+//        return resultArray;
+//    }
     
     // TODO
     @Override
