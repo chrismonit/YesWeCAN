@@ -23,6 +23,8 @@ import yeswecan.model.submodels.CANModelFrequenciesMix;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.GeneticStructure;
+import static yeswecan.run.RunCANMixture.makeMixture;
+import static yeswecan.run.RunCANMixture.numberSiteClasses;
 
 /**
  *
@@ -207,10 +209,9 @@ public class RunCANFreqProductsMix extends RunModel {
 
     }
 
-    //TODO
     @Override
-    public double[] getInitialValues(){ // NB first element does not contain lnL
-        return new double[]{0.1};
+    public  double[] getInitialValues(){ // NB first element does not contain lnL
+        return getValueArray( makeCAN(this.comArgs, this.comArgs.getModel(), Constants.CODON_FREQ_MIX2_IDENTIFIER, numberSiteClasses(this.comArgs.getModel())) );
     }
     
     //TODO
