@@ -7,11 +7,19 @@ package yeswecan.run;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import pal.datatype.CodonTable;
 import pal.datatype.CodonTableFactory;
 import pal.tree.Tree;
+import swmutsel.model.parameters.BranchScaling;
+import swmutsel.model.parameters.Omega;
+import swmutsel.model.parameters.Probabilities;
 import yeswecan.Constants;
 import yeswecan.io.CommandArgs;
+import yeswecan.model.parameters.OmegaNegative;
+import yeswecan.model.parameters.OmegaPositive;
+import yeswecan.model.parameters.TsTvRatioAdvanced;
+import yeswecan.model.submodels.CANModelFrequenciesMix;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.GeneticStructure;
@@ -84,6 +92,92 @@ public class RunCANFreqProductsMix extends RunModel {
         }
         return columns.toArray(new String[columns.size()]);
     }
+    
+    
+    
+    public static CANModelFrequenciesMix makeCAN(CommandArgs comArgs, int mixtureModel, 
+            int complexModelIdentifier, int numberOfSiteClasses){
+
+        TsTvRatioAdvanced kappa = new TsTvRatioAdvanced(comArgs.kappa());
+        if (comArgs.fix().contains(Constants.FIX_KAPPA)) {
+            kappa.setOptimisable(false);
+        }
+        
+        BranchScaling scaling = new BranchScaling(comArgs.scaling());
+        if (comArgs.fix().contains(Constants.FIX_SCALING)){
+            scaling.setOptimisable(false);
+        }
+        
+        List<Omega> omegas = new ArrayList<Omega>();
+        List<Probabilities> probs = new ArrayList<Probabilities>();
+        
+        // neutral (for noncoding frames)
+        
+        Probabilities neutralProbs;
+       
+        OmegaNegative neutralW_0 = new OmegaNegative(1.0); // should never be used
+        neutralW_0.setOptimisable(false);
+        omegas.add(neutralW_0);
+        
+        Omega neutralW_1 = new Omega(1.0);
+        neutralW_1.setOptimisable(false);
+        omegas.add(neutralW_1);
+        
+        if (mixtureModel == complexModelIdentifier){
+            OmegaPositive neutralW_2 = new OmegaPositive(1.0); 
+            neutralW_2.setOptimisable(false);
+            omegas.add(neutralW_2);
+            
+            neutralProbs = new Probabilities(new double[]{ 0.0, 1.0, 0.0 }); // all density on w_1. w_1 == 1.0
+        }else{
+            neutralProbs = new Probabilities(new double[]{ 0.0, 1.0 });
+        }
+        
+        neutralProbs.setOptimisable(false);
+        probs.add(neutralProbs);
+        
+        
+        // for coding frames
+                
+        for (int iGene = 0; iGene < comArgs.getGeneNumber(); iGene++) {
+       
+            OmegaNegative geneW_0 = new OmegaNegative(comArgs.omega0()[iGene]);
+            // fix if needs fixing
+            
+            if (comArgs.fix().contains(Integer.toString(iGene+1) + Constants.WITIHIN_FIELD_SEPARATOR + Constants.OMEGA_STRING + Constants.SITE_CLASS_0)) //+1 for zero based
+               geneW_0.setOptimisable(false);
+        
+            omegas.add(geneW_0);
+
+            Omega geneW_1 = new Omega(1.0);
+            geneW_1.setOptimisable(false); // w_1 always fixed to 1
+            omegas.add(geneW_1);
+            
+            Probabilities geneProbs;
+
+            if (mixtureModel == complexModelIdentifier){
+                OmegaPositive geneW_2 = new OmegaPositive(comArgs.omega2()[iGene]); 
+                if (comArgs.fix().contains(Integer.toString(iGene+1) + Constants.WITIHIN_FIELD_SEPARATOR + Constants.OMEGA_STRING + Constants.SITE_CLASS_2)) //+1 for zero based
+                   geneW_2.setOptimisable(false);
+                omegas.add(geneW_2);
+
+                geneProbs = new Probabilities(new double[]{ comArgs.prob0()[iGene], comArgs.prob1()[iGene], comArgs.prob2()[iGene]});
+            }else{
+                geneProbs = new Probabilities(new double[]{ comArgs.prob0()[iGene], comArgs.prob1()[iGene] });
+            }
+            
+            if (comArgs.fix().contains(Integer.toString(iGene+1)+Constants.WITIHIN_FIELD_SEPARATOR+Constants.PROB_STRING)) // zero based
+                geneProbs.setOptimisable(false);
+                
+            probs.add(geneProbs);
+           
+        } // for iGene
+        
+        return new CANModelFrequenciesMix(
+                kappa, scaling, omegas, probs, numberOfSiteClasses
+        );
+    }
+
     
     //TODO
     @Override
