@@ -16,7 +16,7 @@ public class Constants {
     
     public static final int RELATIVE_TRESHOLD = -1;
     public static final double ABSOLUTE_THRESHOLD = 5.0e-6;
-    public static final int MAXIMUM_EVALUATIONS = 10000;
+    public static final int MAXIMUM_EVALUATIONS = 100000000;
     public static final int MAXIMUM_ITERATIONS = 10000;
     
     public static final double DEFAULT_KAPPA = 1.0;
