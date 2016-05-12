@@ -22,6 +22,7 @@ import yeswecan.model.parameters.OmegaNegative;
 import yeswecan.model.parameters.OmegaPositive;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.model.submodels.CANModelFrequenciesMix;
+import yeswecan.optim.Optimise;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.GeneticStructure;
@@ -233,10 +234,23 @@ public class RunCANFreqProductsMix extends RunModel {
         return resultArray;
     }
     
-    // TODO
+    
     @Override
     public double[] fit(){
-        return new double[]{0.3};
+        
+        CANModelFrequenciesMix can = makeCAN(this.comArgs, this.model, Constants.CODON_FREQ_MIX2_IDENTIFIER, numberSiteClasses(this.model));
+        
+        CANFunctionFreqProductsMix optFunction = 
+                new CANFunctionFreqProductsMix(this.alignment, this.tree, this.genStruct, 
+                        can, this.codonFrequenciesArray, this.codonTable, this.numSiteClasses
+                );
+
+        Optimise opt = new Optimise();
+        CANModelFrequenciesMix result = (CANModelFrequenciesMix)opt.optNMS(optFunction, can);
+        
+        double[] mles = getValueArray(result);        
+        return mles;
+        
     }
     
     // TODO refactor. Identical method in SimFreqsMix
