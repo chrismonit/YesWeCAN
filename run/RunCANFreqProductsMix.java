@@ -17,6 +17,7 @@ import swmutsel.model.parameters.Omega;
 import swmutsel.model.parameters.Probabilities;
 import yeswecan.Constants;
 import yeswecan.io.CommandArgs;
+import yeswecan.model.functions.CANFunctionFreqProductsMix;
 import yeswecan.model.parameters.OmegaNegative;
 import yeswecan.model.parameters.OmegaPositive;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
@@ -217,25 +218,20 @@ public class RunCANFreqProductsMix extends RunModel {
         return getValueArray( makeCAN(this.comArgs, this.model, Constants.CODON_FREQ_MIX2_IDENTIFIER, numberSiteClasses(this.model)) );
     }
     
-//   @Override
-//    public double[] calculate(){
-//                
-//        CANModelFrequenciesMix canMix = makeCAN(this.comArgs, this.comArgs.model, Constants.CODON_FREQ_MIX2_IDENTIFIER, numberSiteClasses(this.comArgs.model));
-//        double[] optimisableParams = Mapper.getOptimisable(canMix.getParameters()); // map parameters to optimisation space, so FunctionHKY.value canMix use them
-//        CANFunctionMixture calculator = 
-//                new CANFunctionMixture(this.alignment, this.tree, this.genStruct, 
-//                        canMix, this.numSiteClasses
-//                );
-//        
-//        
-//        double[] resultArray = getInitialValues();
-//        long start = System.currentTimeMillis();
-//        resultArray[1] = calculator.value(optimisableParams);
-//        long time = System.currentTimeMillis() - start;
-//        System.out.println("overall time (s): "+ time/1000.0);
-//
-//        return resultArray;
-//    }
+   @Override
+    public double[] calculate(){
+                
+        CANModelFrequenciesMix can = makeCAN(this.comArgs, this.model, Constants.CODON_FREQ_MIX2_IDENTIFIER, numberSiteClasses(this.model));
+        double[] optimisableParams = Mapper.getOptimisable(can.getParameters()); // map parameters to optimisation space, so FunctionHKY.value canMix use them
+        CANFunctionFreqProductsMix calculator = 
+                new CANFunctionFreqProductsMix(this.alignment, this.tree, this.genStruct, 
+                        can, this.codonFrequenciesArray, this.codonTable, this.numSiteClasses
+                );
+        
+        double[] resultArray = getInitialValues();
+        resultArray[1] = calculator.value(optimisableParams);
+        return resultArray;
+    }
     
     // TODO
     @Override
