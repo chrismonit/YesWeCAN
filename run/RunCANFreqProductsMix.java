@@ -81,7 +81,6 @@ public class RunCANFreqProductsMix extends RunModel {
                 
         this.numSiteClasses = numberSiteClasses(model);
         this.model = model;
-        System.out.println("test "+1e6);
     }// constructor
     
     
