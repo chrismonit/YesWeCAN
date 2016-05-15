@@ -167,6 +167,16 @@ public class GeneticStructure {
         return this.siteTypeCounts[partitionIndex][siteType];
     }
     
+    public int getFrame(int partition, int gene){
+        int[] partitionGenes = this.partitions[partition].getGenes();
+        for (int iFrame = 0; iFrame < 3; iFrame++) {
+            if (partitionGenes[iFrame] == gene){
+                return iFrame;
+            }
+        }
+        return -1;
+    }
+    
     @Override
     public String toString(){
         StringBuilder builder = new StringBuilder(Constants.LAYOUT + Constants.DEL + "Sites");
@@ -263,7 +273,8 @@ public class GeneticStructure {
         System.out.println(structure.toString());
         
         //MatrixPrinter.PrintMatrix(structure.siteTypeCounts, "site class counts (rows are partitions)");
-        
+        System.out.println("\n");
+        System.out.println(structure.getFrame(2, 3));
     }
     
     
