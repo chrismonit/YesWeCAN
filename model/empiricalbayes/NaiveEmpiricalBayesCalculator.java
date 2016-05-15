@@ -8,7 +8,9 @@ package yeswecan.model.empiricalbayes;
 
 import pal.datatype.CodonTable;
 import pal.tree.Tree;
+import yeswecan.Constants;
 import yeswecan.model.functions.CANFunctionFreqProductsMix;
+import yeswecan.model.likelihood.LikelihoodCalculator;
 import yeswecan.model.likelihood.ProbMatrixFactory;
 import yeswecan.model.likelihood.ProbMatrixGenerator;
 import yeswecan.model.matrices.CANMatrixFreqProducts;
@@ -16,6 +18,7 @@ import yeswecan.model.submodels.CANModelFrequenciesMix;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.GeneticStructure;
+import yeswecan.utils.ArrayPrinter;
 import yeswecan.utils.MatrixPrinter;
 
 /**
@@ -58,19 +61,116 @@ public class NaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
         
         // initialise Q matrices
         
-        CANMatrixFreqProducts[][][][][] Q_matrices = getQMatrices(
-                        genStruct, canModel, codonFrequenciesArray, 
-                        codonTable, numSiteClasses);
+
         
+        this.probValues = computeProbValues();
         
-        ProbMatrixGenerator[][][][][] pMatGens = createProbMatrixGenerators(Q_matrices);
         
         
         //call method which is responsible for computing probValues
         // then this can be overriden is derived classes
     }
     
-    // untested
+    protected double[][][] computeProbValues(){
+        CANMatrixFreqProducts[][][][][] Q_matrices = getQMatrices(
+                this.genStruct, this.canModel, this.codonFrequenciesArray, 
+                this.codonTable, this.numSiteClasses);
+        
+        ProbMatrixGenerator[][][][][] pMatGens = createProbMatrixGenerators(Q_matrices);
+        
+        double[][][] probValues = new double[this.genStruct.getTotalLength()][this.genStruct.getNumberOfGenes()+1][this.numSiteClasses]; // +1 to include noncoding gene
+        
+        for (int iSite = 0; iSite < this.genStruct.getTotalLength(); iSite++) {
+            
+            int partition = this.genStruct.getPartitionIndex(iSite);
+            int siteType = iSite % 3;
+            int[] genes = genStruct.getGenes(iSite); // the genes present in the three frames in this partition
+
+            // compute denominator (normalisation factor)
+            double Z = 0.0;
+            for (int iSiteClassA = 0; iSiteClassA < this.numSiteClasses; iSiteClassA++) {
+                for (int iSiteClassB = 0; iSiteClassB < this.numSiteClasses; iSiteClassB++) {
+                    for (int iSiteClassC = 0; iSiteClassC < this.numSiteClasses; iSiteClassC++) {
+                        
+                        double pA = this.canModel.getProbability(genes[0], iSiteClassA); 
+                        double pB = this.canModel.getProbability(genes[1], iSiteClassB);
+                        double pC = this.canModel.getProbability(genes[2], iSiteClassC);
+                        
+                        ProbMatrixGenerator P = pMatGens[partition][iSiteClassA][iSiteClassB][iSiteClassC][siteType];
+                        
+                        double contrib = pA * pB* pC * LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, iSite, P, 1.0);
+                        Z += contrib;
+                        
+                    }// C
+                }// B
+            }// A
+            
+            // compute numerator
+            
+            for (int iGene = 0; iGene < this.genStruct.getNumberOfGenes(); iGene++) {
+                
+                if (this.genStruct.containsGene(partition, iGene)){
+                    
+                    int[] otherGenes = otherIntegers(genes, iGene);
+                    
+                    //ArrayPrinter.print(otherGenes, ",");
+                    
+                    for (int iSiteClass = 0; iSiteClass < this.numSiteClasses; iSiteClass++) {
+                        
+                        double p_gene_class = this.canModel.getProbability(iGene, iSiteClass); // p_{siteclass}^{gene}
+                        
+                        double sum = 0.0;
+                        
+                        for (int iSiteClassY = 0; iSiteClassY < this.numSiteClasses; iSiteClassY++) {
+                            for (int iSiteClassZ = 0; iSiteClassZ < this.numSiteClasses; iSiteClassZ++) {
+                                
+                                ProbMatrixGenerator P = pMatGens[partition][iSiteClass][iSiteClassY][iSiteClassZ][siteType];
+                                    // is this wrong? only accesses frame A?
+                                
+                                double p_gene0_class = this.canModel.getProbability(otherGenes[0], iSiteClassY);
+                                double p_gene1_class = this.canModel.getProbability(otherGenes[1], iSiteClassZ);
+                                
+                                double contrib = p_gene0_class * p_gene1_class * LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, iSite, P, 1.0);
+                                sum += contrib;
+                            }// Z
+                        }// Y
+                        
+                        probValues[iSite][iGene][iSiteClass] = 1.0 ;//(p_gene_class * sum) / Z;
+                        
+                    }// for iSiteClass
+                    
+                    
+                }// if gene present at this site
+                else{
+                    
+                    for (int iSiteClass = 0; iSiteClass < this.numSiteClasses; iSiteClass++) {
+                        probValues[iSite][iGene][iSiteClass] = Constants.NO_GENE_VALUE; // gene is not present so there's no NEB value to give
+                    }
+                }
+                
+            }// iGene
+
+        }// iSite
+        
+        return probValues;
+    }
+    
+    
+    protected static int[] otherIntegers(int[] allInts, int intToExclude ){
+        int[] remainingInts = new int[allInts.length-1];
+        int adjustment = 0;
+        for (int i = 0; i < allInts.length; i++) {
+            if (allInts[i] == intToExclude){
+                adjustment = 1;
+                continue;
+            }else{
+                remainingInts[i-adjustment] = allInts[i];
+            }
+        }
+        return remainingInts;
+    }
+    
+    
     protected static CANMatrixFreqProducts[][][][][] getQMatrices( 
             GeneticStructure genStruct, CANModelFrequenciesMix canModel, CodonFrequencies[] codonFrequencies,
             CodonTable codonTable, int numSiteClasses){
@@ -88,10 +188,10 @@ public class NaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
         return Q_matrices;
     }
     
-    // untested
+    
     protected static ProbMatrixGenerator[][][][][] createProbMatrixGenerators(CANMatrixFreqProducts[][][][][] Q_matrices){
         int nPartitions = Q_matrices.length;
-        int nFrameAClasses = Q_matrices[0].length; // not sure this is right!
+        int nFrameAClasses = Q_matrices[0].length; 
         int nFrameBClasses = Q_matrices[0][0].length;
         int nFrameCClasses = Q_matrices[0][0][0].length;
         int nSiteTypes = Q_matrices[0][0][0][0].length;
@@ -132,6 +232,5 @@ public class NaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
         return this.probValues;
     }
     
-    
-    
+
 }

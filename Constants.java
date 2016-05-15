@@ -79,7 +79,7 @@ public class Constants {
     public static final String TRUE_STRING = "+";
     public static final double PROB_THRESH = 0.95;
     public static final String THRESH_MARKER = "_X";
-    
+    public static final double NO_GENE_VALUE = Double.NaN;
     
     // arguments for -fix option
     // e.g. "-fix kappa pi" will fix kappa and pi parameters, but omegas and scaling will be optimised
