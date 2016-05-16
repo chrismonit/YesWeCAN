@@ -97,34 +97,7 @@ public class NaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
         return Z;
     }
     
-    
-//    protected double getNumerator(
-//            ProbMatrixGenerator[][][][][] pMatGens,
-//            int site, int[] genes, int partition, int siteType
-//    ){
-//        
-//    }
-    
-    protected static int[] orderIndexers(int[] genes, int gene, int[] indexers){
-        //int[] otherGenes = otherIntegers(genes, gene); // index0=Y, index1=Z
-        int[] orderedIndexers = new int[genes.length];
-        
-        if (genes[0] == gene) {
-            orderedIndexers[0] = indexers[0];
-            orderedIndexers[1] = indexers[1];
-            orderedIndexers[2] = indexers[2];
-        }else if (genes[1] == gene){
-            orderedIndexers[0] = indexers[1];
-            orderedIndexers[1] = indexers[0];
-            orderedIndexers[2] = indexers[2];
-            
-        }else if (genes[2] == gene){
-            orderedIndexers[0] = indexers[1];
-            orderedIndexers[1] = indexers[2];
-            orderedIndexers[2] = indexers[0];
-        }
-        return orderedIndexers;
-    }
+
     
     protected double[][][] computeProbValues(){
         CANMatrixFreqProducts[][][][][] Q_matrices = getQMatrices(
@@ -149,49 +122,54 @@ public class NaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
 
             // compute numerator
             
-            for (int iGene = 0; iGene < this.genStruct.getNumberOfGenes(); iGene++) {
-                
-                if (this.genStruct.containsGene(partition, iGene)){
+            for (int iGeneX = 0; iGeneX < this.genStruct.getNumberOfGenes(); iGeneX++) {
+                System.out.println("iGene "+iGeneX);
+                if (this.genStruct.containsGene(partition, iGeneX)){
                     
-                    int[] otherGenes = otherIntegers(genes, iGene);
+                    int[] otherGenes = otherIntegers(genes, iGeneX);
+                    int otherGeneY = otherGenes[0];
+                    int otherGeneZ = otherGenes[1];
                     
+                    int iGeneXFrame = this.genStruct.getFrame(partition, iGeneX);
+                    int otherGeneYFrame = this.genStruct.getFrame(partition, otherGeneY);
+                    int otherGeneZFrame = this.genStruct.getFrame(partition, otherGeneZ);
                     
-                    //ArrayPrinter.print(otherGenes, ",");
+                    int[] geneFramesXYZ = new int[]{ iGeneXFrame, otherGeneYFrame, otherGeneZFrame };
                     
                     for (int iSiteClassX = 0; iSiteClassX < this.numSiteClasses; iSiteClassX++) {
                         
-                        double p_gene_classX = this.canModel.getProbability(iGene, iSiteClassX); // p_{siteclassX}^{gene}
+                        double p_gene_classX = this.canModel.getProbability(iGeneX, iSiteClassX); // p_{siteclassX}^{gene}
                         
                         double sum = 0.0;
                         
                         for (int iSiteClassY = 0; iSiteClassY < this.numSiteClasses; iSiteClassY++) { //otherGenes[0]
                             for (int iSiteClassZ = 0; iSiteClassZ < this.numSiteClasses; iSiteClassZ++) { //otherGenes[1]
+                                                                
+                                int[] siteClassFrameOrdered = new int[3];
                                 
-                                int[] indexers = new int[]{ iSiteClassX, iSiteClassY, iSiteClassZ };
-                                int[] orderedIndexersByFrame = orderIndexers(genes, iGene, indexers);
-                                
-                                // iSiteClass index should be for whichever FRAME iGene is in
-                                
-                                int aFrameClass = orderedIndexersByFrame[0];
-                                int bFrameClass = orderedIndexersByFrame[1];
-                                int cFrameClass = orderedIndexersByFrame[2];
+                                siteClassFrameOrdered[ geneFramesXYZ[0] ] = iSiteClassX;  
+                                siteClassFrameOrdered[ geneFramesXYZ[1] ] = iSiteClassY;
+                                siteClassFrameOrdered[ geneFramesXYZ[2] ] = iSiteClassZ;
+                                                                
+                                int aFrameClass = siteClassFrameOrdered[0];
+                                int bFrameClass = siteClassFrameOrdered[1];
+                                int cFrameClass = siteClassFrameOrdered[2];
                                 
                                 /* need to match these with the siteclass indexers above
-                                e.g. if iGene is in frame A, aFrameClass=iSiteClass
-                                                                
+                                e.g. if iGeneX is in frame A, aFrameClass=iSiteClassX
                                 */
                                 
                                 ProbMatrixGenerator P = pMatGens[partition][aFrameClass][bFrameClass][cFrameClass][siteType];
                                 
-                                double p_gene_classY = this.canModel.getProbability(otherGenes[0], iSiteClassY);
-                                double p_gene_classZ = this.canModel.getProbability(otherGenes[1], iSiteClassZ);
+                                double p_gene_classY = this.canModel.getProbability(otherGeneYFrame, iSiteClassY);
+                                double p_gene_classZ = this.canModel.getProbability(otherGeneZFrame, iSiteClassZ);
                                 
                                 double contrib = p_gene_classY * p_gene_classZ * LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, iSite, P, 1.0);
                                 sum += contrib;
                             }// Z
                         }// Y
                         
-                        probValues[iSite][iGene][iSiteClassX] = 3.1416;//(p_gene_class * sum) / Z;
+                        probValues[iSite][iGeneX][iSiteClassX] = (p_gene_classX * sum) / Z;
                         
                     }// for iSiteClass
                     
@@ -200,7 +178,7 @@ public class NaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
                 else{
                     
                     for (int iSiteClass = 0; iSiteClass < this.numSiteClasses; iSiteClass++) {
-                        probValues[iSite][iGene][iSiteClass] = 2.7183;  // Constants.NO_GENE_VALUE; // gene is not present so there's no NEB value to give
+                        probValues[iSite][iGeneX][iSiteClass] = Constants.NO_GENE_VALUE; // gene is not present so there's no NEB value to give
                     }
                 }
                 
@@ -295,8 +273,7 @@ public class NaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
         int gene = 3;
         int[] indexers = new int[]{ 0, 1, 2 };
         
-        int[] result = orderIndexers(genes, gene, indexers);
-        ArrayPrinter.print(result, ",");
+
         
     }
     
