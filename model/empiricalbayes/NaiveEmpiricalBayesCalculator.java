@@ -73,10 +73,10 @@ public class NaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
     
     
     // untested
-    protected double getNormalisationFactor( 
+    public double getNormalisationFactor( 
             ProbMatrixGenerator[][][][][] pMatGens,
             int site, int[] genes, int partition, int siteType ){
-        
+        System.out.println("Start Z calc");
         double Z = 0.0;
         for (int iSiteClassA = 0; iSiteClassA < this.numSiteClasses; iSiteClassA++) {
             for (int iSiteClassB = 0; iSiteClassB < this.numSiteClasses; iSiteClassB++) {
@@ -85,21 +85,22 @@ public class NaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
                     double pA = this.canModel.getProbability(genes[0], iSiteClassA); 
                     double pB = this.canModel.getProbability(genes[1], iSiteClassB);
                     double pC = this.canModel.getProbability(genes[2], iSiteClassC);
-
+                    
                     ProbMatrixGenerator P = pMatGens[partition][iSiteClassA][iSiteClassB][iSiteClassC][siteType];
-
-                    double contrib = pA * pB* pC * LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, site, P, 1.0);
+                    double L = LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, site, P, 1.0);
+                    double contrib = pA * pB* pC * L;
                     Z += contrib;
-
+                    System.out.println("partition "+partition+" aFrameClass "+iSiteClassA+" bFrameClass "+iSiteClassB+" cFrameClass "+iSiteClassC+" siteType "+siteType+" L "+L+" pA "+pA+" pB "+pB+" pC "+pC);
                 }// C
             }// B
+            System.out.println("");
         }// A
+        System.out.println("end Z calc");
         return Z;
     }
-    
 
-    
     protected double[][][] computeProbValues(){
+        
         CANMatrixFreqProducts[][][][][] Q_matrices = getQMatrices(
                 this.genStruct, this.canModel, this.codonFrequenciesArray, 
                 this.codonTable, this.numSiteClasses);
@@ -113,31 +114,32 @@ public class NaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
             int partition = this.genStruct.getPartitionIndex(iSite);
             int siteType = iSite % 3;
             int[] genes = genStruct.getGenes(iSite); // the genes present in the three frames in this partition
-
-            // compute denominator (normalisation factor)
-            
-            // untested
-            double Z = getNormalisationFactor(pMatGens, iSite, genes, partition, siteType);
-            
-
+            ArrayPrinter.print(genes, ",");
+            System.out.println("\niSite "+iSite+"================================================\n");
+            double Z = getNormalisationFactor(pMatGens, iSite, genes, partition, siteType); // should this be inside the gene loop?            
             // compute numerator
             
-            for (int iGeneX = 0; iGeneX < this.genStruct.getNumberOfGenes(); iGeneX++) {
-                System.out.println("iGene "+iGeneX);
+            for (int iGeneX = 0; iGeneX < this.genStruct.getNumberOfGenes()+1; iGeneX++) { // + because 0 is noncoding gene and getNumberOfGenes() only counts the coding genes
+                //System.out.println("iGene "+iGeneX);
                 if (this.genStruct.containsGene(partition, iGeneX)){
                     
                     int[] otherGenes = otherIntegers(genes, iGeneX);
                     int otherGeneY = otherGenes[0];
                     int otherGeneZ = otherGenes[1];
+                    System.out.println("gene "+iGeneX+" others "+ArrayPrinter.toString(otherGenes, ","));
                     
                     int iGeneXFrame = this.genStruct.getFrame(partition, iGeneX);
                     int otherGeneYFrame = this.genStruct.getFrame(partition, otherGeneY);
                     int otherGeneZFrame = this.genStruct.getFrame(partition, otherGeneZ);
                     
+                    System.out.println("frame(x)="+iGeneXFrame+" frame(Y)="+otherGeneYFrame+" frame(z)="+otherGeneZFrame);
+                    
                     int[] geneFramesXYZ = new int[]{ iGeneXFrame, otherGeneYFrame, otherGeneZFrame };
                     
+                    double sumX = 0.0; // for testing
+                    System.out.println("Start iSiteClassX loop");
                     for (int iSiteClassX = 0; iSiteClassX < this.numSiteClasses; iSiteClassX++) {
-                        
+                        System.out.println("iSiteClassX "+iSiteClassX);
                         double p_gene_classX = this.canModel.getProbability(iGeneX, iSiteClassX); // p_{siteclassX}^{gene}
                         
                         double sum = 0.0;
@@ -158,22 +160,46 @@ public class NaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
                                 /* need to match these with the siteclass indexers above
                                 e.g. if iGeneX is in frame A, aFrameClass=iSiteClassX
                                 */
-                                
+                                                                
                                 ProbMatrixGenerator P = pMatGens[partition][aFrameClass][bFrameClass][cFrameClass][siteType];
+                                //System.out.println("iSiteClassX="+iSiteClassX+" iSiteClassY="+iSiteClassY+" iSiteClassZ="+iSiteClassZ);
+                                //System.out.println("");
+                                //double t = 0.0001;
+                                //MatrixPrinter.PrintMatrix(P.getP(t).getData(), "t="+t);
                                 
-                                double p_gene_classY = this.canModel.getProbability(otherGeneYFrame, iSiteClassY);
-                                double p_gene_classZ = this.canModel.getProbability(otherGeneZFrame, iSiteClassZ);
+                                double p_gene_classY = this.canModel.getProbability(otherGeneY, iSiteClassY);
+                                double p_gene_classZ = this.canModel.getProbability(otherGeneZ, iSiteClassZ);
                                 
-                                double contrib = p_gene_classY * p_gene_classZ * LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, iSite, P, 1.0);
+                                double L = LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, iSite, P, 1.0);
+                                double contrib = p_gene_classY * p_gene_classZ * L;
+                                System.out.println("iGene="+iGeneX+" p="+partition+" a="+aFrameClass+" b="+bFrameClass+" c="+cFrameClass+" t="+siteType+" L "+L+" px "+p_gene_classX+" py "+p_gene_classY+" pz "+p_gene_classZ);
+
                                 sum += contrib;
                             }// Z
                         }// Y
+                        double numerator = (p_gene_classX * sum);
                         
-                        probValues[iSite][iGeneX][iSiteClassX] = (p_gene_classX * sum) / Z;
+                        System.out.println("numerator sum "+sum);
+                        System.out.println("Z             "+Z);
                         
-                    }// for iSiteClass
-                    
-                    
+                        sumX += numerator;
+                        
+                        probValues[iSite][iGeneX][iSiteClassX] = numerator / Z;
+                        if (numerator > Z+Constants.EPSILON) {
+                            
+                            System.out.println("\nnumerator "+numerator);
+                            System.out.println("Z "+Z);
+                            System.out.println("ratio "+(numerator/Z));
+                            System.out.println("");
+                            System.exit(1);
+                        }//if 
+
+                    }// for iSiteClassX
+                    //System.out.println("Start iSiteClassX loop");
+
+                    System.out.println("sumX "+sumX);
+                    System.out.println("   Z "+Z);
+                    System.out.println("");
                 }// if gene present at this site
                 else{
                     
@@ -205,7 +231,7 @@ public class NaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
     }
     
     
-    protected static CANMatrixFreqProducts[][][][][] getQMatrices( 
+    public static CANMatrixFreqProducts[][][][][] getQMatrices( 
             GeneticStructure genStruct, CANModelFrequenciesMix canModel, CodonFrequencies[] codonFrequencies,
             CodonTable codonTable, int numSiteClasses){
         
@@ -223,7 +249,7 @@ public class NaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
     }
     
     
-    protected static ProbMatrixGenerator[][][][][] createProbMatrixGenerators(CANMatrixFreqProducts[][][][][] Q_matrices){
+    public static ProbMatrixGenerator[][][][][] createProbMatrixGenerators(CANMatrixFreqProducts[][][][][] Q_matrices){
         int nPartitions = Q_matrices.length;
         int nFrameAClasses = Q_matrices[0].length; 
         int nFrameBClasses = Q_matrices[0][0].length;

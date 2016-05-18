@@ -72,14 +72,14 @@ public class Constants {
     
     // for site class output tables
     public static final String MAJOR_DELIM = "|";
-    public static final String CLASSES = "CLASSES"; // prefix for table rows for true site classes in mixmodel simulation
+    public static final String CLASSES = "NEB"; // prefix for table rows for true site classes in mixmodel simulation
     public static final String SITES = "SITES";
     public static final int DEC_PLACES = 4;
     public static final String FALSE_STRING = "-";
     public static final String TRUE_STRING = "+";
     public static final double PROB_THRESH = 0.95;
     public static final String THRESH_MARKER = "_X";
-    public static final double NO_GENE_VALUE = Double.NaN;
+    public static final double NO_GENE_VALUE = -1.0;
     
     // arguments for -fix option
     // e.g. "-fix kappa pi" will fix kappa and pi parameters, but omegas and scaling will be optimised
