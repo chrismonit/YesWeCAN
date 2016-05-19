@@ -23,7 +23,7 @@ public abstract class EmpiricalBayesCalculator {
     public abstract double[][][] getEBValues();
     
     
-    protected static int[] otherIntegers(int[] allInts, int intToExclude ){
+    public static int[] otherIntegers(int[] allInts, int intToExclude ){
         int[] remainingInts = new int[allInts.length-1];
         int adjustment = 0;
         for (int i = 0; i < allInts.length; i++) {
@@ -38,7 +38,7 @@ public abstract class EmpiricalBayesCalculator {
     }
     
     
-    protected static CANMatrixFreqProducts[][][][][] getQMatrices( 
+    public static CANMatrixFreqProducts[][][][][] getQMatrices( 
             GeneticStructure genStruct, CANModelFrequenciesMix canModel, CodonFrequencies[] codonFrequencies,
             CodonTable codonTable, int numSiteClasses){
         
@@ -56,7 +56,7 @@ public abstract class EmpiricalBayesCalculator {
     }
     
     
-    protected static ProbMatrixGenerator[][][][][] createProbMatrixGenerators(CANMatrixFreqProducts[][][][][] Q_matrices){
+    public static ProbMatrixGenerator[][][][][] createProbMatrixGenerators(CANMatrixFreqProducts[][][][][] Q_matrices){
         int nPartitions = Q_matrices.length;
         int nFrameAClasses = Q_matrices[0].length; 
         int nFrameBClasses = Q_matrices[0][0].length;
