@@ -18,6 +18,17 @@ import yeswecan.phylo.GeneticStructure;
 /**
  *
  * @author cmonit1
+ * 
+ * Terminology:
+ * 4 codons overlap with codon of interest (codon V) across the 3 frames
+ * Note that codons W&X and Y&Z do not overlap, but are contiguous codons in the same frame.
+ * 
+ * |_012_| sites in codon
+   |_VVV_| V frame
+   |__WWW| WX frame
+   |XX___| WX frame
+   |YYY__| YZ frame
+   |___ZZ| YZ frame
  */
 public class CodonNaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
     
@@ -55,12 +66,12 @@ public class CodonNaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator
         
     }
     
-    protected ProbMatrixGenerator[] getCodonSiteProbMatrices(
+    protected static ProbMatrixGenerator[] getCodonSiteProbMatrices(
             ProbMatrixGenerator[][][][][] pMatGens,
-            int partition,
             int iSiteClassV, int iSiteClassW, int iSiteClassX,
             int iSiteClassY, int iSiteClassZ, 
-            int codonSite0Type, int codonSite1Type, int codonSite2Type
+            int codonSite0Type, int codonSite1Type, int codonSite2Type,
+            int codonSite0Partition, int codonSite1Partition, int codonSite2Partition
     ){
         int aFrameClass, bFrameClass, cFrameClass;
                             
@@ -79,7 +90,7 @@ public class CodonNaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator
             cFrameClass = iSiteClassV;
         }
 
-        ProbMatrixGenerator P_c0 = pMatGens[partition][aFrameClass][bFrameClass][cFrameClass][codonSite0Type];
+        ProbMatrixGenerator P_c0 = pMatGens[codonSite0Partition][aFrameClass][bFrameClass][cFrameClass][codonSite0Type];
 
         // site C1
         if (codonSite1Type == 1) { // C1 is beta site
@@ -96,7 +107,7 @@ public class CodonNaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator
             cFrameClass = iSiteClassV;
         }
 
-        ProbMatrixGenerator P_c1 = pMatGens[partition][aFrameClass][bFrameClass][cFrameClass][codonSite1Type];
+        ProbMatrixGenerator P_c1 = pMatGens[codonSite1Partition][aFrameClass][bFrameClass][cFrameClass][codonSite1Type];
 
         // site C2
         if (codonSite2Type == 2) { // C2 is gamma site
@@ -113,7 +124,7 @@ public class CodonNaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator
             cFrameClass = iSiteClassV;
         }
 
-        ProbMatrixGenerator P_c2 = pMatGens[partition][aFrameClass][bFrameClass][cFrameClass][codonSite2Type];
+        ProbMatrixGenerator P_c2 = pMatGens[codonSite2Partition][aFrameClass][bFrameClass][cFrameClass][codonSite2Type];
         
         return new ProbMatrixGenerator[]{ P_c0, P_c1, P_c2 };
     }
@@ -138,7 +149,9 @@ public class CodonNaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator
         int codonSite1Type = (codonSite0+1) % 3;
         int codonSite2Type = (codonSite0+2) % 3;
         
-        int partition = this.genStruct.getPartitionIndex(codonSite0);
+        int codonSite0Partition = this.genStruct.getPartitionIndex(codonSite0);
+        int codonSite1Partition = this.genStruct.getPartitionIndex(codonSite0+1);
+        int codonSite2Partition = this.genStruct.getPartitionIndex(codonSite0+2);
         
         int vFrame = geneFrames[codonSite0Type][0];
         int wxFrame = geneFrames[codonSite0Type][1];
@@ -148,7 +161,7 @@ public class CodonNaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator
         int[] codonSite1Genes = this.genStruct.getGenes(codonSite0+1);
         int[] codonSite2Genes = this.genStruct.getGenes(codonSite0+2);
         
-        int vGene = codonSite0Genes[vFrame]; // same gene at all three sites, by definition
+        int vGene = codonSite0Genes[vFrame]; // same gene at all three codon sites, by definition
         int wGene = codonSite1Genes[wxFrame]; // the same as codonSite2Genes[wxFrame]
         int xGene = codonSite0Genes[wxFrame];
         int yGene = codonSite0Genes[yzFrame]; // the same as codonSite1Genes[yzFrame]
@@ -178,9 +191,10 @@ public class CodonNaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator
 
                         double likelihoodProduct = 1.0;
 
-                        ProbMatrixGenerator[] sitePMatGens = getCodonSiteProbMatrices(pMatGens, partition,
+                        ProbMatrixGenerator[] sitePMatGens = getCodonSiteProbMatrices(pMatGens,
                                 codonVSiteClass, iSiteClassW, iSiteClassX, iSiteClassY, iSiteClassZ,
-                                codonSite0Type, codonSite1Type, codonSite2Type);
+                                codonSite0Type, codonSite1Type, codonSite2Type,
+                                codonSite0Partition, codonSite1Partition, codonSite2Partition);
 
                         ProbMatrixGenerator P_c0 = sitePMatGens[0];
                         ProbMatrixGenerator P_c1 = sitePMatGens[1];
