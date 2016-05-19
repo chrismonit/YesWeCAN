@@ -30,7 +30,7 @@ import yeswecan.phylo.GeneticStructure;
    |YYY__| YZ frame
    |___ZZ| YZ frame
  */
-public class CodonNaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
+public class CodonNaiveEmpiricalBayesCalculator  {
     
     protected double[][][] probValues;
     
@@ -216,8 +216,5 @@ public class CodonNaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator
     }// getNormalisationFactor
     
     
-    @Override
-    public double[][][] getEBValues(){
-        return this.probValues;
-    }
+
 }
