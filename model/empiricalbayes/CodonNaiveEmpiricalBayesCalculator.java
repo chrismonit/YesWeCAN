@@ -125,7 +125,14 @@ public class CodonNaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator
         { 2, 0, 1 }
     };
     
-
+    public double getNormalisationFactor(int codonSite0, ProbMatrixGenerator[][][][][] pMatGens){
+        double sum = 0.0;
+        for (int iSiteClassV = 0; iSiteClassV < this.numSiteClasses; iSiteClassV++) {
+            sum += getNumerator(codonSite0, iSiteClassV, pMatGens);
+        }
+        return sum;
+    }
+    
     public double getNumerator(int codonSite0, int codonVSiteClass, ProbMatrixGenerator[][][][][] pMatGens){
         int codonSite0Type = codonSite0 % 3;
         int codonSite1Type = (codonSite0+1) % 3;
