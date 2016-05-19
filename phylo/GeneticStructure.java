@@ -153,6 +153,10 @@ public class GeneticStructure {
         return this.partitions[partitionIndex].getGene(frame) != 0;
     }
     
+    public boolean genePresent(int gene, int partitionIndex, int frame){
+        return (this.partitions[partitionIndex].getGene(frame) == gene);
+    }
+    
     public boolean containsGene(int partitionIndex, int gene){
         int[] genes = getGenesByPartition(partitionIndex);
         for (int i = 0; i < genes.length; i++) {
