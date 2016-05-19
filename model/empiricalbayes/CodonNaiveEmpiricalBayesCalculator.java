@@ -144,15 +144,18 @@ public class CodonNaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator
         int wxFrame = geneFrames[codonSite0Type][1];
         int yzFrame = geneFrames[codonSite0Type][2];
         
-        int[] genes = this.genStruct.getGenes(codonSite0);// NB this is codonSite0 only, assume same genes present at other three sites
+        // NB this is codonSite0 only, assume same genes present at other three sites
+        int[] genes = this.genStruct.getGenes(codonSite0);
         
         Probabilities vProbs = this.canModel.getProbabilities().get( genes[vFrame] );
         double vProbSiteClass = vProbs.get()[codonVSiteClass];
+        // NB these are the same:
         Probabilities wProbs = this.canModel.getProbabilities().get( genes[wxFrame] );
         Probabilities xProbs = this.canModel.getProbabilities().get( genes[wxFrame] );
+        // NB these are the same:
         Probabilities yProbs = this.canModel.getProbabilities().get( genes[yzFrame] );
         Probabilities zProbs = this.canModel.getProbabilities().get( genes[yzFrame] );
-        
+                
         double sum = 0.0;
         
         for (int iSiteClassW = 0; iSiteClassW < this.numSiteClasses; iSiteClassW++) {
