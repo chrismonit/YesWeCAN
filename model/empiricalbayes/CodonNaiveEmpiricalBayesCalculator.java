@@ -39,15 +39,15 @@ public class CodonNaiveEmpiricalBayesCalculator  {
     protected GeneticStructure genStruct;
     protected CANModelFrequenciesMix canModel;
     
-    protected CodonFrequencies[] codonFrequenciesArray;
-    protected CodonTable codonTable;
+//    protected CodonFrequencies[] codonFrequenciesArray;
+//    protected CodonTable codonTable;
     
     protected int numSiteClasses;
     
     public CodonNaiveEmpiricalBayesCalculator(
             AdvancedAlignment alignment, Tree tree, 
             GeneticStructure genStruct, CANModelFrequenciesMix canModel,
-            CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable,
+            //CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable,
             int numSiteClasses
     ){
         this.alignment = alignment;
@@ -57,8 +57,8 @@ public class CodonNaiveEmpiricalBayesCalculator  {
         this.canModel = canModel;
         // NB 0th omega is fixed to 1.0 for neutral evolution
            
-        this.codonFrequenciesArray = codonFrequenciesArray;
-        this.codonTable = codonTable;
+//        this.codonFrequenciesArray = codonFrequenciesArray;
+//        this.codonTable = codonTable;
         
         this.numSiteClasses = numSiteClasses;
 
