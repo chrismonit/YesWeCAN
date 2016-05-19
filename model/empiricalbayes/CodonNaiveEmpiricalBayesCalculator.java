@@ -144,18 +144,28 @@ public class CodonNaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator
         int wxFrame = geneFrames[codonSite0Type][1];
         int yzFrame = geneFrames[codonSite0Type][2];
         
-        // NB this is codonSite0 only, assume same genes present at other three sites
-        int[] genes = this.genStruct.getGenes(codonSite0);
+        int[] codonSite0Genes = this.genStruct.getGenes(codonSite0);
+        int[] codonSite1Genes = this.genStruct.getGenes(codonSite0+1);
+        int[] codonSite2Genes = this.genStruct.getGenes(codonSite0+2);
         
-        Probabilities vProbs = this.canModel.getProbabilities().get( genes[vFrame] );
+        int vGene = codonSite0Genes[vFrame]; // same gene at all three sites, by definition
+        int wGene = codonSite1Genes[wxFrame]; // the same as codonSite2Genes[wxFrame]
+        int xGene = codonSite0Genes[wxFrame];
+        int yGene = codonSite0Genes[yzFrame]; // the same as codonSite1Genes[yzFrame]
+        int zGene = codonSite2Genes[yzFrame];
+        
+        Probabilities vProbs = this.canModel.getProbabilities().get( vGene );
         double vProbSiteClass = vProbs.get()[codonVSiteClass];
-        // NB these are the same:
-        Probabilities wProbs = this.canModel.getProbabilities().get( genes[wxFrame] );
-        Probabilities xProbs = this.canModel.getProbabilities().get( genes[wxFrame] );
-        // NB these are the same:
-        Probabilities yProbs = this.canModel.getProbabilities().get( genes[yzFrame] );
-        Probabilities zProbs = this.canModel.getProbabilities().get( genes[yzFrame] );
-                
+        Probabilities wProbs = this.canModel.getProbabilities().get( wGene );
+        Probabilities xProbs = this.canModel.getProbabilities().get( xGene );
+        Probabilities yProbs = this.canModel.getProbabilities().get( yGene );
+        Probabilities zProbs = this.canModel.getProbabilities().get( zGene );
+        System.out.println("v "+vProbs);
+        System.out.println("w "+wProbs);
+        System.out.println("x "+xProbs);
+        System.out.println("y "+yProbs);
+        System.out.println("z "+zProbs);
+        
         double sum = 0.0;
         
         for (int iSiteClassW = 0; iSiteClassW < this.numSiteClasses; iSiteClassW++) {
