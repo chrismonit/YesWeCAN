@@ -149,7 +149,7 @@ public class GeneticStructure {
         return this.partitions[partitionIndex].getGenes();
     }
     
-    public boolean genePresent(int partitionIndex, int frame){
+    public boolean anyGenePresent(int partitionIndex, int frame){
         return this.partitions[partitionIndex].getGene(frame) != 0;
     }
     
