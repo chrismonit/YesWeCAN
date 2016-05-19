@@ -125,7 +125,8 @@ public class CodonNaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator
         { 2, 0, 1 }
     };
     
-    public double getNormalisationFactor(int codonSite0, ProbMatrixGenerator[][][][][] pMatGens){
+
+    public double getNumerator(int codonSite0, int codonVSiteClass, ProbMatrixGenerator[][][][][] pMatGens){
         int codonSite0Type = codonSite0 % 3;
         int codonSite1Type = (codonSite0+1) % 3;
         int codonSite2Type = (codonSite0+2) % 3;
@@ -139,6 +140,7 @@ public class CodonNaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator
         int[] genes = this.genStruct.getGenes(codonSite0);// NB this is codonSite0 only, assume same genes present at other three sites
         
         Probabilities vProbs = this.canModel.getProbabilities().get( genes[vFrame] );
+        double vProbSiteClass = vProbs.get()[codonVSiteClass];
         Probabilities wProbs = this.canModel.getProbabilities().get( genes[wxFrame] );
         Probabilities xProbs = this.canModel.getProbabilities().get( genes[wxFrame] );
         Probabilities yProbs = this.canModel.getProbabilities().get( genes[yzFrame] );
@@ -146,40 +148,37 @@ public class CodonNaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator
         
         double sum = 0.0;
         
-        for (int iSiteClassV = 0; iSiteClassV < this.numSiteClasses; iSiteClassV++) {
-            for (int iSiteClassW = 0; iSiteClassW < this.numSiteClasses; iSiteClassW++) {
-                for (int iSiteClassX = 0; iSiteClassX < this.numSiteClasses; iSiteClassX++) {
-                    for (int iSiteClassY = 0; iSiteClassY < this.numSiteClasses; iSiteClassY++) {
-                        for (int iSiteClassZ = 0; iSiteClassZ < this.numSiteClasses; iSiteClassZ++) {
-                            
-                            double probProduct = 
-                                    vProbs.get()[iSiteClassV] * wProbs.get()[iSiteClassW] * xProbs.get()[iSiteClassX] * yProbs.get()[iSiteClassY] * zProbs.get()[iSiteClassZ];
-                                 
-                            double likelihoodProduct = 1.0;
-                                                        
-                            ProbMatrixGenerator[] sitePMatGens = getCodonSiteProbMatrices(
-                                    pMatGens, partition,
-                                    iSiteClassV, iSiteClassW, iSiteClassX, iSiteClassY, iSiteClassZ,
-                                    codonSite0Type, codonSite1Type, codonSite2Type);
-                            
-                            ProbMatrixGenerator P_c0 = sitePMatGens[0];
-                            ProbMatrixGenerator P_c1 = sitePMatGens[1];
-                            ProbMatrixGenerator P_c2 = sitePMatGens[2];
-                            
-                            likelihoodProduct *= LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, codonSite0, P_c0, 1.0);                           
-                            likelihoodProduct *= LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, codonSite0+1, P_c1, 1.0);
-                            likelihoodProduct *= LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, codonSite0+2, P_c2, 1.0);
-                            
-                            double contrib = probProduct * likelihoodProduct; 
-                            sum += contrib;
-                            
-                        }// iSiteClassZ
-                    }// iSiteClassY                    
-                }// iSiteClassX                
-            }// iSiteClassW
-        }// iSiteClassV
+        for (int iSiteClassW = 0; iSiteClassW < this.numSiteClasses; iSiteClassW++) {
+            for (int iSiteClassX = 0; iSiteClassX < this.numSiteClasses; iSiteClassX++) {
+                for (int iSiteClassY = 0; iSiteClassY < this.numSiteClasses; iSiteClassY++) {
+                    for (int iSiteClassZ = 0; iSiteClassZ < this.numSiteClasses; iSiteClassZ++) {
+
+                        double probProduct = 
+                                wProbs.get()[iSiteClassW] * xProbs.get()[iSiteClassX] * yProbs.get()[iSiteClassY] * zProbs.get()[iSiteClassZ];
+
+                        double likelihoodProduct = 1.0;
+
+                        ProbMatrixGenerator[] sitePMatGens = getCodonSiteProbMatrices(pMatGens, partition,
+                                codonVSiteClass, iSiteClassW, iSiteClassX, iSiteClassY, iSiteClassZ,
+                                codonSite0Type, codonSite1Type, codonSite2Type);
+
+                        ProbMatrixGenerator P_c0 = sitePMatGens[0];
+                        ProbMatrixGenerator P_c1 = sitePMatGens[1];
+                        ProbMatrixGenerator P_c2 = sitePMatGens[2];
+
+                        likelihoodProduct *= LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, codonSite0, P_c0, 1.0);                           
+                        likelihoodProduct *= LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, codonSite0+1, P_c1, 1.0);
+                        likelihoodProduct *= LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, codonSite0+2, P_c2, 1.0);
+
+                        double contrib = probProduct * likelihoodProduct; 
+                        sum += contrib;
+
+                    }// iSiteClassZ
+                }// iSiteClassY                    
+            }// iSiteClassX                
+        }// iSiteClassW
                 
-        return sum;
+        return vProbSiteClass * sum;
     }// getNormalisationFactor
     
     
