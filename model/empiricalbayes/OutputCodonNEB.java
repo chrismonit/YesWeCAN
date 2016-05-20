@@ -13,6 +13,7 @@ import yeswecan.model.submodels.CANModelFrequenciesMix;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.GeneticStructure;
+import yeswecan.utils.ArrayPrinter;
 
 /**
  *
@@ -57,7 +58,51 @@ public class OutputCodonNEB {
         
     }
     
-
+    // make new method which gets all the contiguous sites in a gene
+    // i.e. splice it
+    // then have a method which pulls out the codons sites
+    
+    public static int[] intArray(List<Integer> intList){
+        int[] array = new int[intList.size()];
+        for (int i = 0; i < intList.size(); i++) {
+            array[i] = intList.get(i);
+        }
+        return array;
+    }
+    
+    public int[] getGeneContiguousSites(int gene){
+        List<Integer> geneSites = new ArrayList<Integer>();
+        
+        for (int iSite = 0; iSite < this.genStruct.getTotalLength(); iSite++) {
+            int partition = this.genStruct.getPartitionIndex(iSite);
+            
+            if (this.genStruct.containsGene(partition, gene)) {
+                geneSites.add(iSite);
+            }
+        }//for iSite
+        
+        return intArray(geneSites);
+    }
+    
+    // if array length is not multiple of three, will just ignore the last 1 or 2 elements
+    public int[][] getCodons(int[] sites){
+        
+        int nCodons = sites.length/3; // integer division. Only considers number of complete triplets
+        
+        int[][] codons = new int[nCodons][3];
+        
+        for (int iSite = 0; iSite < sites.length-2; iSite+=3) {
+            int codonIndex = iSite/3;
+            codons[codonIndex] = new int[]{ sites[iSite], sites[iSite+1], sites[iSite+2] };
+        }
+        return codons;
+    }
+    
+    
+    
+    
+    
+    // this is redundant now I think
     public int[] getCodonSites(int gene){
         
         List<Integer> codonStartSites = new ArrayList<Integer>();
@@ -71,13 +116,15 @@ public class OutputCodonNEB {
             if (this.genStruct.containsGene(partition, gene)) {
                 
                 int frame = this.genStruct.getFrame(partition, gene);
-                
-//                int plusTwoPartition = this.genStruct.getPartitionIndex(iSite+2);
-//                boolean completeCodon = this.genStruct.
+
+                // two sites up from here, is the same gene present in the same frame?
+                // if so, we have a complete codon
+                int plusTwoPartition = this.genStruct.getPartitionIndex(iSite+2);
+                boolean completeCodon = this.genStruct.genePresent(gene, plusTwoPartition, frame);
                 
                 // if this is leading site in codon. eg if frame==0 && siteType==0 then this is alpha site in frame A, 
                 // and is a first codon position by definition
-                if (frame == siteType) {
+                if (frame == siteType && completeCodon) {
                     codonStartSites.add(iSite);
                 }
                                 
