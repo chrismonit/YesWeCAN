@@ -70,6 +70,10 @@ public class OutputCodonNEB {
         return array;
     }
     
+    public static boolean sitesSequential(int[] codon){
+        return (codon[1] == codon[0]+1 && codon[2] == codon[0]+2);
+    }
+    
     public int[] getGeneContiguousSites(int gene){
         List<Integer> geneSites = new ArrayList<Integer>();
         
@@ -103,42 +107,42 @@ public class OutputCodonNEB {
     
     
     // this is redundant now I think
-    public int[] getCodonSites(int gene){
-        
-        List<Integer> codonStartSites = new ArrayList<Integer>();
-        
-        // -2 because you can't have a codon starting right at the end of the sequence
-        for (int iSite = 0; iSite < this.genStruct.getTotalLength()-2; iSite++) {
-            
-            int partition = this.genStruct.getPartitionIndex(iSite);
-            int siteType = iSite%3;
-            
-            if (this.genStruct.containsGene(partition, gene)) {
-                
-                int frame = this.genStruct.getFrame(partition, gene);
-
-                // two sites up from here, is the same gene present in the same frame?
-                // if so, we have a complete codon
-                int plusTwoPartition = this.genStruct.getPartitionIndex(iSite+2);
-                boolean completeCodon = this.genStruct.genePresent(gene, plusTwoPartition, frame);
-                
-                // if this is leading site in codon. eg if frame==0 && siteType==0 then this is alpha site in frame A, 
-                // and is a first codon position by definition
-                if (frame == siteType && completeCodon) {
-                    codonStartSites.add(iSite);
-                }
-                                
-            }// if gene present in this partition
-            
-        }// iSite
-    
-        int[] codonStartSitesArray = new int[codonStartSites.size()];
-        for (int i = 0; i < codonStartSites.size(); i++) {
-            codonStartSitesArray[i] = codonStartSites.get(i);
-        }
-        return codonStartSitesArray;
-        
-    }// getCodonSites
+//    public int[] getCodonSites(int gene){
+//        
+//        List<Integer> codonStartSites = new ArrayList<Integer>();
+//        
+//        // -2 because you can't have a codon starting right at the end of the sequence
+//        for (int iSite = 0; iSite < this.genStruct.getTotalLength()-2; iSite++) {
+//            
+//            int partition = this.genStruct.getPartitionIndex(iSite);
+//            int siteType = iSite%3;
+//            
+//            if (this.genStruct.containsGene(partition, gene)) {
+//                
+//                int frame = this.genStruct.getFrame(partition, gene);
+//
+//                // two sites up from here, is the same gene present in the same frame?
+//                // if so, we have a complete codon
+//                int plusTwoPartition = this.genStruct.getPartitionIndex(iSite+2);
+//                boolean completeCodon = this.genStruct.genePresent(gene, plusTwoPartition, frame);
+//                
+//                // if this is leading site in codon. eg if frame==0 && siteType==0 then this is alpha site in frame A, 
+//                // and is a first codon position by definition
+//                if (frame == siteType && completeCodon) {
+//                    codonStartSites.add(iSite);
+//                }
+//                                
+//            }// if gene present in this partition
+//            
+//        }// iSite
+//    
+//        int[] codonStartSitesArray = new int[codonStartSites.size()];
+//        for (int i = 0; i < codonStartSites.size(); i++) {
+//            codonStartSitesArray[i] = codonStartSites.get(i);
+//        }
+//        return codonStartSitesArray;
+//        
+//    }// getCodonSites
     
     
 }
