@@ -14,6 +14,8 @@ import yeswecan.model.submodels.CANModelFrequenciesMix;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.GeneticStructure;
+import yeswecan.utils.ArrayPrinter;
+import yeswecan.utils.MatrixPrinter;
 
 /**
  *
@@ -39,10 +41,9 @@ public class CodonNaiveEmpiricalBayesCalculator  {
     protected GeneticStructure genStruct;
     protected CANModelFrequenciesMix canModel;
     
-//    protected CodonFrequencies[] codonFrequenciesArray;
-//    protected CodonTable codonTable;
     
     protected int numSiteClasses;
+    protected int[][][] geneFramesByCodon;
     
     public CodonNaiveEmpiricalBayesCalculator(
             AdvancedAlignment alignment, Tree tree, 
@@ -57,12 +58,9 @@ public class CodonNaiveEmpiricalBayesCalculator  {
         this.canModel = canModel;
         // NB 0th omega is fixed to 1.0 for neutral evolution
            
-//        this.codonFrequenciesArray = codonFrequenciesArray;
-//        this.codonTable = codonTable;
         
         this.numSiteClasses = numSiteClasses;
-
-        //this.probValues = computeProbValues();
+        this.geneFramesByCodon = getGeneFramesByCodon();
         
     }
     
@@ -130,54 +128,85 @@ public class CodonNaiveEmpiricalBayesCalculator  {
     }
     
     
-    protected static int[][] geneFrames = new int[][]{
-        { 0, 1, 2 },
-        { 1, 2, 0 },
-        { 2, 0, 1 }
-    };
+    protected static int[][][] getGeneFramesByCodon(){
+        int[][][] array = new int[3][3][3];
+        
+        array[0][0] = new int[]{ 0,1,2 }; // codon site 0 and it is alpha site, v=frame0, xw=frame1 and yz=frame2
+        array[1][0] = new int[]{ 2,0,1 };
+        array[2][0] = new int[]{ 1,2,0 };
+
+        array[0][1] = new int[]{ 1,2,0 };
+        array[1][1] = new int[]{ 0,1,2 };
+        array[2][1] = new int[]{ 2,0,1 };
+
+        array[0][2] = new int[]{ 2,0,1 };
+        array[1][2] = new int[]{ 1,2,0 };// codonsite 1 and it is gamma site, v=frame1, xw=frame2 and yz=frame0
+        array[2][2] = new int[]{ 0,1,2 };
+        return array;
+    }
     
-    public double getNormalisationFactor(int codonSite0, ProbMatrixGenerator[][][][][] pMatGens){
+    
+    // e.g. getFrame(1, 2, 2) returns the frame for codonPos=1, siteType=gamma and desired frame is yz
+    public int getFrame(int codonPosition, int siteType, int codonFrame){
+        return this.geneFramesByCodon[codonPosition][siteType][codonFrame];
+    }
+    
+    public double getNormalisationFactor(int[] codonSites, ProbMatrixGenerator[][][][][] pMatGens){
         double sum = 0.0;
         for (int iSiteClassV = 0; iSiteClassV < this.numSiteClasses; iSiteClassV++) {
-            sum += getNumerator(codonSite0, iSiteClassV, pMatGens);
+            sum += getNumerator(codonSites, iSiteClassV, pMatGens);
         }
         return sum;
     }
     
-    public double getNumerator(int codonSite0, int codonVSiteClass, ProbMatrixGenerator[][][][][] pMatGens){
-        int codonSite0Type = codonSite0 % 3;
-        int codonSite1Type = (codonSite0+1) % 3;
-        int codonSite2Type = (codonSite0+2) % 3;
+
+    
+    public double getNumerator(int[] codonSites, int codonVSiteClass, ProbMatrixGenerator[][][][][] pMatGens){
         
-        int codonSite0Partition = this.genStruct.getPartitionIndex(codonSite0);
-        int codonSite1Partition = this.genStruct.getPartitionIndex(codonSite0+1);
-        int codonSite2Partition = this.genStruct.getPartitionIndex(codonSite0+2);
+        int codonSite0Type = codonSites[0] % 3;
+        int codonSite1Type = codonSites[1] % 3;
+        int codonSite2Type = codonSites[2] % 3;
         
-        int vFrame = geneFrames[codonSite0Type][0];
-        int wxFrame = geneFrames[codonSite0Type][1];
-        int yzFrame = geneFrames[codonSite0Type][2];
+        int codonSite0Partition = this.genStruct.getPartitionIndex(codonSites[0]);
+        int codonSite1Partition = this.genStruct.getPartitionIndex(codonSites[1]);
+        int codonSite2Partition = this.genStruct.getPartitionIndex(codonSites[2]);
         
-        int[] codonSite0Genes = this.genStruct.getGenes(codonSite0);
-        int[] codonSite1Genes = this.genStruct.getGenes(codonSite0+1);
-        int[] codonSite2Genes = this.genStruct.getGenes(codonSite0+2);
+        int vFrame = getFrame(0, codonSite0Type, 0 );
+        int wxFrame = getFrame(1, codonSite1Type, 1 );
+        int yzFrame = getFrame(2, codonSite2Type, 2 );
+                
+        int[] codonSite0Genes = this.genStruct.getGenes(codonSites[0]);
+        int[] codonSite1Genes = this.genStruct.getGenes(codonSites[1]);
+        int[] codonSite2Genes = this.genStruct.getGenes(codonSites[2]);
         
+        //ArrayPrinter.print(codonSite2Genes, ",");
+        
+        /*
+            We assume the 4 codons overlapping with codonV are complete codons
+            i.e. no genes start/end WITHIN codons w, x, y or z.
+            Different genes may be present in the same frame,
+            e.g. if codons w and x are from different genes,
+            with a partition boundary between codonSite0 and codonSite1.
+            (ignoring codons at splice boundaries can be justified since 
+            splice sites are conserved at nt level)
+        */
         int vGene = codonSite0Genes[vFrame]; // same gene at all three codon sites, by definition
-        int wGene = codonSite1Genes[wxFrame]; // the same as codonSite2Genes[wxFrame]
+        int wGene = codonSite1Genes[wxFrame]; // the same as codonSite2Genes[wxFrame], following assumption described above
         int xGene = codonSite0Genes[wxFrame];
         int yGene = codonSite0Genes[yzFrame]; // the same as codonSite1Genes[yzFrame]
         int zGene = codonSite2Genes[yzFrame];
-        
+                
         Probabilities vProbs = this.canModel.getProbabilities().get( vGene );
         double vProbSiteClass = vProbs.get()[codonVSiteClass];
         Probabilities wProbs = this.canModel.getProbabilities().get( wGene );
         Probabilities xProbs = this.canModel.getProbabilities().get( xGene );
         Probabilities yProbs = this.canModel.getProbabilities().get( yGene );
         Probabilities zProbs = this.canModel.getProbabilities().get( zGene );
-        System.out.println("v "+vProbs);
-        System.out.println("w "+wProbs);
-        System.out.println("x "+xProbs);
-        System.out.println("y "+yProbs);
-        System.out.println("z "+zProbs);
+//        System.out.println("v "+vProbs);
+//        System.out.println("w "+wProbs);
+//        System.out.println("x "+xProbs);
+//        System.out.println("y "+yProbs);
+//        System.out.println("z "+zProbs);
         
         double sum = 0.0;
         
@@ -199,10 +228,11 @@ public class CodonNaiveEmpiricalBayesCalculator  {
                         ProbMatrixGenerator P_c0 = sitePMatGens[0];
                         ProbMatrixGenerator P_c1 = sitePMatGens[1];
                         ProbMatrixGenerator P_c2 = sitePMatGens[2];
+                        
 
-                        likelihoodProduct *= LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, codonSite0, P_c0, 1.0);                           
-                        likelihoodProduct *= LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, codonSite0+1, P_c1, 1.0);
-                        likelihoodProduct *= LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, codonSite0+2, P_c2, 1.0);
+                        likelihoodProduct *= LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, codonSites[0], P_c0, 1.0);                           
+                        likelihoodProduct *= LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, codonSites[1], P_c1, 1.0);
+                        likelihoodProduct *= LikelihoodCalculator.calculateSiteLikelihood(this.alignment, this.tree, codonSites[2], P_c2, 1.0);
 
                         double contrib = probProduct * likelihoodProduct; 
                         sum += contrib;
