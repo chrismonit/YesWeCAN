@@ -5,15 +5,22 @@
  */
 package yeswecan.model.empiricalbayes;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import pal.datatype.CodonTable;
 import pal.tree.Tree;
+import yeswecan.Constants;
+import yeswecan.model.likelihood.ProbMatrixGenerator;
+import yeswecan.model.matrices.CANMatrixFreqProducts;
 import yeswecan.model.submodels.CANModelFrequenciesMix;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.utils.ArrayPrinter;
+import yeswecan.utils.MatrixPrinter;
 
 /**
  *
@@ -33,11 +40,15 @@ public class OutputCodonNEB {
     
     protected CodonNaiveEmpiricalBayesCalculator codonNEB;
     
+    protected ProbMatrixGenerator[][][][][] pMatGenes;
+    protected boolean roundNEBValues;
+    protected int representativeSequence = Constants.DISPLAY_SEQUENCE_INDEX;
+    
     public OutputCodonNEB(
             AdvancedAlignment alignment, Tree tree, 
             GeneticStructure genStruct, CANModelFrequenciesMix canModel,
             CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable,
-            int numSiteClasses
+            int numSiteClasses, boolean roundNEBValues
     ){
         this.alignment = alignment;
         this.tree = tree;
@@ -56,13 +67,131 @@ public class OutputCodonNEB {
                         this.alignment, this.tree, this.genStruct, 
                         this.canModel, this.numSiteClasses);
         
+        CANMatrixFreqProducts[][][][][] Q_matrices = 
+                EmpiricalBayesCalculator.getQMatrices(
+                        this.genStruct, this.canModel, this.codonFrequenciesArray, 
+                        this.codonTable, this.numSiteClasses);
+        
+        this.pMatGenes = EmpiricalBayesCalculator.createProbMatrixGenerators(Q_matrices);
+        this.roundNEBValues = roundNEBValues;
+        
     }
     
-    // make new method which gets all the contiguous sites in a gene
-    // i.e. splice it
-    // then have a method which pulls out the codons sites
+    public void print(){
+        System.out.println( getHeader() );
+        for (String row : getAllGenesCodonNEBRows()){
+            System.out.println(row);
+        }
+    }
     
-    public static int[] intArray(List<Integer> intList){
+    public void write(String filePath){
+    
+         try{
+            FileWriter fileWriter = new FileWriter(filePath);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            
+            bufferedWriter.write( getHeader() );
+            bufferedWriter.newLine();
+            for (String row : getAllGenesCodonNEBRows()){
+                bufferedWriter.write(row);
+                bufferedWriter.newLine();
+            }
+
+            bufferedWriter.close();
+        
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+    
+    
+    public String getHeader(){
+        List<String> row = new ArrayList<String>();
+        row.add(Constants.HEADER); // blank to match the regular expression at the start of each row
+        row.add(Constants.GENE);
+        row.add(Constants.CODON_SITE);
+        for (int iSiteClass = 0; iSiteClass < this.numSiteClasses; iSiteClass++) {
+            row.add(Integer.toString(iSiteClass));
+        }
+        row.add(Constants.NT_SITES);
+        row.add(Constants.CODON);
+        row.add(Constants.AA);
+        return String.join(Constants.DEL, row);
+    }
+    
+    public List<String> getAllGenesCodonNEBRows(){
+        List<String> allGeneRows = new ArrayList<String>();
+        
+        for (int iGene = 1; iGene < this.genStruct.getNumberOfGenes()+1; iGene++) { // ignore noncoding gene
+            allGeneRows.addAll( getGeneCodonNEBRows(iGene) );
+            allGeneRows.add("");// empty line between genes for readability
+        }
+        return allGeneRows;
+    }
+    
+    public List<String> getGeneCodonNEBRows(int gene){ // each element in returned list will be a row to print/save
+        
+        int[] geneNucSites = getGeneContiguousSites(gene);
+        int[][] codons = getCodons(geneNucSites);
+        
+        List<String> allRows = new ArrayList<String>();
+        
+        for (int iCodon = 0; iCodon < codons.length; iCodon++) {
+            
+            List<String> row = new ArrayList<String>();
+            row.add(Constants.CLASSES);
+            row.add(Integer.toString(gene));
+            row.add(Integer.toString(iCodon+1)); // correct for zero based
+            
+            double Z = this.codonNEB.getNormalisationFactor(codons[iCodon], this.pMatGenes);
+            
+            for (int iSiteClass = 0; iSiteClass < this.numSiteClasses; iSiteClass++) {
+                String nebString;
+                
+                if (!sitesSequential(codons[iCodon])) {
+                    nebString = Constants.NO_DATA;
+                }else{
+                    double numerator = this.codonNEB.getNumerator(
+                    codons[iCodon], iSiteClass, this.pMatGenes);
+                    double neb = numerator/Z;
+
+                    if (this.roundNEBValues) {
+                        nebString = Double.toString(MatrixPrinter.roundDouble(neb, Constants.DEC_PLACES));
+                    }else{
+                        nebString = Double.toString(neb);
+                    }
+                }// else
+                
+                row.add(nebString);
+            }//iSiteClass
+            
+            int[] codonSitesPlus1 = new int[codons[iCodon].length];
+            for (int i = 0; i < codonSitesPlus1.length; i++) {
+                codonSitesPlus1[i] = codons[iCodon][i]+1;
+            }
+            
+            row.add( ArrayPrinter.toString(codonSitesPlus1, Constants.ARGS_DELIMITER));
+            
+            // make string representation of codon in representativeSequence
+            char[] bases = new char[codons[iCodon].length];
+            for (int iCodonPosition = 0; iCodonPosition < bases.length; iCodonPosition++) {
+                bases[iCodonPosition] = this.alignment.getData(this.representativeSequence, codons[iCodon][iCodonPosition]);
+            }
+            row.add( new String(bases) );
+                        
+            // make string representation of corresponding amino acid
+            char aa = codonTable.getAminoAcidChar(bases);
+            row.add( Character.toString(aa) );
+            
+            String joined = String.join(Constants.DEL, row);
+            allRows.add( joined );
+        }// iCodon
+        
+        return allRows;
+    }
+    
+    
+    protected static int[] intArray(List<Integer> intList){
         int[] array = new int[intList.size()];
         for (int i = 0; i < intList.size(); i++) {
             array[i] = intList.get(i);
@@ -89,7 +218,7 @@ public class OutputCodonNEB {
     }
     
     // if array length is not multiple of three, will just ignore the last 1 or 2 elements
-    public int[][] getCodons(int[] sites){
+    public static int[][] getCodons(int[] sites){
         
         int nCodons = sites.length/3; // integer division. Only considers number of complete triplets
         
@@ -101,48 +230,6 @@ public class OutputCodonNEB {
         }
         return codons;
     }
-    
-    
-    
-    
-    
-    // this is redundant now I think
-//    public int[] getCodonSites(int gene){
-//        
-//        List<Integer> codonStartSites = new ArrayList<Integer>();
-//        
-//        // -2 because you can't have a codon starting right at the end of the sequence
-//        for (int iSite = 0; iSite < this.genStruct.getTotalLength()-2; iSite++) {
-//            
-//            int partition = this.genStruct.getPartitionIndex(iSite);
-//            int siteType = iSite%3;
-//            
-//            if (this.genStruct.containsGene(partition, gene)) {
-//                
-//                int frame = this.genStruct.getFrame(partition, gene);
-//
-//                // two sites up from here, is the same gene present in the same frame?
-//                // if so, we have a complete codon
-//                int plusTwoPartition = this.genStruct.getPartitionIndex(iSite+2);
-//                boolean completeCodon = this.genStruct.genePresent(gene, plusTwoPartition, frame);
-//                
-//                // if this is leading site in codon. eg if frame==0 && siteType==0 then this is alpha site in frame A, 
-//                // and is a first codon position by definition
-//                if (frame == siteType && completeCodon) {
-//                    codonStartSites.add(iSite);
-//                }
-//                                
-//            }// if gene present in this partition
-//            
-//        }// iSite
-//    
-//        int[] codonStartSitesArray = new int[codonStartSites.size()];
-//        for (int i = 0; i < codonStartSites.size(); i++) {
-//            codonStartSitesArray[i] = codonStartSites.get(i);
-//        }
-//        return codonStartSitesArray;
-//        
-//    }// getCodonSites
     
     
 }
