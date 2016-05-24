@@ -120,11 +120,5 @@ public class TrueCodonSiteClassTable extends CodonSiteClass {
         return true;
     }
     
-//    public static void main(String[] args){
-//        int[] states = new int[]{ 1,2,3 };
-//        boolean equal = statesEqual(states);
-//        System.out.println(ArrayPrinter.toString(states, ",")+"\t"+equal);
-//        
-//    }
     
 }
