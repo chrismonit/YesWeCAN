@@ -37,17 +37,12 @@ public class FrequencySimulatorMix extends FrequencySimulator {
     public FrequencySimulatorMix(Tree tree, Random rand, GeneticStructure genStruct,
         TsTvRatioAdvanced kappa, List<Omega> omegas, List<CodonFrequencies> codonFrequencies,
         List<Probabilities> probabilities, int numSiteClasses
-    
         ){
 
         super(tree, rand, genStruct, kappa, omegas, codonFrequencies);
         
         this.probabilities = probabilities;
-        this.numSiteClasses = numSiteClasses; // do we need this?
-        
-//        this.geneSiteClasses = assignGeneSiteClasses( // old
-//                genStruct.getTotalLength(), genStruct.getNumberOfGenes()+1, 
-//                rand, probabilities);
+        this.numSiteClasses = numSiteClasses;
         
         this.frameSiteClasses = assignCodonSiteClasses(rand, probabilities, genStruct);
         
@@ -74,7 +69,6 @@ public class FrequencySimulatorMix extends FrequencySimulator {
             
             if (!this.codonTable.isSynonymous(codonI, codonJ)) { 
                 int gene = genes[iFrame];
-                //int siteClass = this.geneSiteClasses[site][gene]; // old version, for when each nt site has own site class
                 
                 int siteClass = this.frameSiteClasses[site][iFrame]; // new version, each CODON has site class
                 
@@ -101,7 +95,8 @@ public class FrequencySimulatorMix extends FrequencySimulator {
         
         int[][] siteClasses = new int[genStruct.getTotalLength()][NUM_FRAMES];
         
-        // set initial values in array to -1 so we don't mistake an un-assigned element for site class 0
+        // set initial values in array to -1, 
+        // so we don't mistake an un-assigned element for site class 0
         for (int iSite = 0; iSite < siteClasses.length; iSite++) {
             for (int iFrame = 0; iFrame < siteClasses[0].length; iFrame++) {
                 siteClasses[iSite][iFrame] = -1;
@@ -124,21 +119,5 @@ public class FrequencySimulatorMix extends FrequencySimulator {
         return siteClasses;
     }
     
-//    public static int[][] assignGeneSiteClasses(int numSites, int numGenes, 
-//            Random rand, List<Probabilities> probabilities){
-//        
-//        int[][] siteClasses = new int[numSites][numGenes];
-//        
-//        for (int iSite = 0; iSite < numSites; iSite++) {
-//            for (int iGene = 0; iGene < numGenes; iGene++) {
-//                
-//                double[] probs = probabilities.get(iGene).get();
-//                int siteClass = States.draw(probs, rand.nextDouble());
-//                siteClasses[iSite][iGene] = siteClass;
-//            }
-//        }
-//        
-//        return siteClasses;
-//    }
 
 }
