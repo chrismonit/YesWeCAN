@@ -122,6 +122,8 @@ public class Simulate {
             
             SimFreqsMix simFreqsMix = new SimFreqsMix(this.tree, rand, makeGenStruct(this.comArgs), this.comArgs);
             
+            simFreqsMix.printTrueSites();
+            
             System.out.println(Constants.HEADER + Constants.DEL + String.join(Constants.DEL, simFreqsMix.getHeader()));
             System.out.println(Constants.SIMULATION + Constants.DEL + ArrayPrinter.toString(simFreqsMix.getSimParameters(), Constants.DEL));
             

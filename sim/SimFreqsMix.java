@@ -12,6 +12,7 @@ import java.util.Random;
 import pal.tree.Tree;
 import yeswecan.Constants;
 import yeswecan.io.CommandArgs;
+import yeswecan.io.TrueCodonSiteClassTable;
 import yeswecan.io.ntsiteclasses.TrueSiteClassTable;
 import yeswecan.model.submodels.CANModelMixture;
 import yeswecan.phylo.GeneticStructure;
@@ -27,6 +28,8 @@ public class SimFreqsMix extends SimFreqs {
     protected CommandArgs comArgs;
     protected int numSiteClasses;
 
+    protected TrueCodonSiteClassTable trueSites;
+    
     public SimFreqsMix(Tree tree, Random rand, GeneticStructure genStruct, 
         CommandArgs comArgs){
 
@@ -54,10 +57,12 @@ public class SimFreqsMix extends SimFreqs {
         // this.simulator is classified as FrequencySimulator instance in parent class, which does not have a getGeneSiteClasses method
         int[][] siteClasses = ((FrequencySimulatorMix)this.simulator).getSiteClasses();
         
-        TrueSiteClassTable table = new TrueSiteClassTable(siteClasses, this.numSiteClasses);
-        table.print(Constants.CLASSES);
+        this.trueSites = new TrueCodonSiteClassTable(siteClasses, this.numSiteClasses, genStruct);
         
-
+    }
+    
+    public void printTrueSites(){
+        this.trueSites.print();
     }
         
         
