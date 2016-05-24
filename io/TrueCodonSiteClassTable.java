@@ -106,6 +106,8 @@ public class TrueCodonSiteClassTable extends CodonSiteClass {
             }
             row.add( ArrayPrinter.toString(codonSitesPlus1, Constants.ARGS_DELIMITER));
             
+            allRows.add( String.join(Constants.DEL, row) );
+            
         }// for iCodon
         
         return allRows;

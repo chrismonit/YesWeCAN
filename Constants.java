@@ -84,7 +84,7 @@ public class Constants {
     public static final String NO_DATA = "na";
     public static final int DISPLAY_SEQUENCE_INDEX = 0; // index for sequence to be used for displaying codon and aa information in output table
     public static final String GENE = "GENE";
-    public static final String CODON_SITE = "CODON_SITE";
+    public static final String CODON_SITE = "C_SITE";
     public static final String NT_SITES = "NT_SITES";
     public static final String CODON = "CODON";
     public static final String AA = "Residue";
