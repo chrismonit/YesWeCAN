@@ -22,7 +22,6 @@ public class TrueCodonSiteClassTable extends CodonSiteClass {
     protected int[][] siteClasses; // i dimension is nt site, j dimension is frame
     
     public TrueCodonSiteClassTable(int[][] siteClasses, int numSiteClasses, GeneticStructure genStruct){
-        // assign fields
         
         this.numSiteClasses = numSiteClasses;
         this.genStruct = genStruct;

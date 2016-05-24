@@ -52,7 +52,7 @@ public class SimFreqsMix extends SimFreqs {
         );
         
         // this.simulator is classified as FrequencySimulator instance in parent class, which does not have a getGeneSiteClasses method
-        int[][] siteClasses = ((FrequencySimulatorMix)this.simulator).getGeneSiteClasses();
+        int[][] siteClasses = ((FrequencySimulatorMix)this.simulator).getSiteClasses();
         
         TrueSiteClassTable table = new TrueSiteClassTable(siteClasses, this.numSiteClasses);
         table.print(Constants.CLASSES);

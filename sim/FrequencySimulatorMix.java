@@ -48,7 +48,7 @@ public class FrequencySimulatorMix extends FrequencySimulator {
         
     }
     
-    public int[][] getGeneSiteClasses(){
+    public int[][] getSiteClasses(){
         return this.frameSiteClasses;
     }
     
