@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package yeswecan.model.empiricalbayes;
+package yeswecan.io;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -13,6 +13,8 @@ import java.util.List;
 import pal.datatype.CodonTable;
 import pal.tree.Tree;
 import yeswecan.Constants;
+import yeswecan.model.empiricalbayes.CodonNaiveEmpiricalBayesCalculator;
+import yeswecan.model.empiricalbayes.EmpiricalBayesCalculator;
 import yeswecan.model.likelihood.ProbMatrixGenerator;
 import yeswecan.model.matrices.CANMatrixFreqProducts;
 import yeswecan.model.submodels.CANModelFrequenciesMix;
