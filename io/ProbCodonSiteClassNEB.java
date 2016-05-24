@@ -28,7 +28,7 @@ import yeswecan.utils.MatrixPrinter;
  *
  * @author cmonit1
  */
-public class OutputCodonNEB {
+public class ProbCodonSiteClassNEB {
     
     protected AdvancedAlignment alignment;
     protected Tree tree;
@@ -46,7 +46,7 @@ public class OutputCodonNEB {
     protected boolean roundNEBValues;
     protected int representativeSequence = Constants.DISPLAY_SEQUENCE_INDEX;
     
-    public OutputCodonNEB(
+    public ProbCodonSiteClassNEB(
             AdvancedAlignment alignment, Tree tree, 
             GeneticStructure genStruct, CANModelFrequenciesMix canModel,
             CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable,
