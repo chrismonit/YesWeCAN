@@ -12,7 +12,7 @@ import java.util.Random;
 import pal.tree.Tree;
 import yeswecan.Constants;
 import yeswecan.io.CommandArgs;
-import yeswecan.io.TrueSiteClassTable;
+import yeswecan.io.ntsiteclasses.TrueSiteClassTable;
 import yeswecan.model.submodels.CANModelMixture;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.run.RunCANMixture;
