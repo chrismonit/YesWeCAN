@@ -26,7 +26,7 @@ public class FrequencySimulatorMix extends FrequencySimulator {
     private List<Probabilities> probabilities;
     private int numSiteClasses;
     
-    private int[][] geneSiteClasses;
+    private int[][] frameSiteClasses;
     
     private static final int TERMINAL_SITES = 2; // number of sites we want to skip at end of sequence (2 because there are 3 sites in codon)
     private static final int NUM_FRAMES = 3; 
@@ -45,21 +45,23 @@ public class FrequencySimulatorMix extends FrequencySimulator {
         this.probabilities = probabilities;
         this.numSiteClasses = numSiteClasses; // do we need this?
         
-        this.geneSiteClasses = assignGeneSiteClasses(
-                genStruct.getTotalLength(), genStruct.getNumberOfGenes()+1, 
-                rand, probabilities);
+//        this.geneSiteClasses = assignGeneSiteClasses( // old
+//                genStruct.getTotalLength(), genStruct.getNumberOfGenes()+1, 
+//                rand, probabilities);
+        
+        this.frameSiteClasses = assignCodonSiteClasses(rand, probabilities, genStruct);
         
     }
     
     public int[][] getGeneSiteClasses(){
-        return this.geneSiteClasses;
+        return this.frameSiteClasses;
     }
     
     
     @Override
     public double computeRate(int[] quintStates, int j, int site, double nu){
         int[] genes = this.genStruct.getGenes(site);
-        double product = 1.0; // multiplicative identity
+        double product = 1.0;
                 
         product *= this.kappa.getKappaIfTransition(quintStates[2], j);
         for (int iFrame = 0; iFrame < 3; iFrame++) {
@@ -72,7 +74,9 @@ public class FrequencySimulatorMix extends FrequencySimulator {
             
             if (!this.codonTable.isSynonymous(codonI, codonJ)) { 
                 int gene = genes[iFrame];
-                int siteClass = this.geneSiteClasses[site][gene];
+                //int siteClass = this.geneSiteClasses[site][gene]; // old version, for when each nt site has own site class
+                
+                int siteClass = this.frameSiteClasses[site][iFrame]; // new version, each CODON has site class
                 
                 int omegaIndex = (gene * this.numSiteClasses) + siteClass;
                 
@@ -120,21 +124,21 @@ public class FrequencySimulatorMix extends FrequencySimulator {
         return siteClasses;
     }
     
-    public static int[][] assignGeneSiteClasses(int numSites, int numGenes, 
-            Random rand, List<Probabilities> probabilities){
-        
-        int[][] siteClasses = new int[numSites][numGenes];
-        
-        for (int iSite = 0; iSite < numSites; iSite++) {
-            for (int iGene = 0; iGene < numGenes; iGene++) {
-                
-                double[] probs = probabilities.get(iGene).get();
-                int siteClass = States.draw(probs, rand.nextDouble());
-                siteClasses[iSite][iGene] = siteClass;
-            }
-        }
-        
-        return siteClasses;
-    }
+//    public static int[][] assignGeneSiteClasses(int numSites, int numGenes, 
+//            Random rand, List<Probabilities> probabilities){
+//        
+//        int[][] siteClasses = new int[numSites][numGenes];
+//        
+//        for (int iSite = 0; iSite < numSites; iSite++) {
+//            for (int iGene = 0; iGene < numGenes; iGene++) {
+//                
+//                double[] probs = probabilities.get(iGene).get();
+//                int siteClass = States.draw(probs, rand.nextDouble());
+//                siteClasses[iSite][iGene] = siteClass;
+//            }
+//        }
+//        
+//        return siteClasses;
+//    }
 
 }
