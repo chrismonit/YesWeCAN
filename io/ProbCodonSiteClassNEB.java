@@ -79,35 +79,9 @@ public class ProbCodonSiteClassNEB extends CodonSiteClass {
         
     }
     
-    public void print(){
-        System.out.println( getHeader() );
-        for (String row : getAllGenesCodonNEBRows()){
-            System.out.println(row);
-        }
-    }
     
-    public void write(String filePath){
-    
-         try{
-            FileWriter fileWriter = new FileWriter(filePath);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            
-            bufferedWriter.write( getHeader() );
-            bufferedWriter.newLine();
-            for (String row : getAllGenesCodonNEBRows()){
-                bufferedWriter.write(row);
-                bufferedWriter.newLine();
-            }
-
-            bufferedWriter.close();
-        
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-    
-    
-    public String getHeader(){
+    @Override
+    protected String getHeader(){
         List<String> row = new ArrayList<String>();
         row.add(Constants.HEADER); // blank to match the regular expression at the start of each row
         row.add(Constants.GENE);
@@ -121,7 +95,8 @@ public class ProbCodonSiteClassNEB extends CodonSiteClass {
         return String.join(Constants.DEL, row);
     }
     
-    public List<String> getAllGenesCodonNEBRows(){
+    @Override
+    protected List<String> getGeneRows(){
         List<String> allGeneRows = new ArrayList<String>();
         
         for (int iGene = 1; iGene < this.genStruct.getNumberOfGenes()+1; iGene++) { // ignore noncoding gene
@@ -131,7 +106,7 @@ public class ProbCodonSiteClassNEB extends CodonSiteClass {
         return allGeneRows;
     }
     
-    public List<String> getGeneCodonNEBRows(int gene){ // each element in returned list will be a row to print/save
+    protected List<String> getGeneCodonNEBRows(int gene){ // each element in returned list will be a row to print/save
         
         int[] geneNucSites = getGeneContiguousSites(gene, this.genStruct);
         int[][] codons = getCodons(geneNucSites);

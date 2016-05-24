@@ -17,8 +17,6 @@ import yeswecan.utils.ArrayPrinter;
  */
 public class TrueCodonSiteClassTable extends CodonSiteClass {
     
-    protected List<String> rows;
-    protected String header;
     protected int numSiteClasses;
     protected GeneticStructure genStruct;
     protected int[][] siteClasses; // i dimension is nt site, j dimension is frame
@@ -31,7 +29,8 @@ public class TrueCodonSiteClassTable extends CodonSiteClass {
         this.siteClasses = siteClasses;
     }
     
-    public String getHeader(){
+    @Override
+    protected String getHeader(){
         List<String> row = new ArrayList<String>();
         row.add(Constants.HEADER); // blank to match the regular expression at the start of each row
         row.add(Constants.GENE);
@@ -45,7 +44,19 @@ public class TrueCodonSiteClassTable extends CodonSiteClass {
         return String.join(Constants.DEL, row);
     }
     
-    public List<String> getGeneCodonTrueRows(int gene){
+    @Override
+    protected List<String> getGeneRows(){
+        List<String> allGeneRows = new ArrayList<String>();
+
+        for (int iGene = 1; iGene < this.genStruct.getNumberOfGenes()+1; iGene++) { // ignore noncoding gene
+            allGeneRows.addAll( getGeneCodonTrueRows(iGene) );
+            allGeneRows.add("");// empty line between genes for readability
+        }
+        return allGeneRows;
+    }
+    
+    
+    protected List<String> getGeneCodonTrueRows(int gene){
         int[] geneNucSites = getGeneContiguousSites(gene, this.genStruct);
         int[][] codons = getCodons(geneNucSites);
         
@@ -81,13 +92,14 @@ public class TrueCodonSiteClassTable extends CodonSiteClass {
             for (int iSiteClass = 0; iSiteClass < this.numSiteClasses; iSiteClass++) {
                 String siteClassString;
                 if (iSiteClass == codonSiteClass) {
-                    row.add(Constants.TRUE_STRING);
+                    siteClassString = Constants.TRUE_STRING;
                 }else{
-                    row.add(Constants.FALSE_STRING);
+                    siteClassString = Constants.FALSE_STRING;
                 }
+                row.add(siteClassString);
             }// for iSiteClass
             
-            // show the 3 nt site indices for this codon 
+            // show the 3 nt site indices which comprise this codon 
             int[] codonSitesPlus1 = new int[codons[iCodon].length];
             for (int i = 0; i < codonSitesPlus1.length; i++) {
                 codonSitesPlus1[i] = codons[iCodon][i]+1;
@@ -108,11 +120,11 @@ public class TrueCodonSiteClassTable extends CodonSiteClass {
         return true;
     }
     
-    public static void main(String[] args){
-        int[] states = new int[]{ 1,2,3 };
-        boolean equal = statesEqual(states);
-        System.out.println(ArrayPrinter.toString(states, ",")+"\t"+equal);
-        
-    }
+//    public static void main(String[] args){
+//        int[] states = new int[]{ 1,2,3 };
+//        boolean equal = statesEqual(states);
+//        System.out.println(ArrayPrinter.toString(states, ",")+"\t"+equal);
+//        
+//    }
     
 }

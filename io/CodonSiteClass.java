@@ -5,6 +5,9 @@
  */
 package yeswecan.io;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import yeswecan.phylo.GeneticStructure;
@@ -15,6 +18,41 @@ import yeswecan.phylo.GeneticStructure;
  */
 public abstract class CodonSiteClass {
 
+    protected abstract String getHeader();
+    
+    protected abstract List<String> getGeneRows();
+    
+    
+    public void print(){
+        System.out.println( getHeader() );
+        for (String row : getGeneRows()){
+            System.out.println(row);
+        }
+    }
+    
+    public void write(String filePath){
+    
+        try{
+            FileWriter fileWriter = new FileWriter(filePath);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            
+            bufferedWriter.write( getHeader() );
+            bufferedWriter.newLine();
+            for (String row : getGeneRows()){
+                bufferedWriter.write(row);
+                bufferedWriter.newLine();
+            }
+
+            bufferedWriter.close();
+        
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+    
+    
+    // static utility methods
+    
     public static int[] intArray(List<Integer> intList){
         int[] array = new int[intList.size()];
         for (int i = 0; i < intList.size(); i++) {
