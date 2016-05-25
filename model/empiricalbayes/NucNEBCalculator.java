@@ -21,7 +21,7 @@ import yeswecan.phylo.GeneticStructure;
  *
  * @author cmonit1
  */
-public class NucNaiveEmpiricalBayesCalculator extends NucEmpiricalBayesCalculator {
+public class NucNEBCalculator extends NucEmpiricalBayesCalculator {
     
     protected double[][][] probValues;
     
@@ -35,7 +35,7 @@ public class NucNaiveEmpiricalBayesCalculator extends NucEmpiricalBayesCalculato
     
     protected int numSiteClasses;
     
-    public NucNaiveEmpiricalBayesCalculator(
+    public NucNEBCalculator(
             AdvancedAlignment alignment, Tree tree, 
             GeneticStructure genStruct, CANModelFrequenciesMix canModel,
             CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable,
