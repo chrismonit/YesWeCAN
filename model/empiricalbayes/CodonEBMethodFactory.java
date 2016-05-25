@@ -16,7 +16,7 @@ import yeswecan.phylo.GeneticStructure;
  *
  * @author cmonit1
  */
-public class CodonEBFactory {
+public class CodonEBMethodFactory {
     
     public static BaseCodonEBCalculator getCodonEBCalculator(
             AdvancedAlignment alignment, Tree tree, 
