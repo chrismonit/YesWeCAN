@@ -11,4 +11,5 @@ package yeswecan.model.empiricalbayes;
  */
 public abstract class NucEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
      
+    public abstract double[][][] getEBValues();
 }
