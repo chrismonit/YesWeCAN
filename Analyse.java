@@ -23,6 +23,7 @@ import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.run.RunCANFreqProducts;
 import yeswecan.run.RunCANFreqProductsMix;
 import yeswecan.run.RunCANSum;
+import yeswecan.run.RunEmpiricalBayes;
 import yeswecan.utils.ArrayPrinter;
 
 /**
@@ -82,6 +83,11 @@ public class Analyse {
             
             System.out.println( Constants.CALC + Constants.DEL +
                 ArrayPrinter.toString(result, Constants.DEL) );
+            
+            if (run instanceof RunEmpiricalBayes) {
+                ((RunEmpiricalBayes)run).computeAndOutputEB();
+            }
+            
         }
         else{
             double[] initial = run.getInitialValues();
@@ -96,6 +102,12 @@ public class Analyse {
             
             System.out.println( Constants.MLE + Constants.DEL +
                     ArrayPrinter.toString(result, Constants.DEL) ); 
+            
+            System.out.println("");
+            
+            if (run instanceof RunEmpiricalBayes) {
+                ((RunEmpiricalBayes)run).computeAndOutputEB();
+            }
             
             System.out.println("");
             

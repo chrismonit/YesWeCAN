@@ -14,6 +14,7 @@ import pal.tree.Tree;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
+import swmutsel.model.parameters.Parameter;
 import swmutsel.model.parameters.Probabilities;
 import yeswecan.Constants;
 import yeswecan.io.CommandArgs;
