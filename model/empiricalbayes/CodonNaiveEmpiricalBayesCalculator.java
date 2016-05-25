@@ -5,17 +5,13 @@
  */
 package yeswecan.model.empiricalbayes;
 
-import pal.datatype.CodonTable;
 import pal.tree.Tree;
 import swmutsel.model.parameters.Probabilities;
 import yeswecan.model.likelihood.LikelihoodCalculator;
 import yeswecan.model.likelihood.ProbMatrixGenerator;
 import yeswecan.model.submodels.CANModelFrequenciesMix;
 import yeswecan.phylo.AdvancedAlignment;
-import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.GeneticStructure;
-import yeswecan.utils.ArrayPrinter;
-import yeswecan.utils.MatrixPrinter;
 
 /**
  *
@@ -64,6 +60,7 @@ public class CodonNaiveEmpiricalBayesCalculator  {
         
     }
     
+    //returns an array of ProbMatrixGenerators, one for each nuc site in the codon
     protected static ProbMatrixGenerator[] getCodonSiteProbMatrices(
             ProbMatrixGenerator[][][][][] pMatGens,
             int iSiteClassV, int iSiteClassW, int iSiteClassX,
