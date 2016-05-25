@@ -17,6 +17,8 @@ import swmutsel.model.parameters.Omega;
 import swmutsel.model.parameters.Probabilities;
 import yeswecan.Constants;
 import yeswecan.io.CommandArgs;
+import yeswecan.model.empiricalbayes.BaseCodonEBCalculator;
+import yeswecan.model.empiricalbayes.CodonEBMethodFactory;
 import yeswecan.model.functions.CANFunctionFreqProductsMix;
 import yeswecan.model.parameters.OmegaNegative;
 import yeswecan.model.parameters.OmegaPositive;
@@ -26,14 +28,12 @@ import yeswecan.optim.Optimise;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.GeneticStructure;
-import static yeswecan.run.RunCANMixture.makeMixture;
-import static yeswecan.run.RunCANMixture.numberSiteClasses;
 
 /**
  *
  * @author cmonit1
  */
-public class RunCANFreqProductsMix extends RunModel {
+public class RunCANFreqProductsMix extends RunEmpiricalBayes {
     
     private CommandArgs comArgs;
     private AdvancedAlignment alignment;
@@ -47,6 +47,8 @@ public class RunCANFreqProductsMix extends RunModel {
     private int numSiteClasses;
     
     private int model;
+    
+    private CANModelFrequenciesMix mleModel;
     
     public RunCANFreqProductsMix(AdvancedAlignment alignment, Tree tree, CommandArgs input, int model){
         this.comArgs = input;
@@ -248,6 +250,8 @@ public class RunCANFreqProductsMix extends RunModel {
         Optimise opt = new Optimise();
         CANModelFrequenciesMix result = (CANModelFrequenciesMix)opt.optNMS(optFunction, can);
         
+        this.mleModel = result; // keep this for computing EB values afterwards
+        
         double[] mles = getValueArray(result);        
         return mles;
         
@@ -264,5 +268,14 @@ public class RunCANFreqProductsMix extends RunModel {
         return numSiteClasses;
     }
 
+    @Override
+    public void computeAndOutputEB(){
+        
+        BaseCodonEBCalculator ebCalculator = CodonEBMethodFactory.getCodonEBCalculator(
+                this.alignment, this.tree, this.genStruct, this.mleModel, 
+                this.codonFrequenciesArray, this.codonTable, this.numSiteClasses);
+    
+        
+    }
     
 }
