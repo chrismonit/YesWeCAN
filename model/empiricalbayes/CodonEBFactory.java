@@ -5,10 +5,32 @@
  */
 package yeswecan.model.empiricalbayes;
 
+import pal.datatype.CodonTable;
+import pal.tree.Tree;
+import yeswecan.model.submodels.CANModelFrequenciesMix;
+import yeswecan.phylo.AdvancedAlignment;
+import yeswecan.phylo.CodonFrequencies;
+import yeswecan.phylo.GeneticStructure;
+
 /**
  *
  * @author cmonit1
  */
 public class CodonEBFactory {
+    
+    public static CodonEmpiricalBayesCalculator getCodonEBCalculator(
+            AdvancedAlignment alignment, Tree tree, 
+            GeneticStructure genStruct, CANModelFrequenciesMix canModel,
+            CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable,
+            int numSiteClasses
+    ){
+        
+        return new CodonNEBCalculator(
+            alignment,  tree, 
+            genStruct,  canModel,
+            codonFrequenciesArray,  codonTable,
+            numSiteClasses
+        );
+    }
     
 }
