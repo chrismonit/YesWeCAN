@@ -17,6 +17,7 @@ import swmutsel.model.parameters.Omega;
 import swmutsel.model.parameters.Probabilities;
 import yeswecan.Constants;
 import yeswecan.io.CommandArgs;
+import yeswecan.io.ProbCodonSiteClassEB;
 import yeswecan.model.empiricalbayes.BaseCodonEBCalculator;
 import yeswecan.model.empiricalbayes.CodonEBMethodFactory;
 import yeswecan.model.functions.CANFunctionFreqProductsMix;
@@ -48,7 +49,7 @@ public class RunCANFreqProductsMix extends RunEmpiricalBayes {
     
     private int model;
     
-    private CANModelFrequenciesMix mleModel;
+    private CANModelFrequenciesMix modelForComputingEB;
     
     public RunCANFreqProductsMix(AdvancedAlignment alignment, Tree tree, CommandArgs input, int model){
         this.comArgs = input;
@@ -231,6 +232,8 @@ public class RunCANFreqProductsMix extends RunEmpiricalBayes {
                         can, this.codonFrequenciesArray, this.codonTable, this.numSiteClasses
                 );
         
+        this.modelForComputingEB = can; // keep this reference for computing EB
+        
         double[] resultArray = getInitialValues();
         resultArray[1] = calculator.value(optimisableParams);
         return resultArray;
@@ -250,7 +253,7 @@ public class RunCANFreqProductsMix extends RunEmpiricalBayes {
         Optimise opt = new Optimise();
         CANModelFrequenciesMix result = (CANModelFrequenciesMix)opt.optNMS(optFunction, can);
         
-        this.mleModel = result; // keep this for computing EB values afterwards
+        this.modelForComputingEB = result; // keep this for computing EB values afterwards
         
         double[] mles = getValueArray(result);        
         return mles;
@@ -269,13 +272,18 @@ public class RunCANFreqProductsMix extends RunEmpiricalBayes {
     }
 
     @Override
-    public void computeAndOutputEB(){
+    public void computeAndOutputEB(){ // NB this can only be called after calculate() or fit() method, or the 'modelForComputingEB' reference will be null
         
         BaseCodonEBCalculator ebCalculator = CodonEBMethodFactory.getCodonEBCalculator(
-                this.alignment, this.tree, this.genStruct, this.mleModel, 
+                this.alignment, this.tree, this.genStruct, this.modelForComputingEB, 
                 this.codonFrequenciesArray, this.codonTable, this.numSiteClasses);
     
+        ProbCodonSiteClassEB output = new ProbCodonSiteClassEB(
+                ebCalculator, this.genStruct, this.numSiteClasses, 
+                this.alignment, this.codonTable, Constants.ROUND_EB
+        );
         
+        output.print();
     }
     
 }

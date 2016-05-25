@@ -70,11 +70,12 @@ public class Constants {
     public static final String NU = "NU";
     public static final String P_N = "P_N";
     
-    // for site class output tables
+    // for site class output tables. Most associated with NucEB rather than codon
     public static final String MAJOR_DELIM = "|";
     public static final String CLASSES = "NEB"; // prefix for table rows for true site classes in mixmodel simulation
     public static final String SITES = "SITES";
     public static final int DEC_PLACES = 4;
+    public static final boolean ROUND_EB = true; // round EB values to <DEC_PLACES> decimal places
     public static final String FALSE_STRING = "-";
     public static final String TRUE_STRING = "+";
     public static final double PROB_THRESH = 0.95;
