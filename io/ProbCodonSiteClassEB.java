@@ -10,7 +10,7 @@ import java.util.List;
 import pal.datatype.CodonTable;
 import pal.tree.Tree;
 import yeswecan.Constants;
-import yeswecan.model.empiricalbayes.CodonEmpiricalBayesCalculator;
+import yeswecan.model.empiricalbayes.BaseCodonEmpiricalBayesCalculator;
 import yeswecan.model.submodels.CANModelFrequenciesMix;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.CodonFrequencies;
@@ -37,14 +37,14 @@ public class ProbCodonSiteClassEB extends CodonSiteClass {
     protected boolean roundNEBValues;
     protected int representativeSequence = Constants.DISPLAY_SEQUENCE_INDEX;
     
-    protected CodonEmpiricalBayesCalculator codonEB;
+    protected BaseCodonEmpiricalBayesCalculator codonEB;
     
     public ProbCodonSiteClassEB(
             AdvancedAlignment alignment, Tree tree, 
             GeneticStructure genStruct, CANModelFrequenciesMix canModel,
             CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable,
             int numSiteClasses, boolean roundNEBValues,
-            CodonEmpiricalBayesCalculator codonEB
+            BaseCodonEmpiricalBayesCalculator codonEB
     ){
         this.alignment = alignment;
         this.tree = tree;

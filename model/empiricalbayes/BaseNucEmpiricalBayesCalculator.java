@@ -9,7 +9,7 @@ package yeswecan.model.empiricalbayes;
  *
  * @author cmonit1
  */
-public abstract class NucEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
+public abstract class BaseNucEmpiricalBayesCalculator extends BaseEmpiricalBayesCalculator {
      
     public abstract double[][][] getEBValues();
 }

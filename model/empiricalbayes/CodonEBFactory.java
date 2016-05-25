@@ -18,7 +18,7 @@ import yeswecan.phylo.GeneticStructure;
  */
 public class CodonEBFactory {
     
-    public static CodonEmpiricalBayesCalculator getCodonEBCalculator(
+    public static BaseCodonEmpiricalBayesCalculator getCodonEBCalculator(
             AdvancedAlignment alignment, Tree tree, 
             GeneticStructure genStruct, CANModelFrequenciesMix canModel,
             CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable,

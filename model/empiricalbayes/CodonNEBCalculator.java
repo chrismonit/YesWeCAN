@@ -31,7 +31,7 @@ import yeswecan.phylo.GeneticStructure;
    |YYY__| YZ frame
    |___ZZ| YZ frame
  */
-public class CodonNEBCalculator extends CodonEmpiricalBayesCalculator {
+public class CodonNEBCalculator extends BaseCodonEmpiricalBayesCalculator {
     
     protected double[][][] probValues;
     
