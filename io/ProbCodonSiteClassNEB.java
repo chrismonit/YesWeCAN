@@ -11,10 +11,6 @@ import pal.datatype.CodonTable;
 import pal.tree.Tree;
 import yeswecan.Constants;
 import yeswecan.model.empiricalbayes.CodonEmpiricalBayesCalculator;
-import yeswecan.model.empiricalbayes.CodonNEBCalculator;
-import yeswecan.model.empiricalbayes.EmpiricalBayesCalculator;
-import yeswecan.model.likelihood.ProbMatrixGenerator;
-import yeswecan.model.matrices.CANMatrixFreqProducts;
 import yeswecan.model.submodels.CANModelFrequenciesMix;
 import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.CodonFrequencies;
@@ -37,20 +33,18 @@ public class ProbCodonSiteClassNEB extends CodonSiteClass {
     protected CodonTable codonTable;
     
     protected int numSiteClasses;
-    
-    protected CodonNEBCalculator codonNEB;
-    
-    //protected ProbMatrixGenerator[][][][][] pMatGenes;
+        
     protected boolean roundNEBValues;
     protected int representativeSequence = Constants.DISPLAY_SEQUENCE_INDEX;
     
     protected CodonEmpiricalBayesCalculator codonEB;
     
-    public ProbCodonSiteClassNEB(
+    public ProbCodonSiteClassNEB( // TODO rename this
             AdvancedAlignment alignment, Tree tree, 
             GeneticStructure genStruct, CANModelFrequenciesMix canModel,
             CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable,
-            int numSiteClasses, boolean roundNEBValues
+            int numSiteClasses, boolean roundNEBValues,
+            CodonEmpiricalBayesCalculator codonEB
     ){
         this.alignment = alignment;
         this.tree = tree;
@@ -63,18 +57,9 @@ public class ProbCodonSiteClassNEB extends CodonSiteClass {
         this.codonTable = codonTable;
         
         this.numSiteClasses = numSiteClasses;
+
+        this.codonEB = codonEB;
         
-        this.codonNEB = 
-                new CodonNEBCalculator(
-                        this.alignment, this.tree, this.genStruct, 
-                        this.canModel, this.numSiteClasses);
-        
-        CANMatrixFreqProducts[][][][][] Q_matrices = 
-                EmpiricalBayesCalculator.getQMatrices(
-                        this.genStruct, this.canModel, this.codonFrequenciesArray, 
-                        this.codonTable, this.numSiteClasses);
-        
-        //this.pMatGenes = EmpiricalBayesCalculator.createProbMatrixGenerators(Q_matrices);
         this.roundNEBValues = roundNEBValues;
         
     }
@@ -100,13 +85,13 @@ public class ProbCodonSiteClassNEB extends CodonSiteClass {
         List<String> allGeneRows = new ArrayList<String>();
         
         for (int iGene = 1; iGene < this.genStruct.getNumberOfGenes()+1; iGene++) { // ignore noncoding gene
-            allGeneRows.addAll( getGeneCodonNEBRows(iGene) );
+            allGeneRows.addAll( getGeneCodonEBRows(iGene) );
             allGeneRows.add("");// empty line between genes for readability
         }
         return allGeneRows;
     }
     
-    protected List<String> getGeneCodonNEBRows(int gene){ // each element in returned list will be a row to print/save
+    protected List<String> getGeneCodonEBRows(int gene){ // each element in returned list will be a row to print/save
         
         int[] geneNucSites = getGeneContiguousSites(gene, this.genStruct);
         int[][] codons = getCodons(geneNucSites);
@@ -120,7 +105,7 @@ public class ProbCodonSiteClassNEB extends CodonSiteClass {
             row.add(Integer.toString(gene));
             row.add(Integer.toString(iCodon+1)); // correct for zero based
             
-            double Z = this.codonNEB.getNormalisationFactor(codons[iCodon], this.pMatGens);
+            double Z = this.codonEB.getNormalisationFactor(codons[iCodon]);
             
             for (int iSiteClass = 0; iSiteClass < this.numSiteClasses; iSiteClass++) {
                 String nebString;
@@ -128,8 +113,7 @@ public class ProbCodonSiteClassNEB extends CodonSiteClass {
                 if (!sitesSequential(codons[iCodon])) {
                     nebString = Constants.NO_DATA;
                 }else{
-                    double numerator = this.codonNEB.getNumerator(
-                            codons[iCodon], iSiteClass, this.pMatGens);
+                    double numerator = this.codonEB.getNumerator(codons[iCodon], iSiteClass);
                     double neb = numerator/Z;
 
                     if (this.roundNEBValues) {
