@@ -10,6 +10,7 @@ import java.util.List;
 import pal.datatype.CodonTable;
 import pal.tree.Tree;
 import yeswecan.Constants;
+import yeswecan.model.empiricalbayes.CodonEmpiricalBayesCalculator;
 import yeswecan.model.empiricalbayes.CodonNEBCalculator;
 import yeswecan.model.empiricalbayes.EmpiricalBayesCalculator;
 import yeswecan.model.likelihood.ProbMatrixGenerator;
@@ -39,9 +40,11 @@ public class ProbCodonSiteClassNEB extends CodonSiteClass {
     
     protected CodonNEBCalculator codonNEB;
     
-    protected ProbMatrixGenerator[][][][][] pMatGenes;
+    //protected ProbMatrixGenerator[][][][][] pMatGenes;
     protected boolean roundNEBValues;
     protected int representativeSequence = Constants.DISPLAY_SEQUENCE_INDEX;
+    
+    protected CodonEmpiricalBayesCalculator codonEB;
     
     public ProbCodonSiteClassNEB(
             AdvancedAlignment alignment, Tree tree, 
@@ -71,7 +74,7 @@ public class ProbCodonSiteClassNEB extends CodonSiteClass {
                         this.genStruct, this.canModel, this.codonFrequenciesArray, 
                         this.codonTable, this.numSiteClasses);
         
-        this.pMatGenes = EmpiricalBayesCalculator.createProbMatrixGenerators(Q_matrices);
+        //this.pMatGenes = EmpiricalBayesCalculator.createProbMatrixGenerators(Q_matrices);
         this.roundNEBValues = roundNEBValues;
         
     }
@@ -117,7 +120,7 @@ public class ProbCodonSiteClassNEB extends CodonSiteClass {
             row.add(Integer.toString(gene));
             row.add(Integer.toString(iCodon+1)); // correct for zero based
             
-            double Z = this.codonNEB.getNormalisationFactor(codons[iCodon], this.pMatGenes);
+            double Z = this.codonNEB.getNormalisationFactor(codons[iCodon], this.pMatGens);
             
             for (int iSiteClass = 0; iSiteClass < this.numSiteClasses; iSiteClass++) {
                 String nebString;
@@ -126,7 +129,7 @@ public class ProbCodonSiteClassNEB extends CodonSiteClass {
                     nebString = Constants.NO_DATA;
                 }else{
                     double numerator = this.codonNEB.getNumerator(
-                            codons[iCodon], iSiteClass, this.pMatGenes);
+                            codons[iCodon], iSiteClass, this.pMatGens);
                     double neb = numerator/Z;
 
                     if (this.roundNEBValues) {
