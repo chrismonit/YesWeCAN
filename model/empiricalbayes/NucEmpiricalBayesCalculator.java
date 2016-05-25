@@ -9,6 +9,6 @@ package yeswecan.model.empiricalbayes;
  *
  * @author cmonit1
  */
-public class NucEmpiricalBayesCalculator {
-    
+public abstract class NucEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
+     
 }
