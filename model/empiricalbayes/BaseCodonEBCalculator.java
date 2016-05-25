@@ -23,7 +23,7 @@ import yeswecan.model.likelihood.ProbMatrixGenerator;
    |___ZZ| YZ frame
  * 
  */
-public abstract class BaseCodonEmpiricalBayesCalculator extends BaseEmpiricalBayesCalculator {
+public abstract class BaseCodonEBCalculator extends BaseEBCalculator {
     
     public abstract double getNormalisationFactor(int[] codonSites);
     

@@ -18,7 +18,7 @@ import yeswecan.phylo.GeneticStructure;
  *
  * @author cmonit1
  */
-public abstract class BaseEmpiricalBayesCalculator {
+public abstract class BaseEBCalculator {
     
     
     

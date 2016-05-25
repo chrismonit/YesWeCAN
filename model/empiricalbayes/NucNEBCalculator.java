@@ -21,7 +21,7 @@ import yeswecan.phylo.GeneticStructure;
  *
  * @author cmonit1
  */
-public class NucNEBCalculator extends BaseNucEmpiricalBayesCalculator {
+public class NucNEBCalculator extends BaseNucEBCalculator {
     
     protected double[][][] probValues;
     
