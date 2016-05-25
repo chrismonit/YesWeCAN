@@ -8,12 +8,9 @@ package yeswecan.io;
 import java.util.ArrayList;
 import java.util.List;
 import pal.datatype.CodonTable;
-import pal.tree.Tree;
 import yeswecan.Constants;
 import yeswecan.model.empiricalbayes.BaseCodonEBCalculator;
-import yeswecan.model.submodels.CANModelFrequenciesMix;
 import yeswecan.phylo.AdvancedAlignment;
-import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.utils.ArrayPrinter;
 import yeswecan.utils.MatrixPrinter;
@@ -25,43 +22,33 @@ import yeswecan.utils.MatrixPrinter;
 public class ProbCodonSiteClassEB extends CodonSiteClass {
     
     protected AdvancedAlignment alignment;
-    protected Tree tree;
     protected GeneticStructure genStruct;
-    protected CANModelFrequenciesMix canModel;
-    
-    protected CodonFrequencies[] codonFrequenciesArray;
     protected CodonTable codonTable;
-    
     protected int numSiteClasses;
-        
     protected boolean roundNEBValues;
     protected int representativeSequence = Constants.DISPLAY_SEQUENCE_INDEX;
     
     protected BaseCodonEBCalculator codonEB;
     
     public ProbCodonSiteClassEB(
-            AdvancedAlignment alignment, Tree tree, 
-            GeneticStructure genStruct, CANModelFrequenciesMix canModel,
-            CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable,
-            int numSiteClasses, boolean roundNEBValues,
-            BaseCodonEBCalculator codonEB
+            BaseCodonEBCalculator codonEB,
+            GeneticStructure genStruct,
+            int numSiteClasses,
+            AdvancedAlignment alignment, 
+            CodonTable codonTable,
+            boolean roundNEBValues
     ){
-        this.alignment = alignment;
-        this.tree = tree;
-        this.genStruct = genStruct;
         
-        this.canModel = canModel;
-        // NB 0th omega is fixed to 1.0 for neutral evolution
-           
-        this.codonFrequenciesArray = codonFrequenciesArray;
-        this.codonTable = codonTable;
-        
-        this.numSiteClasses = numSiteClasses;
-
+        // necessary for computing EB
         this.codonEB = codonEB;
+        this.genStruct = genStruct;
+        this.numSiteClasses = numSiteClasses;
         
         this.roundNEBValues = roundNEBValues;
         
+        // used for adding extra columns to EB output to help user work out which sites they're looking at
+        this.alignment = alignment;
+        this.codonTable = codonTable;
     }
     
     
