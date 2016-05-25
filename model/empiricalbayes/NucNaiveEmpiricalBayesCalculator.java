@@ -9,9 +9,7 @@ package yeswecan.model.empiricalbayes;
 import pal.datatype.CodonTable;
 import pal.tree.Tree;
 import yeswecan.Constants;
-import yeswecan.model.functions.CANFunctionFreqProductsMix;
 import yeswecan.model.likelihood.LikelihoodCalculator;
-import yeswecan.model.likelihood.ProbMatrixFactory;
 import yeswecan.model.likelihood.ProbMatrixGenerator;
 import yeswecan.model.matrices.CANMatrixFreqProducts;
 import yeswecan.model.submodels.CANModelFrequenciesMix;
@@ -23,7 +21,7 @@ import yeswecan.phylo.GeneticStructure;
  *
  * @author cmonit1
  */
-public class NaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
+public class NucNaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
     
     protected double[][][] probValues;
     
@@ -37,7 +35,7 @@ public class NaiveEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
     
     protected int numSiteClasses;
     
-    public NaiveEmpiricalBayesCalculator(
+    public NucNaiveEmpiricalBayesCalculator(
             AdvancedAlignment alignment, Tree tree, 
             GeneticStructure genStruct, CANModelFrequenciesMix canModel,
             CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable,

@@ -5,9 +5,6 @@
  */
 package yeswecan.io;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import pal.datatype.CodonTable;
@@ -129,7 +126,7 @@ public class ProbCodonSiteClassNEB extends CodonSiteClass {
                     nebString = Constants.NO_DATA;
                 }else{
                     double numerator = this.codonNEB.getNumerator(
-                    codons[iCodon], iSiteClass, this.pMatGenes);
+                            codons[iCodon], iSiteClass, this.pMatGenes);
                     double neb = numerator/Z;
 
                     if (this.roundNEBValues) {
