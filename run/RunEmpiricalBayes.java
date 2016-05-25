@@ -9,6 +9,8 @@ package yeswecan.run;
  *
  * @author cmonit1
  */
-public abstract class RunEmpiricalBayes {
+public abstract class RunEmpiricalBayes extends RunModel {
+    
+    public abstract void computeAndOutputEB();
     
 }
