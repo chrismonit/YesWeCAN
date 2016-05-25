@@ -22,7 +22,7 @@ import yeswecan.utils.MatrixPrinter;
  *
  * @author cmonit1
  */
-public class ProbCodonSiteClassNEB extends CodonSiteClass {
+public class ProbCodonSiteClassEB extends CodonSiteClass {
     
     protected AdvancedAlignment alignment;
     protected Tree tree;
@@ -39,7 +39,7 @@ public class ProbCodonSiteClassNEB extends CodonSiteClass {
     
     protected CodonEmpiricalBayesCalculator codonEB;
     
-    public ProbCodonSiteClassNEB( // TODO rename this
+    public ProbCodonSiteClassEB(
             AdvancedAlignment alignment, Tree tree, 
             GeneticStructure genStruct, CANModelFrequenciesMix canModel,
             CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable,
