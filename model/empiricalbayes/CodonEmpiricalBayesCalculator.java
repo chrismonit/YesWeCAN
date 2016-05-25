@@ -11,4 +11,8 @@ package yeswecan.model.empiricalbayes;
  */
 public abstract class CodonEmpiricalBayesCalculator extends EmpiricalBayesCalculator {
     
+    public abstract double getNormalisationFactor(int[] codonSites);
+    
+    public abstract double getNumerator(int[] codonSites, int codonVSiteClass);
+
 }

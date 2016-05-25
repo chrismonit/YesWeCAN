@@ -5,12 +5,15 @@
  */
 package yeswecan.model.empiricalbayes;
 
+import pal.datatype.CodonTable;
 import pal.tree.Tree;
 import swmutsel.model.parameters.Probabilities;
 import yeswecan.model.likelihood.LikelihoodCalculator;
 import yeswecan.model.likelihood.ProbMatrixGenerator;
+import yeswecan.model.matrices.CANMatrixFreqProducts;
 import yeswecan.model.submodels.CANModelFrequenciesMix;
 import yeswecan.phylo.AdvancedAlignment;
+import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.GeneticStructure;
 
 /**
@@ -41,10 +44,12 @@ public class CodonNEBCalculator extends CodonEmpiricalBayesCalculator {
     protected int numSiteClasses;
     protected int[][][] geneFramesByCodon;
     
+    protected ProbMatrixGenerator[][][][][] pMatGens;
+    
     public CodonNEBCalculator(
             AdvancedAlignment alignment, Tree tree, 
             GeneticStructure genStruct, CANModelFrequenciesMix canModel,
-            //CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable,
+            CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable,
             int numSiteClasses
     ){
         this.alignment = alignment;
@@ -58,6 +63,11 @@ public class CodonNEBCalculator extends CodonEmpiricalBayesCalculator {
         this.numSiteClasses = numSiteClasses;
         this.geneFramesByCodon = getGeneFramesByCodon();
         
+        CANMatrixFreqProducts[][][][][] Q_matrices = getQMatrices(
+                this.genStruct, this.canModel, codonFrequenciesArray, 
+                codonTable, this.numSiteClasses );
+        
+        this.pMatGens = createProbMatrixGenerators(Q_matrices);
     }
     
     //returns an array of ProbMatrixGenerators, one for each nuc site in the codon
@@ -148,17 +158,18 @@ public class CodonNEBCalculator extends CodonEmpiricalBayesCalculator {
         return this.geneFramesByCodon[codonPosition][siteType][codonFrame];
     }
     
-    public double getNormalisationFactor(int[] codonSites, ProbMatrixGenerator[][][][][] pMatGens){
+    @Override
+    public double getNormalisationFactor(int[] codonSites){
         double sum = 0.0;
         for (int iSiteClassV = 0; iSiteClassV < this.numSiteClasses; iSiteClassV++) {
-            sum += getNumerator(codonSites, iSiteClassV, pMatGens);
+            sum += getNumerator(codonSites, iSiteClassV);
         }
         return sum;
     }
     
 
-    
-    public double getNumerator(int[] codonSites, int codonVSiteClass, ProbMatrixGenerator[][][][][] pMatGens){
+    @Override
+    public double getNumerator(int[] codonSites, int codonVSiteClass){
         
         int codonSite0Type = codonSites[0] % 3;
         int codonSite1Type = codonSites[1] % 3;
@@ -217,7 +228,7 @@ public class CodonNEBCalculator extends CodonEmpiricalBayesCalculator {
 
                         double likelihoodProduct = 1.0;
 
-                        ProbMatrixGenerator[] sitePMatGens = getCodonSiteProbMatrices(pMatGens,
+                        ProbMatrixGenerator[] sitePMatGens = getCodonSiteProbMatrices(this.pMatGens,
                                 codonVSiteClass, iSiteClassW, iSiteClassX, iSiteClassY, iSiteClassZ,
                                 codonSite0Type, codonSite1Type, codonSite2Type,
                                 codonSite0Partition, codonSite1Partition, codonSite2Partition);
