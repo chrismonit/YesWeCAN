@@ -28,7 +28,7 @@ import yeswecan.phylo.GeneticStructure;
    |YYY__| YZ frame
    |___ZZ| YZ frame
  */
-public class CodonNaiveEmpiricalBayesCalculator  {
+public class CodonNEBCalculator extends CodonEmpiricalBayesCalculator {
     
     protected double[][][] probValues;
     
@@ -41,7 +41,7 @@ public class CodonNaiveEmpiricalBayesCalculator  {
     protected int numSiteClasses;
     protected int[][][] geneFramesByCodon;
     
-    public CodonNaiveEmpiricalBayesCalculator(
+    public CodonNEBCalculator(
             AdvancedAlignment alignment, Tree tree, 
             GeneticStructure genStruct, CANModelFrequenciesMix canModel,
             //CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable,

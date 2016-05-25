@@ -20,7 +20,6 @@ import yeswecan.phylo.GeneticStructure;
  */
 public abstract class EmpiricalBayesCalculator {
     
-    public abstract double[][][] getEBValues();
     
     
     public static int[] otherIntegers(int[] allInts, int intToExclude ){

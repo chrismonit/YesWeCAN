@@ -10,7 +10,7 @@ import java.util.List;
 import pal.datatype.CodonTable;
 import pal.tree.Tree;
 import yeswecan.Constants;
-import yeswecan.model.empiricalbayes.CodonNaiveEmpiricalBayesCalculator;
+import yeswecan.model.empiricalbayes.CodonNEBCalculator;
 import yeswecan.model.empiricalbayes.EmpiricalBayesCalculator;
 import yeswecan.model.likelihood.ProbMatrixGenerator;
 import yeswecan.model.matrices.CANMatrixFreqProducts;
@@ -37,7 +37,7 @@ public class ProbCodonSiteClassNEB extends CodonSiteClass {
     
     protected int numSiteClasses;
     
-    protected CodonNaiveEmpiricalBayesCalculator codonNEB;
+    protected CodonNEBCalculator codonNEB;
     
     protected ProbMatrixGenerator[][][][][] pMatGenes;
     protected boolean roundNEBValues;
@@ -62,7 +62,7 @@ public class ProbCodonSiteClassNEB extends CodonSiteClass {
         this.numSiteClasses = numSiteClasses;
         
         this.codonNEB = 
-                new CodonNaiveEmpiricalBayesCalculator(
+                new CodonNEBCalculator(
                         this.alignment, this.tree, this.genStruct, 
                         this.canModel, this.numSiteClasses);
         
