@@ -14,7 +14,6 @@ import pal.tree.Tree;
 import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Mapper;
 import swmutsel.model.parameters.Omega;
-import swmutsel.model.parameters.Parameter;
 import swmutsel.model.parameters.Probabilities;
 import yeswecan.Constants;
 import yeswecan.io.CommandArgs;
@@ -245,7 +244,7 @@ public class RunCANFreqProductsMix extends RunEmpiricalBayes {
     public double[] fit(){
         
         CANModelFrequenciesMix can = makeCAN(this.comArgs, this.model, Constants.CODON_FREQ_MIX2_IDENTIFIER, numberSiteClasses(this.model));
-        
+    
         CANFunctionFreqProductsMix optFunction = 
                 new CANFunctionFreqProductsMix(this.alignment, this.tree, this.genStruct, 
                         can, this.codonFrequenciesArray, this.codonTable, this.numSiteClasses

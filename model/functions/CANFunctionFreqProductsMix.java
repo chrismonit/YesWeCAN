@@ -26,6 +26,7 @@ import yeswecan.phylo.AdvancedAlignment;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.phylo.States;
+import yeswecan.utils.ArrayPrinter;
 import yeswecan.utils.MatrixPrinter;
 
 /**
@@ -176,12 +177,12 @@ public class CANFunctionFreqProductsMix implements MultivariateFunction {
             }// iSiteType
         }// iPartition
     }
-    
-    @Override 
-    public double value(double[] point) {
-        
-        Mapper.setOptimisable(this.canModel.getParameters(), point);
 
+    @Override 
+    public double value(double[] point) { 
+  
+        Mapper.setOptimisable(this.canModel.getParameters(), point);
+        
         CANMatrixFreqProducts[][][][][] Q_matrices = createUnscaledMatrices(
                 this.genStruct, this.canModel, this.codonFrequenciesArray, 
                 this.codonTable, this.numSiteClasses);
@@ -237,7 +238,7 @@ public class CANFunctionFreqProductsMix implements MultivariateFunction {
             
             totalLogL += Math.log(siteL);
         }// iSite
-        
+
         return totalLogL;
     }// value
     
