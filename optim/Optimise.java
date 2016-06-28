@@ -12,7 +12,9 @@ import org.apache.commons.math3.optim.MaxEval;
 import org.apache.commons.math3.optim.MaxIter;
 import org.apache.commons.math3.optim.PointValuePair;
 import org.apache.commons.math3.optim.SimplePointChecker;
+import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
 import org.apache.commons.math3.optim.nonlinear.scalar.ObjectiveFunction;
+import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.BOBYQAOptimizer;
 import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.NelderMeadSimplex;
 import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.SimplexOptimizer;
 import swmutsel.model.parameters.Mapper;
@@ -79,6 +81,32 @@ public class Optimise {
     }//opt
     
     
+    
+    public SubstitutionModel optBOBYQA(MultivariateFunction function, SubstitutionModel model){
+        double[] initialValues = Mapper.getOptimisable(model.getParameters());// might not be happy about model being declared as SubstitutionModel, which is abstract
+        int numFreeParameters = initialValues.length; // optimiser needs to know how many variables its dealing with
+        
+        // values Richard uses:
+        int numberOfInterpolationPoints = 2*numFreeParameters;
+        double initialTrustRegionRadius = 0.01;
+        double stoppingTrustRegionRadius = 1.0E-6;
+        
+        BOBYQAOptimizer bobyqa = new BOBYQAOptimizer(numberOfInterpolationPoints, initialTrustRegionRadius, stoppingTrustRegionRadius);
+
+        myOF = new ObjectiveFunction(function);
+
+        InitialGuess guess = new InitialGuess(initialValues); // starting values
+        
+        // I don't know if all of these arguments are necessary
+        PointValuePair result = bobyqa.optimize( maxeval, maxiter, myOF, guess, GoalType.MAXIMIZE );
+
+        Mapper.setOptimisable(model.getParameters(), result.getPoint()); // map values from optimisation space back to parameter space
+        model.setLnL(result.getValue()); 
+
+        return model; 
+
+    }
+
   
 }//class
 
