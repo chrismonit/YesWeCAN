@@ -11,6 +11,7 @@ import org.apache.commons.math3.optim.InitialGuess;
 import org.apache.commons.math3.optim.MaxEval;
 import org.apache.commons.math3.optim.MaxIter;
 import org.apache.commons.math3.optim.PointValuePair;
+import org.apache.commons.math3.optim.SimpleBounds;
 import org.apache.commons.math3.optim.SimplePointChecker;
 import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
 import org.apache.commons.math3.optim.nonlinear.scalar.ObjectiveFunction;
@@ -97,8 +98,17 @@ public class Optimise {
 
         InitialGuess guess = new InitialGuess(initialValues); // starting values
         
+        // 
+        double[] upperBounds = new double[numFreeParameters];
+        double[] lowerBounds = new double[numFreeParameters];
+        for (int i = 0; i < numFreeParameters; i++) {
+            upperBounds[i] = Double.POSITIVE_INFINITY;
+            lowerBounds[i] = Double.NEGATIVE_INFINITY;
+        }
+        SimpleBounds bounds = new SimpleBounds(lowerBounds, upperBounds);
+        
         // I don't know if all of these arguments are necessary
-        PointValuePair result = bobyqa.optimize( maxeval, maxiter, myOF, guess, GoalType.MAXIMIZE );
+        PointValuePair result = bobyqa.optimize( bounds, maxeval, maxiter, myOF, guess, GoalType.MAXIMIZE );
 
         Mapper.setOptimisable(model.getParameters(), result.getPoint()); // map values from optimisation space back to parameter space
         model.setLnL(result.getValue()); 

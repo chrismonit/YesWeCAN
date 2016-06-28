@@ -251,7 +251,8 @@ public class RunCANFreqProductsMix extends RunEmpiricalBayes {
                 );
 
         Optimise opt = new Optimise();
-        CANModelFrequenciesMix result = (CANModelFrequenciesMix)opt.optNMS(optFunction, can);
+        //CANModelFrequenciesMix result = (CANModelFrequenciesMix)opt.optNMS(optFunction, can);
+        CANModelFrequenciesMix result = (CANModelFrequenciesMix)opt.optBOBYQA(optFunction, can);
         
         this.modelForComputingEB = result; // keep this for computing EB values afterwards
         
