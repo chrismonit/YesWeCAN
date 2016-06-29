@@ -45,12 +45,15 @@ public class CANFunctionFreqProductsMix implements MultivariateFunction {
     private static int NUM_SITE_TYPES = 3;
     private int numSiteClasses;
     
+    private boolean penaliseGene = false;
+    private int nullGene;
     
     public CANFunctionFreqProductsMix(
             AdvancedAlignment alignment, Tree tree, 
             GeneticStructure genStruct, CANModelFrequenciesMix canModel,
             CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable,
-            int numSiteClasses
+            int numSiteClasses,
+            int nullGene
     ){
         this.alignment = alignment;
         this.tree = tree;
@@ -64,6 +67,12 @@ public class CANFunctionFreqProductsMix implements MultivariateFunction {
         
         this.numSiteClasses = numSiteClasses;
         
+        if (nullGene != -1){ // -1 by default, so is != null it means user has specified a value with -null option
+            this.penaliseGene = true;
+            this.nullGene = nullGene;
+        }
+        System.out.println("penalise "+this.penaliseGene);
+        System.exit(1);
     }
     
     

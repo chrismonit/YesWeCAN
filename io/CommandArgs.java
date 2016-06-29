@@ -64,6 +64,9 @@ public class CommandArgs {
     private String probArg2 = "";
     
     
+    @Parameter(names = {"-null"}, required = false, description = "Gene for which p_2>0 is to be penalised")
+    private int nullGene = -1; // minus one by default. If value is -1, no gene is to be penalised
+    
     
     @Parameter(names = {"-frameA", "-a"}, required = false, description = "Gene layout for frame A, delimited by comma")
     private String aFrame = "";
@@ -286,6 +289,11 @@ public class CommandArgs {
     public double[] prob2(){
         return prob(this.probArg2);
     }
+    
+    public int getNullGene(){
+        return this.nullGene;
+    }
+    
     
     // for omegas or prob values. argument is string supplied at CLI after the relevant flag
     private double[] geneSpecificParameter(String argument, double defaultValue){

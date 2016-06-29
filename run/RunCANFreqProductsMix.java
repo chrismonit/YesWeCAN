@@ -227,9 +227,11 @@ public class RunCANFreqProductsMix extends RunEmpiricalBayes {
                 
         CANModelFrequenciesMix can = makeCAN(this.comArgs, this.model, Constants.CODON_FREQ_MIX2_IDENTIFIER, numberSiteClasses(this.model));
         double[] optimisableParams = Mapper.getOptimisable(can.getParameters()); // map parameters to optimisation space, so FunctionHKY.value canMix use them
+        int NULL_GENE = -1; // NG we don't want to penalise p2 when just calculating lnL. so we fix it to default value here
         CANFunctionFreqProductsMix calculator = 
                 new CANFunctionFreqProductsMix(this.alignment, this.tree, this.genStruct, 
-                        can, this.codonFrequenciesArray, this.codonTable, this.numSiteClasses
+                        can, this.codonFrequenciesArray, this.codonTable, this.numSiteClasses,
+                        NULL_GENE // NG
                 );
         
         this.modelForComputingEB = can; // keep this reference for computing EB
@@ -247,7 +249,8 @@ public class RunCANFreqProductsMix extends RunEmpiricalBayes {
     
         CANFunctionFreqProductsMix optFunction = 
                 new CANFunctionFreqProductsMix(this.alignment, this.tree, this.genStruct, 
-                        can, this.codonFrequenciesArray, this.codonTable, this.numSiteClasses
+                        can, this.codonFrequenciesArray, this.codonTable, this.numSiteClasses,
+                        this.comArgs.getNullGene() // NG
                 );
 
         Optimise opt = new Optimise();
