@@ -261,11 +261,11 @@ public class RunCANFreqProductsMix extends RunEmpiricalBayes {
         CANModelFrequenciesMix result = (CANModelFrequenciesMix)opt.optBOBYQA(optFunction, can);
         
         this.modelForComputingEB = result; // keep this for computing EB values afterwards
-        System.out.println("PENALISED_LNL\t"+result.getLnL());
+        System.out.println("OPT_LNL\t"+result.getLnL());
         double[] mles = getValueArray(result);     
         
     //NG ->
-        System.out.println("computing unpenalised lnL with mles");
+        System.out.println("computing again lnL with mles (and no penalty, even if using penalty in optimisation):");
         // NG recompute lnl using the MLEs (in can reference) and without null gene penalty, and ouput that instead
         double[] optimisableParams = Mapper.getOptimisable(can.getParameters()); // map parameters to optimisation space, so FunctionHKY.value canMix use them
         int NULL_GENE = -1; // NG we don't want to penalise p2 when just calculating lnL. so we fix it to default value here
