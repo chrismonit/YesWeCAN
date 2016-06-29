@@ -252,15 +252,31 @@ public class RunCANFreqProductsMix extends RunEmpiricalBayes {
                         can, this.codonFrequenciesArray, this.codonTable, this.numSiteClasses,
                         this.comArgs.getNullGene() // NG
                 );
-
+        System.out.println("NULLGENE_VALUE\t"+this.comArgs.getNullGene()); //NG
         Optimise opt = new Optimise();
+        
         //CANModelFrequenciesMix result = (CANModelFrequenciesMix)opt.optNMS(optFunction, can);
         System.out.println("OPTIMISER\tbobyqa");
+        // NG the model returned here will have a penalised lnL (but only relevant to outputting the lnL value from now on)
         CANModelFrequenciesMix result = (CANModelFrequenciesMix)opt.optBOBYQA(optFunction, can);
         
         this.modelForComputingEB = result; // keep this for computing EB values afterwards
+        System.out.println("PENALISED_LNL\t"+result.getLnL());
+        double[] mles = getValueArray(result);     
         
-        double[] mles = getValueArray(result);        
+    //NG ->
+        System.out.println("computing unpenalised lnL with mles");
+        // NG recompute lnl using the MLEs (in can reference) and without null gene penalty, and ouput that instead
+        double[] optimisableParams = Mapper.getOptimisable(can.getParameters()); // map parameters to optimisation space, so FunctionHKY.value canMix use them
+        int NULL_GENE = -1; // NG we don't want to penalise p2 when just calculating lnL. so we fix it to default value here
+        CANFunctionFreqProductsMix calculator = 
+                new CANFunctionFreqProductsMix(this.alignment, this.tree, this.genStruct, 
+                        can, this.codonFrequenciesArray, this.codonTable, this.numSiteClasses,
+                        NULL_GENE // NG
+                );                
+        mles[1] = calculator.value(optimisableParams);
+    // <- NG
+        
         return mles;
         
     }

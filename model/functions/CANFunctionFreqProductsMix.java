@@ -53,7 +53,7 @@ public class CANFunctionFreqProductsMix implements MultivariateFunction {
             GeneticStructure genStruct, CANModelFrequenciesMix canModel,
             CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable,
             int numSiteClasses,
-            int nullGene
+            int nullGene // NG
     ){
         this.alignment = alignment;
         this.tree = tree;
@@ -67,12 +67,11 @@ public class CANFunctionFreqProductsMix implements MultivariateFunction {
         
         this.numSiteClasses = numSiteClasses;
         
-        if (nullGene != -1){ // -1 by default, so is != null it means user has specified a value with -null option
+        if (nullGene != -1){ // NG -1 by default, so is != null it means user has specified a value with -null option
             this.penaliseGene = true;
             this.nullGene = nullGene;
         }
-        System.out.println("penalise "+this.penaliseGene);
-        System.exit(1);
+        System.out.println("penalising "+this.penaliseGene); // NG
     }
     
     
@@ -187,6 +186,8 @@ public class CANFunctionFreqProductsMix implements MultivariateFunction {
         }// iPartition
     }
 
+    static double PENALTY = 10e8;
+    
     @Override 
     public double value(double[] point) { 
   
@@ -248,7 +249,14 @@ public class CANFunctionFreqProductsMix implements MultivariateFunction {
             totalLogL += Math.log(siteL);
         }// iSite
 
-        return totalLogL;
+        if (penaliseGene) {
+            double p2 = this.canModel.getProbability(this.nullGene, 2);
+            double penalisedLogL = totalLogL - (p2 * PENALTY);
+            return penalisedLogL;
+        }else{
+            return totalLogL;
+        }
+        
     }// value
     
 }
