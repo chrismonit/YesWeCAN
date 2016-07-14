@@ -23,6 +23,7 @@ import yeswecan.model.empiricalbayes.CodonEBMethodFactory;
 import yeswecan.model.functions.CANFunctionFreqProductsMix;
 import yeswecan.model.parameters.OmegaNegative;
 import yeswecan.model.parameters.OmegaPositive;
+import yeswecan.model.parameters.ProbabilitiesFixLast;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.model.submodels.CANModelFrequenciesMix;
 import yeswecan.optim.Optimise;
@@ -170,8 +171,14 @@ public class RunCANFreqProductsMix extends RunEmpiricalBayes {
                 if (comArgs.fix().contains(Integer.toString(iGene+1) + Constants.WITIHIN_FIELD_SEPARATOR + Constants.OMEGA_STRING + Constants.SITE_CLASS_2)) //+1 for zero based
                    geneW_2.setOptimisable(false);
                 omegas.add(geneW_2);
-
-                geneProbs = new Probabilities(new double[]{ comArgs.prob0()[iGene], comArgs.prob1()[iGene], comArgs.prob2()[iGene]});
+                
+                double FIX_LAST = 0.0;
+                if (iGene+1 == comArgs.getNullGene()) { // null gene argument is not zero based, while iGene is
+                    geneProbs = new ProbabilitiesFixLast(new double[]{ comArgs.prob0()[iGene], comArgs.prob1()[iGene], FIX_LAST });
+                }else{
+                    geneProbs = new Probabilities(new double[]{ comArgs.prob0()[iGene], comArgs.prob1()[iGene], comArgs.prob2()[iGene]});
+                }
+                
             }else{
                 geneProbs = new Probabilities(new double[]{ comArgs.prob0()[iGene], comArgs.prob1()[iGene] });
             }
@@ -227,7 +234,7 @@ public class RunCANFreqProductsMix extends RunEmpiricalBayes {
                 
         CANModelFrequenciesMix can = makeCAN(this.comArgs, this.model, Constants.CODON_FREQ_MIX2_IDENTIFIER, numberSiteClasses(this.model));
         double[] optimisableParams = Mapper.getOptimisable(can.getParameters()); // map parameters to optimisation space, so FunctionHKY.value canMix use them
-        int NULL_GENE = -1; // NG we don't want to penalise p2 when just calculating lnL. so we fix it to default value here
+        //int NULL_GENE = -1; // NG we don't want to penalise p2 when just calculating lnL. so we fix it to default value here
         CANFunctionFreqProductsMix calculator = 
                 new CANFunctionFreqProductsMix(this.alignment, this.tree, this.genStruct, 
                         can, this.codonFrequenciesArray, this.codonTable, this.numSiteClasses
@@ -257,7 +264,6 @@ public class RunCANFreqProductsMix extends RunEmpiricalBayes {
         
         //CANModelFrequenciesMix result = (CANModelFrequenciesMix)opt.optNMS(optFunction, can);
         System.out.println("OPTIMISER\tbobyqa");
-        // NG the model returned here will have a penalised lnL (but only relevant to outputting the lnL value from now on)
         CANModelFrequenciesMix result = (CANModelFrequenciesMix)opt.optBOBYQA(optFunction, can);
         
         this.modelForComputingEB = result; // keep this for computing EB values afterwards
@@ -265,6 +271,7 @@ public class RunCANFreqProductsMix extends RunEmpiricalBayes {
         double[] mles = getValueArray(result);     
         
 //    //NG ->
+        //is using the penalised lnl approach, the lnl above will include the penalty. compute again without.
 //        System.out.println("computing again lnL with mles (and no penalty, even if using penalty in optimisation):");
 //        // NG recompute lnl using the MLEs (in can reference) and without null gene penalty, and ouput that instead
 //        double[] optimisableParams = Mapper.getOptimisable(can.getParameters()); // map parameters to optimisation space, so FunctionHKY.value canMix use them
