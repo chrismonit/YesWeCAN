@@ -230,8 +230,8 @@ public class RunCANFreqProductsMix extends RunEmpiricalBayes {
         int NULL_GENE = -1; // NG we don't want to penalise p2 when just calculating lnL. so we fix it to default value here
         CANFunctionFreqProductsMix calculator = 
                 new CANFunctionFreqProductsMix(this.alignment, this.tree, this.genStruct, 
-                        can, this.codonFrequenciesArray, this.codonTable, this.numSiteClasses,
-                        NULL_GENE // NG
+                        can, this.codonFrequenciesArray, this.codonTable, this.numSiteClasses
+                        //NULL_GENE // NG
                 );
         
         this.modelForComputingEB = can; // keep this reference for computing EB
@@ -249,8 +249,8 @@ public class RunCANFreqProductsMix extends RunEmpiricalBayes {
     
         CANFunctionFreqProductsMix optFunction = 
                 new CANFunctionFreqProductsMix(this.alignment, this.tree, this.genStruct, 
-                        can, this.codonFrequenciesArray, this.codonTable, this.numSiteClasses,
-                        this.comArgs.getNullGene() // NG
+                        can, this.codonFrequenciesArray, this.codonTable, this.numSiteClasses
+                        //this.comArgs.getNullGene() // NG
                 );
         System.out.println("NULLGENE_VALUE\t"+this.comArgs.getNullGene()); //NG
         Optimise opt = new Optimise();
@@ -264,18 +264,18 @@ public class RunCANFreqProductsMix extends RunEmpiricalBayes {
         System.out.println("OPT_LNL\t"+result.getLnL());
         double[] mles = getValueArray(result);     
         
-    //NG ->
-        System.out.println("computing again lnL with mles (and no penalty, even if using penalty in optimisation):");
-        // NG recompute lnl using the MLEs (in can reference) and without null gene penalty, and ouput that instead
-        double[] optimisableParams = Mapper.getOptimisable(can.getParameters()); // map parameters to optimisation space, so FunctionHKY.value canMix use them
-        int NULL_GENE = -1; // NG we don't want to penalise p2 when just calculating lnL. so we fix it to default value here
-        CANFunctionFreqProductsMix calculator = 
-                new CANFunctionFreqProductsMix(this.alignment, this.tree, this.genStruct, 
-                        can, this.codonFrequenciesArray, this.codonTable, this.numSiteClasses,
-                        NULL_GENE // NG
-                );                
-        mles[1] = calculator.value(optimisableParams);
-    // <- NG
+//    //NG ->
+//        System.out.println("computing again lnL with mles (and no penalty, even if using penalty in optimisation):");
+//        // NG recompute lnl using the MLEs (in can reference) and without null gene penalty, and ouput that instead
+//        double[] optimisableParams = Mapper.getOptimisable(can.getParameters()); // map parameters to optimisation space, so FunctionHKY.value canMix use them
+//        int NULL_GENE = -1; // NG we don't want to penalise p2 when just calculating lnL. so we fix it to default value here
+//        CANFunctionFreqProductsMix calculator = 
+//                new CANFunctionFreqProductsMix(this.alignment, this.tree, this.genStruct, 
+//                        can, this.codonFrequenciesArray, this.codonTable, this.numSiteClasses
+//                       // NULL_GENE // NG
+//                );                
+//        mles[1] = calculator.value(optimisableParams);
+//    // <- NG
         
         return mles;
         
