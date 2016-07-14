@@ -45,15 +45,15 @@ public class CANFunctionFreqProductsMix implements MultivariateFunction {
     private static int NUM_SITE_TYPES = 3;
     private int numSiteClasses;
     
-    private boolean penaliseGene = false;
-    private int nullGene;
+    //private boolean penaliseGene = false;
+    //private int nullGene;
     
     public CANFunctionFreqProductsMix(
             AdvancedAlignment alignment, Tree tree, 
             GeneticStructure genStruct, CANModelFrequenciesMix canModel,
             CodonFrequencies[] codonFrequenciesArray, CodonTable codonTable,
-            int numSiteClasses,
-            int nullGene // NG
+            int numSiteClasses
+            //int nullGene // NG
     ){
         this.alignment = alignment;
         this.tree = tree;
@@ -67,11 +67,11 @@ public class CANFunctionFreqProductsMix implements MultivariateFunction {
         
         this.numSiteClasses = numSiteClasses;
         
-        if (nullGene != -1){ // NG -1 by default, so is != null it means user has specified a value with -null option
-            this.penaliseGene = true;
-            this.nullGene = nullGene;
-        }
-        System.out.println("penalising "+this.penaliseGene); // NG
+//        if (nullGene != -1){ // NG -1 by default, so is != null it means user has specified a value with -null option
+//            this.penaliseGene = true;
+//            this.nullGene = nullGene;
+//        }
+//        System.out.println("penalising "+this.penaliseGene); // NG
     }
     
     
@@ -186,7 +186,8 @@ public class CANFunctionFreqProductsMix implements MultivariateFunction {
         }// iPartition
     }
 
-    static double PENALTY = 10e8;
+     //NG
+    //static double PENALTY = 10e8; // following conversation with R, apparently this is too high. 10e4 better
     
     @Override 
     public double value(double[] point) { 
@@ -249,13 +250,13 @@ public class CANFunctionFreqProductsMix implements MultivariateFunction {
             totalLogL += Math.log(siteL);
         }// iSite
 
-        if (penaliseGene) {
-            double p2 = this.canModel.getProbability(this.nullGene, 2);
-            double penalisedLogL = totalLogL - (p2 * PENALTY);
-            return penalisedLogL;
-        }else{
+//        if (penaliseGene) { //NG
+//            double p2 = this.canModel.getProbability(this.nullGene, 2);
+//            double penalisedLogL = totalLogL - (p2 * PENALTY);
+//            return penalisedLogL;
+//        }else{
             return totalLogL;
-        }
+//        }
         
     }// value
     
