@@ -273,6 +273,9 @@ public class CommandArgs {
         else if (this.model == Constants.M2_IDENTIFIER || this.model == Constants.CODON_FREQ_MIX2_IDENTIFIER){
             return geneSpecificParameter(argument, 1.0/(double)Constants.NUM_M2_SITE_CLASSES);
         }
+        else if (this.model == Constants.CODON_FREQ_MIX2_CANSIM_IDENTIFIER){
+             return geneSpecificParameter(argument, 1.0/(double)Constants.NUM_M2_SITE_CLASSES); // always assume alternative model for this simulation
+        }
         else{
             throw new RuntimeException("Model probability values requested from CommandArgs, when model specified does not include probabilities");
         }

@@ -16,6 +16,7 @@ import pal.datatype.CodonTableFactory;
 import pal.datatype.Nucleotides;
 import pal.tree.Node;
 import pal.tree.Tree;
+import swmutsel.model.parameters.BranchScaling;
 import swmutsel.model.parameters.Omega;
 import yeswecan.Constants;
 import yeswecan.io.CommandArgs;
@@ -24,6 +25,7 @@ import yeswecan.model.likelihood.ProbMatrixFactory;
 import yeswecan.model.likelihood.ProbMatrixGenerator;
 import yeswecan.model.codonawareness.RatioScaler;
 import yeswecan.model.codonawareness.RatioScalerFactory;
+import yeswecan.model.functions.CANFunctionFreqProductsMix;
 import yeswecan.model.matrices.CANMatrixFreqProducts;
 import yeswecan.model.parameters.TsTvRatioAdvanced;
 import yeswecan.model.submodels.CANModelFrequenciesMix;
@@ -31,6 +33,7 @@ import yeswecan.model.submodels.CANModelMixture;
 import yeswecan.phylo.CodonFrequencies;
 import yeswecan.phylo.GeneticStructure;
 import yeswecan.phylo.States;
+import yeswecan.run.RunCANFreqProductsMix;
 
 /**
  *
@@ -48,7 +51,7 @@ public class SimFreqProductsMix extends SimModel { // TODO this is just SimCANMi
     private CodonFrequencies[] codonFrequenciesArray;
     private TsTvRatioAdvanced kappa;
     private CodonTable universalTable;
-    
+    private CANMatrixFreqProducts[][][][][] Q_matrices;
     
     public SimFreqProductsMix(Tree tree, Random rand, 
             GeneticStructure genStruct, CommandArgs comArgs, boolean printSubCounts){
@@ -75,6 +78,22 @@ public class SimFreqProductsMix extends SimModel { // TODO this is just SimCANMi
         this.universalTable = CodonTableFactory.createUniversalTranslator();
         System.out.println("MODEL"+Constants.DEL+"site"+Constants.DEL+"A"+Constants.DEL+"B"+Constants.DEL+"C"); // just a header for the class and w rows
 
+        int MIX_MODEL = 7; // assuming we only ever want to simulate with the alternative model (3 site classes). This is fine, because we can just set probabilities to 0 for any site class we want to remove
+        int COMPLEX_MODEL = 7;
+        int NUM_SITE_CLASSES = Constants.NUM_M2_SITE_CLASSES;
+        this.canMix = RunCANFreqProductsMix.makeCAN(this.comArgs, MIX_MODEL, COMPLEX_MODEL, NUM_SITE_CLASSES);
+        
+        // make unscaled matrices
+        this.Q_matrices = CANFunctionFreqProductsMix.createUnscaledMatrices(
+                this.genStruct, this.canMix, this.codonFrequenciesArray, 
+                this.universalTable, Constants.NUM_M2_SITE_CLASSES);
+        
+        // compute scaling factor
+        double nu = CANFunctionFreqProductsMix.computeNu(this.genStruct, this.Q_matrices, this.canMix, Constants.NUM_M2_SITE_CLASSES);
+        
+        // scale matrices
+        CANFunctionFreqProductsMix.scaleMatrices(
+                this.Q_matrices, this.genStruct.getNumberOfPartitions(), Constants.NUM_M2_SITE_CLASSES, nu);
     }
 
     
@@ -99,12 +118,12 @@ public class SimFreqProductsMix extends SimModel { // TODO this is just SimCANMi
             Omega bOmega = this.canMix.getGeneAndSiteClassOmega(genes[1], bFrameSiteClass);  
             Omega cOmega = this.canMix.getGeneAndSiteClassOmega(genes[2], cFrameSiteClass);  
             
-            Omega[] omegas = new Omega[]{ aOmega, bOmega, cOmega };
+           // Omega[] omegas = new Omega[]{ aOmega, bOmega, cOmega };
             
             System.out.println("class"+Constants.DEL+iSite+Constants.DEL+aFrameSiteClass+Constants.DEL+bFrameSiteClass+Constants.DEL+cFrameSiteClass);
             System.out.println("w"+Constants.DEL+iSite+Constants.DEL+aOmega.get()+Constants.DEL+bOmega.get()+Constants.DEL+cOmega.get());
-            
-            CANMatrixFreqProducts canQ = new CANMatrixFreqProducts(this.kappa, siteType, omegas, this.codonFrequenciesArray, this.universalTable);
+                        
+            CANMatrixFreqProducts canQ = this.Q_matrices[this.genStruct.getPartitionIndex(iSite)][aFrameSiteClass][bFrameSiteClass][cFrameSiteClass][siteType];
             
             ProbMatrixGenerator Pgen = ProbMatrixFactory.getPGenerator(canQ);
             
@@ -133,4 +152,8 @@ public class SimFreqProductsMix extends SimModel { // TODO this is just SimCANMi
         return allSites;
     }
      
+    public CANModelFrequenciesMix getModel(){
+        return this.canMix;
+    }
+    
 }

@@ -32,7 +32,8 @@ public class Constants {
     public static final int M2_IDENTIFIER = 2;
     public static final int CODON_FREQ_IDENTIFIER = 3;
     public static final int CODON_FREQ_MIX1_IDENTIFIER = 6; // TODO renumber these models!
-    public static final int CODON_FREQ_MIX2_IDENTIFIER = 7;
+    public static final int CODON_FREQ_MIX2_IDENTIFIER = 7; // in analysis this represents freqproducts_mix but for simulation it represents the mixture version of the 'local site dependence' simulation
+    public static final int CODON_FREQ_MIX2_CANSIM_IDENTIFIER = 8; // for simulating with CAN CODON_FREQ_MIX2 model (i.e. simulating with the same model we use to analyse)
     public static final int CAN_SUM_IDENTIFIER = 4;
     public static final int CAN_FREQ_IDENTIFIER = 5;
 
