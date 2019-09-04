@@ -79,11 +79,11 @@ public class CodonScaler implements RatioScaler {
     }
     
     public static void main(String[] args){
-        String path = "/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/freq_test/sapiens.csv";
+        String path = "/Users/cmonit1/Desktop/overlapping_ORF/CAN_model/freq_test/61.csv";
         CodonScaler scaler = new CodonScaler(new CodonFrequencies(path));
         //CodonScaler scaler = new CodonScaler(new CodonFrequencies()); // 1/64
         
-        double ratio = 2.0;
+        double ratio = 1.0;
         int siteType = 0;
         int frame = 0;
                 
